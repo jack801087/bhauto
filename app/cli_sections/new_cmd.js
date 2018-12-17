@@ -10,6 +10,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     let project_path = ProjectMgr.newProject();
     if(project_path === null) return;
 
+    ConfigMgr.save();
+
     let p1 = (cliReference,cliNextCb,cliData)=>{
         ProjectMgr.newProjectStructure();
     };
