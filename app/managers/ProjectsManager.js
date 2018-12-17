@@ -55,9 +55,9 @@ class ProjectManager {
 
         let utilsdata_path = Utils.File.join(Utils.File.getAbsPath(),'assets','utils_data');
         this.project_utilsdata_path = Utils.File.join(this.project_path,'utils_data');
-        let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.project_utilsdata_path);
+        let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.project_utilsdata_path,{ overwrite:true });
         if(_cpresult.err!==null){
-            clUI.error('Error while copying directory:',utilsdata_path,' > ');
+            clUI.error('Error while copying directory:',_cpresult.path_from,' > ',_cpresult.path_to);
             return false;
         }
         return true;
