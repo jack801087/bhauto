@@ -149,7 +149,6 @@ class Utils {
         if (dtobj.dd.length < 2) dtobj.dd = '0' + dtobj.dd;
 
         dtobj.yyyy = d.getFullYear();
-        dtobj.yy = dtobj.yyyy.substring(2);
 
         dtobj.hh = '' + d.getHours();
         if (dtobj.hh.length < 2) dtobj.hh = '0' + dtobj.hh;

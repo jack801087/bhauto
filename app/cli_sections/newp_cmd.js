@@ -1,6 +1,6 @@
 let cmd_name = 'newp';
 
-CliMgr.addCommand(cmd_name+' <action>');
+CliMgr.addCommand(cmd_name+'');
 
 CliMgr.addCommandHeader(cmd_name)
     .description("Create a new project."+"\n");
@@ -8,7 +8,7 @@ CliMgr.addCommandHeader(cmd_name)
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
     let project_path = ProjectMgr.newProject();
-    if(project_path === null) return;
+    if(project_path === null) return cliNextCb(cliData.success_code);
 
     ConfigMgr.save();
 

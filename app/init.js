@@ -10,7 +10,7 @@ global.ProjectMgr = require('./managers/ProjectManager.js');
 
 // require('./cli_sections/bookm_cmd.js');
 require('./cli_sections/config_cmd.js');
-// require('./cli_sections/coverage_cmd.js');
+require('./cli_sections/newp_cmd.js');
 // require('./cli_sections/dir_cmd.js');
 // require('./cli_sections/export_cmd.js');
 // require('./cli_sections/lookup_cmd.js');
@@ -20,7 +20,7 @@ require('./cli_sections/config_cmd.js');
 // require('./cli_sections/scan_cmd.js');
 // require('./cli_sections/tquery_cmd.js');
 
-//CliMgr.show('bh');
+CliMgr.show('bh');
 
 
 /*
