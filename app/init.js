@@ -29,17 +29,6 @@ s0/s1 = project
 s2 = export
 s4 = manage reset
 
-s1 = pre set directories [init]
-- cli parameter: music platform -w (beatport default)
-- se presente directory 'beatport', chiedere conferma reset > eliminare [do-later]
-- chiamare adapter beatport - randomizzare array
-- generare /utils_data/search_utility.html
-- generare /utils_data/data_collection.json
--   preparare array di oggetti con tutte le keys e stringa vuota se dati non presenti
--   unire dati memorizzati
--   modificare oggetto artist e labels in array di oggetti con name, instagram tags, fb tags, ecc.
-
-
 s2 = generare dati finali [save]
 - se presenti, chiedere conferma reset > eliminare [do-later]
 - stampare un output delle settimane, titoli, jumpdays, etc. e chiedere conferma
@@ -69,5 +58,19 @@ s0 = new project in export dir [new]
 - in questa directory creare directory utils
 - creare /utils_data/beatport_cart.jquery.js (con istruzioni commentate)
 - creare /utils_data/beatport_cart.json vuoto
+
+
+
+s1 = pre set directories [init]
+- cli parameter: music platform -w (beatport default)
+- se presente directory 'beatport', chiedere conferma reset > eliminare [do-later]
+- chiamare adapter beatport - randomizzare array
+- generare /utils_data/search_utility.html
+- generare /utils_data/data_collection.json
+-   preparare array di oggetti con tutte le keys e stringa vuota se dati non presenti
+-   unire dati memorizzati
+-   modificare oggetto artist e labels in array di oggetti con name, instagram tags, fb tags, ecc.
+
+
 
 */
