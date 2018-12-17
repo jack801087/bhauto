@@ -30,22 +30,6 @@ let datestring_hm = utils.formatDate(Date.now());//,true);
 let dest_path = path.join( path.dirname(path_ftxt) , 'bh_'+datestring_hm );
 let prelist_file = path.join( dest_path , 'prelist.json' );
 
-/*
-
-s1 = (NO richiesto login! curl pagina/uso jquery su node) - jquery generare pre-json
-
-s2 = generare html utility per cercare instagram tags
- - modificare oggetto artist e labels in array di oggetti con name, instagram tags, fb tags, ecc.
- - cercare tags e aggiungere
- - generare pre-json
-
-s3 = processare pre-json
-- memorizzare tags artisti / se non esiste
-- memorizzare tags labels / se non esiste
-- generare dir, singoli txt instagram, txt per ae, txt per photoshop
-
-*/
-
 
 if(args[2]==='-s1'){
     d$(dest_path);

@@ -13,6 +13,8 @@ class ConfigManager {
 
         this._paths = {};
         this._cfg_paths = {};
+
+        this._mixed_cache = {};
     }
 
     init(){
@@ -256,7 +258,13 @@ class ConfigManager {
     print(){
         clUI.print("\n",'Current Configuration:');
         let params = this.getConfigParams();
-        let _mlen1 = 0; params.forEach((v)=>{ if(_mlen1<v.length) _mlen1=v.length; }); _mlen1+=7;
+
+        let _mlen1 = this._mixed_cache.print_mlen1;
+        if(!_mlen1){
+            params.forEach((v)=>{ if(_mlen1<v.length) _mlen1=v.length; }); _mlen1+=7;
+            this._mixed_cache.print_mlen1 = _mlen1;
+        }
+
         for(let i=0; i<params.length; i++){
             let pvalue = this.get(params[i], true /*original value*/);
             if(_.isNil(pvalue) || _.isNaN(pvalue)) pvalue='<undefined>';
@@ -272,12 +280,16 @@ class ConfigManager {
         let _paths_keys = Object.keys(this._paths);
         let _cfg_paths_keys = Object.keys(this._cfg_paths);
         let _flags_keys = Object.keys(this._flags);
+
         let pad_end1=16;
-        let pad_end2=0;
-        _paths_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
-        _cfg_paths_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
-        _flags_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
-        pad_end2+=3;
+        let pad_end2 = this._mixed_cache.print_pad_end2;
+        if(!pad_end2){
+            _paths_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
+            _cfg_paths_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
+            _flags_keys.forEach((v)=>{ if(pad_end2<v.length) pad_end2=v.length; });
+            pad_end2+=3;
+            this._mixed_cache.print_pad_end2 = pad_end2;
+        }
 
         clUI.print("\n","Internal Configuration");
         clUI.print(_.padEnd("   (private)",pad_end1),_.padEnd("userdata path: ",pad_end2),_self._userdata_path);
@@ -300,7 +312,7 @@ class ConfigManager {
         let str = '';
         for(let i=0; i<k.length; i++){
             if(this._flags[k[i]].status===true){
-                str += 'Warning: '+this._flags[k[i]].message+"\n";
+                str += '[App Warning] '+this._flags[k[i]].message+"\n";
             }
         }
         if(str.length===0) return;
