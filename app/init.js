@@ -1,13 +1,12 @@
-/* Project Modules */
-global.SamplesMgr = require('./managers/SamplesManager.js');
-global.DirCommand = require('./managers/Dir.command.js');
-global.BookmarksMgr = require('./managers/BookmarksManager.js');
-global.ProjectsMgr = require('./managers/ProjectsManager.js');
-global.TQueryMgr = require('./managers/TQueryManager.js');
-global.ExportMgr = require('./managers/ExportManager.js');
-
-
 require('./config.js');
+
+/* Project Modules */
+// global.SamplesMgr = require('./managers/SamplesManager.js');
+// global.DirCommand = require('./managers/Dir.command.js');
+// global.BookmarksMgr = require('./managers/BookmarksManager.js');
+global.ProjectMgr = require('./managers/ProjectManager.js');
+// global.TQueryMgr = require('./managers/TQueryManager.js');
+// global.ExportMgr = require('./managers/ExportManager.js');
 
 // require('./cli_sections/bookm_cmd.js');
 require('./cli_sections/config_cmd.js');
@@ -21,8 +20,6 @@ require('./cli_sections/config_cmd.js');
 // require('./cli_sections/scan_cmd.js');
 // require('./cli_sections/tquery_cmd.js');
 
-
-
 //CliMgr.show('bh');
 
 
@@ -31,16 +28,6 @@ require('./cli_sections/config_cmd.js');
 s0/s1 = project
 s2 = export
 s4 = manage reset
-
-s0 = new project in export dir [new]
-- errore se exportdir non settata
-- new directory bh_proj_yymmddhhii
-- se esiste gia chiedere se eliminare (rimraf - al momento creare nuova dir con id univoco)
-- set config-current project
-- in questa directory creare directory utils
-- creare /utils_data/beatport_cart.jquery.js (con istruzioni commentate)
-- creare /utils_data/beatport_cart.json vuoto
-
 
 s1 = pre set directories [init]
 - cli parameter: music platform -w (beatport default)
@@ -68,5 +55,19 @@ s2 = generare dati finali [save]
 s4 = reset project
 - cli parameter: -k1 -k2 -k3 (k1 dati finali, k2 data collection, k3 tutto)
 - in ogni caso deve rilevare quante week diverse ci sono e decrementare il contatore
+
+
+
+
+
+
+s0 = new project in export dir [new]
+- errore se exportdir non settata
+- new directory bh_proj_yymmddhhii
+- se esiste gia chiedere se eliminare (rimraf - al momento creare nuova dir con id univoco)
+- set config-current project
+- in questa directory creare directory utils
+- creare /utils_data/beatport_cart.jquery.js (con istruzioni commentate)
+- creare /utils_data/beatport_cart.json vuoto
 
 */

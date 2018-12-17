@@ -1,61 +1,67 @@
-let ProjectsHistory = require('./project.modules/ProjectsHistory.class');
-let ProjectsTemplate = require('./project.modules/ProjectsTemplate.class');
-let ProjectsPath = require('./project.modules/ProjectsPath.class');
 
-class ProjectsManager {
+class ProjectManager {
 
     constructor(){
-        this._data = {
-            history:null,
-            template:null,
-            ppaths:null
-        };
-        this._createBookmarksHolder();
+
+
+        // from config
     }
 
-    get history() { return this._data.history; }
-    get template() { return this._data.template; }
-    get ppaths() { return this._data.ppaths; }
-
-    get current() { if(this._data.history.empty()) return null; return this._data.history.get(0); }
-    set current(project_path) { return this._data.history.add(project_path); }
-
-    save(){
-        return DataMgr.save('projects');
+    _init(){
+        this.project_name = null;
+        this.project_path = null;
+        this.project_utilsdata_path = null;
     }
 
-    _createBookmarksHolder(){
-        let _self = this;
-        return DataMgr.setHolder({
-            label:'projects',
-            filePath:ConfigMgr.path('projects'),
-            fileType:'json',
-            dataType:'object',
-            logErrorsFn:d$,
-            preLoad:true,
-            autoSave:true,
 
-            loadFn:(fileData)=>{
-                _self._data.ppaths = new ProjectsPath();
-                _self._data.history = new ProjectsHistory();
-                _self._data.template = new ProjectsTemplate();
-                if(!_.isObject(fileData)){
-                    return _self._data;
-                }
-                _self._data.history.fromJson(fileData.history);
-                _self._data.template.fromJson(fileData.templates);
-                return _self._data;
-            },
+    newProject(project_path){
+        this._init();
+        let export_project_path = ConfigMgr.cfg_paths('ExportDirectory');
+        if(export_project_path===null){
+            clUI.error('No export path configured');
+            return null;
+        }
+        if(project_path===null){
+            this.project_name = 'bh_proj_'+Utils.dateToYYYYMMDDhhiiss();
+            this.project_path = Utils.File.pathJoin(export_project_path,this.project_name);
+        }else{
+            this.project_name = Utils.File.pathBasename(project_path);
+            this.project_path = project_path;
+        }
+        ConfigMgr.set('CurrentProject',this.project_path);
+        return this.project_path;
+    }
 
-            saveFn:(pData)=>{
-                return {
-                    history:pData.history.toJson(),
-                    templates:pData.template.toJson()
-                }
-            }
-        });
+
+    resumeProject(){
+        let current_project_path = ConfigMgr.cfg_paths('CurrentProject');
+        if(current_project_path===null){
+            clUI.error('No current project path configured');
+            return null;
+        }
+        if(!Utils.File.directoryExistsSync(current_project_path)){
+            clUI.error('The configured current project path does not exist',current_project_path);
+            return null;
+        }
+        return this.newProject(current_project_path);
+    }
+
+
+    newProjectStructure(){
+        if(!Utils.File.removeDirSync(this.project_path)){
+            clUI.error('Error while removing directory:',this.project_path);
+            return false;
+        }
+
+        let utilsdata_path = Utils.File.join(Utils.File.getAbsPath(),'assets','utils_data');
+        this.project_utilsdata_path = Utils.File.join(this.project_path,'utils_data');
+        if(!Utils.File.copyDirSync(utilsdata_path,this.project_utilsdata_path)){
+            clUI.error('Error while copying directory:',utilsdata_path,' > ');
+            return false;
+        }
+        return true;
     }
 
 }
 
-module.exports = new ProjectsManager();
+module.exports = new ProjectManager();
