@@ -306,6 +306,28 @@ class Utils_Files {
         return true;
     }
 
+
+    copyDirectorySync(path_from, path_to, options){
+        options = _.merge({
+            overwrite:false,
+            errorOnExist:false
+        },options);
+        let _self = this;
+        let _ret_value = {
+            err:null,
+            path_from:path_from,
+            path_to:path_to
+        };
+        try {
+            this._FS_EXTRA.copySync(path_from, path_to, options)
+        } catch (err) {
+            _ret_value.err = err;
+            d$(_ret_value);
+        }
+        return _ret_value;
+    }
+
+
     readDirectorySync(path_string,preFn,callback){
         if(!callback) callback=function(){};
         if(!preFn) preFn=function(){};
