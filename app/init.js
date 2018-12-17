@@ -31,7 +31,7 @@ s4 = manage reset
 
 s1 = pre set directories [init]
 - cli parameter: music platform -w (beatport default)
-- se presenti, chiedere conferma reset > eliminare [do-later]
+- se presente directory 'beatport', chiedere conferma reset > eliminare [do-later]
 - chiamare adapter beatport - randomizzare array
 - generare /utils_data/search_utility.html
 - generare /utils_data/data_collection.json
