@@ -3,6 +3,8 @@ const fs = require('fs');
 const fs_extra = require('fs-extra');
 const rimraf = require('rimraf'); //A "rm -rf" util for nodejs
 const _ = require('lodash');
+const imagedownloader = require('image-downloader');
+const iconv = require('iconv-lite');
 
 class Utils_Files {
 
@@ -177,6 +179,13 @@ class Utils_Files {
         try{
             if(!encoding) encoding='utf8';
             if(!flag) flag='r';
+            if(encoding==='iso88591'){
+                let fcont = fs.readFileSync(path_string,{
+                    encoding:'binary',
+                    flag:flag
+                }).toString();
+                return iconv.decode(fcont, 'iso88591');
+            }
             return this._FS.readFileSync(path_string,{
                 encoding:encoding,
                 flag:flag
@@ -188,8 +197,8 @@ class Utils_Files {
     }
 
     readJsonFileSync(path_string){
-        let file_content = this.readFileSync(path_string,'utf8');
-        if(file_content === false) return false;
+        let file_content = this.readFileSync(path_string,'iso88591');
+        if(file_content===false || _.isNil(file_content)) return false;
         try{
             let json_obj = JSON.parse(file_content);
             if(!_.isObject(json_obj)) return null;
@@ -201,8 +210,8 @@ class Utils_Files {
     }
 
     readTextFileSync(path_string){
-        let file_content = this.readFileSync(path_string,'utf8');
-        if(file_content === false) return false;
+        let file_content = this.readFileSync(path_string,'iso88591');
+        if(file_content===false || _.isNil(file_content)) return false;
         return _.trim(file_content);
     }
 
@@ -211,6 +220,14 @@ class Utils_Files {
             if(!encoding) encoding='utf8';
             if(!flag) flag='w';
             if(!mode) mode=0o666;
+            if(encoding==='iso88591'){
+                file_content = iconv.decode(file_content, 'iso88591');
+                this._FS.writeFileSync(path_string, file_content, {
+                    encoding:"binary",
+                    flag:flag,
+                    mode:mode
+                });
+            }
             this._FS.writeFileSync(path_string, file_content, {
                 encoding:encoding,
                 flag:flag,
@@ -224,7 +241,7 @@ class Utils_Files {
     }
 
     writeTextFileSync(path_string, file_content){
-        return this.writeFileSync(path_string, file_content, 'utf8');
+        return this.writeFileSync(path_string, file_content, 'iso88591');
     }
 
     writeJsonFileSync(path_string, json_obj, space){
@@ -240,7 +257,7 @@ class Utils_Files {
             d$(e);
             return false;
         }
-        return this.writeTextFileSync(path_string,file_content);
+        return this.writeTextFileSync(path_string, file_content, 'iso88591');
     }
 
 
