@@ -1,6 +1,6 @@
 let cmd_name = 'initp';
 
-CliMgr.addCommand(cmd_name+' <action>');
+CliMgr.addCommand(cmd_name);
 
 CliMgr.addCommandHeader(cmd_name)
     .description("Initialize the project."+"\n");
@@ -20,11 +20,32 @@ s1 = pre set directories [init]
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
     let p1 = (cliReference,cliNextCb,cliData)=>{
-        if(!ProjectMgr.setFromRawData()){
+        let fdObj = ProjectMgr.setFromRawData();
+        if(!_.isObject(fdObj)){
             d$('ProjectMgr.setFromRawData returned an error');
             return cliNextCb(cliData.error_code);
         }
 
+        if(fdObj.raw_data_error.length>0){
+            cliData.ui.warning(fdObj.raw_data_error);
+            cliData.ui.warning('Some errors occurred while reading the raw data showed above.');
+            cliReference.prompt({
+                type: 'input',
+                name: 'answer',
+                message: 'Do you want to continue? [y/n] '
+            }, function (result) {
+                if(result.answer !== 'y'){
+                    return cliNextCb(cliData.success_code);
+                }
+                p2(cliReference,cliNextCb,cliData,fdObj);
+            });
+            return;
+        }
+        p2(cliReference,cliNextCb,cliData,fdObj);
+    };
+
+
+    let p2 = (cliReference,cliNextCb,cliData, fdObj)=>{
         if(!ProjectMgr.generateSearchUtility()){
             d$('ProjectMgr.generateSearchUtility returned an error');
             return cliNextCb(cliData.error_code);
@@ -44,7 +65,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         return cliNextCb(cliData.error_code);
     }
 
-    if(!ProjectMgr.checkFinalDataExists()){
+    if(ProjectMgr.checkFinalDataExists()){
         cliData.ui.warning('Final data already exists.');
         cliReference.prompt({
             type: 'input',

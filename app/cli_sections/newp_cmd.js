@@ -1,6 +1,6 @@
 let cmd_name = 'newp';
 
-CliMgr.addCommand(cmd_name+'');
+CliMgr.addCommand(cmd_name);
 
 CliMgr.addCommandHeader(cmd_name)
     .description("Create a new project."+"\n");

@@ -65,26 +65,55 @@ class ProjectManager {
             return false;
         }
 
-        this.path_utilsdata_rawdata = Utils.File.pathJoin(path_utilsdata,'raw_data.json');
-        this.path_utilsdata_finaldata = Utils.File.pathJoin(path_utilsdata,'final_data.json');
-        this.path_utilsdata_searchutility = Utils.File.pathJoin(path_utilsdata,'search_utility.html');
+        this.path_utilsdata_rawdata = Utils.File.pathJoin(this.path_utilsdata,'raw_data.json');
+        this.path_utilsdata_finaldata = Utils.File.pathJoin(this.path_utilsdata,'final_data.json');
+        this.path_utilsdata_searchutility = Utils.File.pathJoin(this.path_utilsdata,'search_utility.html');
         return true;
     }
 
 
     checkRawDataExists(){
+        if(!this.path_utilsdata_rawdata) return false;
         return Utils.File.fileExistsSync(this.path_utilsdata_rawdata);
-        //clUI.error('Raw data file does not exits!' ,"\n", this.path_utilsdata_rawdata);
     }
 
     checkFinalDataExists(){
+        if(!this.path_utilsdata_finaldata) return false;
         return Utils.File.fileExistsSync(this.path_utilsdata_finaldata);
-        //clUI.error('Raw data file does not exits!' ,"\n", this.path_utilsdata_rawdata);
     }
 
 
     setFromRawData(){
-        // read file txt, iconv-lite, string-to-json / try-catch
+        let raw_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_rawdata);
+        if(!_.isObject(raw_data_json)) return null;
+
+        let TrackSource_class = null;
+        if(raw_data_json.datasource === 'beatport_cart'){
+            TrackSource_class = BeatportTrackSource;
+        }else{
+            d$('Unknown datasource in the raw data object:',raw_data_json.datasource);
+            return null;
+        }
+
+        let final_data_json = [];
+        let raw_data_error = [];
+        raw_data_json.collection.forEach((v,i,a)=>{
+            let newv = new TrackSource_class();
+            if(newv.fromRawData(v)===false){
+                raw_data_error.push(v);
+                return;
+            }
+            final_data_json.push(newv);
+        });
+
+        return {
+            raw_data_error:raw_data_error,
+            data:final_data_json
+        };
+
+        let prwdResult = BeatportAdapter.processRawData(raw_data_json.collection).forEach();
+
+        Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,raw_data_json);
 
         // call adapter and process
         // Beatport.adapter.processRawData - arrange data, split artists, split labels
@@ -95,6 +124,16 @@ class ProjectManager {
             // future other socials
 
         // store final-json in the object
+        return true;
+    }
+
+
+    saveFinalData(final_data){
+        let final_data_json = [];
+        final_data.forEach((v)=>{
+            final_data_json.push(v.toJSON());
+        });
+        return Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data_json);
     }
 
 

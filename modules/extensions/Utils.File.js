@@ -185,11 +185,12 @@ class Utils_Files {
                     flag:flag
                 }).toString();
                 return iconv.decode(fcont, 'iso88591');
+            }else{
+                return this._FS.readFileSync(path_string,{
+                    encoding:encoding,
+                    flag:flag
+                });
             }
-            return this._FS.readFileSync(path_string,{
-                encoding:encoding,
-                flag:flag
-            });
         }catch(e){
             d$(e);
             return false;
@@ -198,7 +199,7 @@ class Utils_Files {
 
     readJsonFileSync(path_string){
         let file_content = this.readFileSync(path_string,'iso88591');
-        if(file_content===false || _.isNil(file_content)) return false;
+        if(!_.isString(file_content)) return false;
         try{
             let json_obj = JSON.parse(file_content);
             if(!_.isObject(json_obj)) return null;
@@ -227,12 +228,14 @@ class Utils_Files {
                     flag:flag,
                     mode:mode
                 });
+
+            }else{
+                this._FS.writeFileSync(path_string, file_content, {
+                    encoding:encoding,
+                    flag:flag,
+                    mode:mode
+                });
             }
-            this._FS.writeFileSync(path_string, file_content, {
-                encoding:encoding,
-                flag:flag,
-                mode:mode
-            });
             return true;
         }catch(e){
             d$(e);
@@ -257,7 +260,7 @@ class Utils_Files {
             d$(e);
             return false;
         }
-        return this.writeTextFileSync(path_string, file_content, 'iso88591');
+        return this.writeTextFileSync(path_string, file_content);
     }
 
 
