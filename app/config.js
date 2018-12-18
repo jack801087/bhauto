@@ -20,6 +20,9 @@
     ConfigMgr.setUserdataDirectory('userdata');
     ConfigMgr.setConfigFile('config.json');
 
+    ConfigMgr.addUserFile('artists_db','artists.json');
+    ConfigMgr.addUserFile('labels_db','labels.json');
+
     ConfigMgr.init();
 
 })();

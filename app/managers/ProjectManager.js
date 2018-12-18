@@ -64,6 +64,41 @@ class ProjectManager {
         return true;
     }
 
+
+    processRawData(){
+        /*
+        ArtistMgr
+        LabelMgr
+
+        db = {
+            prop1:""
+            _09:{
+                array:[
+                    {
+                        name:"abc",
+                        hash:"a3h2hk5g32kh5g2kbc",
+                        inst_tags:[],
+                        fb_tags:[]
+                    }
+                ]
+            }
+        }
+
+        project_path/raw_data.json
+        if datatype beatport new Beatport.adapter
+
+        Beatport.adapter.processRawData - arrange data, split artists, split labels
+
+        db - trim string, get hash
+
+        final json ready for finaldata.json
+
+        search_utility.html resume of finaldata.json
+
+
+         */
+    }
+
 }
 
 module.exports = new ProjectManager();

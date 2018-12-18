@@ -11,7 +11,7 @@ global.ProjectMgr = require('./managers/ProjectManager.js');
 // require('./cli_sections/bookm_cmd.js');
 require('./cli_sections/config_cmd.js');
 require('./cli_sections/newp_cmd.js');
-// require('./cli_sections/dir_cmd.js');
+require('./cli_sections/initp_cmd.js');
 // require('./cli_sections/export_cmd.js');
 // require('./cli_sections/lookup_cmd.js');
 // require('./cli_sections/project_cmd.js');
