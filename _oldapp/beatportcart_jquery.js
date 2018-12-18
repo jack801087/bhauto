@@ -12,4 +12,4 @@ jQuery('.cart-tracks .bucket-item.track').each(function(i,elmt){
 
    obinfoarray.push(oi);
 });
-JSON.stringify(obinfoarray, null, 2);
+JSON.stringify({ datasource:'beatport', collection:obinfoarray }, null, 2);

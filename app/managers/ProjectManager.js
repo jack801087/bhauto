@@ -10,7 +10,10 @@ class ProjectManager {
     _init(){
         this.project_name = null;
         this.project_path = null;
-        this.project_utilsdata_path = null;
+        this.path_utilsdata = null;
+        this.path_utilsdata_rawdata = null;
+        this.path_utilsdata_finaldata = null;
+        this.path_utilsdata_searchutility = null;
     }
 
 
@@ -55,48 +58,53 @@ class ProjectManager {
         }
 
         let utilsdata_path = Utils.File.pathJoin(Utils.File.getAbsPath(),'assets','utils_data');
-        this.project_utilsdata_path = Utils.File.pathJoin(this.project_path,'utils_data');
-        let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.project_utilsdata_path,{ overwrite:true });
+        this.path_utilsdata = Utils.File.pathJoin(this.project_path,'utils_data');
+        let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.path_utilsdata,{ overwrite:true });
         if(_cpresult.err!==null){
             clUI.error('Error while copying directory:',_cpresult.path_from,' > ',_cpresult.path_to);
             return false;
         }
+
+        this.path_utilsdata_rawdata = Utils.File.pathJoin(path_utilsdata,'raw_data.json');
+        this.path_utilsdata_finaldata = Utils.File.pathJoin(path_utilsdata,'final_data.json');
+        this.path_utilsdata_searchutility = Utils.File.pathJoin(path_utilsdata,'search_utility.html');
         return true;
     }
 
 
-    processRawData(){
-        /*
-        ArtistMgr
-        LabelMgr
+    checkRawDataExists(){
+        return Utils.File.fileExistsSync(this.path_utilsdata_rawdata);
+        //clUI.error('Raw data file does not exits!' ,"\n", this.path_utilsdata_rawdata);
+    }
 
-        db = {
-            prop1:""
-            _09:{
-                array:[
-                    {
-                        name:"abc",
-                        hash:"a3h2hk5g32kh5g2kbc",
-                        inst_tags:[],
-                        fb_tags:[]
-                    }
-                ]
-            }
-        }
-
-        project_path/raw_data.json
-        if datatype beatport new Beatport.adapter
-
-        Beatport.adapter.processRawData - arrange data, split artists, split labels
-
-        db - trim string, get hash
-
-        final json ready for finaldata.json
-
-        search_utility.html resume of finaldata.json
+    checkFinalDataExists(){
+        return Utils.File.fileExistsSync(this.path_utilsdata_finaldata);
+        //clUI.error('Raw data file does not exits!' ,"\n", this.path_utilsdata_rawdata);
+    }
 
 
-         */
+    setFromRawData(){
+        // read file txt, iconv-lite, string-to-json / try-catch
+
+        // call adapter and process
+        // Beatport.adapter.processRawData - arrange data, split artists, split labels
+
+        // for each
+            // set inst tags label
+            // set inst tags artist
+            // future other socials
+
+        // store final-json in the object
+    }
+
+
+    generateSearchUtility(){
+        return true;
+    }
+
+    generateDataCollection(){
+        //solo json stringify
+        return true;
     }
 
 }

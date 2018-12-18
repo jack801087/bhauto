@@ -6,10 +6,7 @@ CliMgr.addCommand(cmd_name+' [name] [values...]');
 CliMgr.addCommandHeader(cmd_name)
     .autocomplete(ConfigMgr.getConfigParams())
     .description("Get or set the value of a configuration parameter." +
-        "\n  $ "+cmd_name+" / print the whole config and internal data" +
-        "\n  $ "+cmd_name+" ExtensionCheckForSamples I[, E, X] (included/excluded/disabled)" +
-        "\n  $ "+cmd_name+" ExcludedExtensionsForSamples ext / (or .ext)" +
-        "\n  $ "+cmd_name+" ExcludedExtensionsForSamples !ext / (or !.ext)"+"\n");
+        "\n  $ "+cmd_name+" / print the whole config and internal data" +"\n");
 
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
