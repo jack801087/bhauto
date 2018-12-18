@@ -46,6 +46,9 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 
     let p2 = (cliReference,cliNextCb,cliData, fdObj)=>{
+        // foreach fdObj
+        // getInstTag
+        // if multiple > prompt scelta - no in futuro, ora si unisce tutto e si controlla in un ben fatto search_utility.html
         if(!ProjectMgr.generateSearchUtility()){
             d$('ProjectMgr.generateSearchUtility returned an error');
             return cliNextCb(cliData.error_code);
