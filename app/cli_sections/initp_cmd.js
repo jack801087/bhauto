@@ -20,6 +20,8 @@ s1 = pre set directories [init]
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
     let p1 = (cliReference,cliNextCb,cliData)=>{
+        ProjectMgr.cleanFinalData();
+
         let fdObj = ProjectMgr.setFromRawData();
         if(!_.isObject(fdObj)){
             d$('ProjectMgr.setFromRawData returned an error');
@@ -37,18 +39,24 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
                 if(result.answer !== 'y'){
                     return cliNextCb(cliData.success_code);
                 }
-                p2(cliReference,cliNextCb,cliData,fdObj);
+                p2(cliReference,cliNextCb,cliData);
             });
             return;
         }
-        p2(cliReference,cliNextCb,cliData,fdObj);
+        p2(cliReference,cliNextCb,cliData);
     };
 
 
-    let p2 = (cliReference,cliNextCb,cliData, fdObj)=>{
+    let p2 = (cliReference,cliNextCb,cliData)=>{
         // foreach fdObj
         // getInstTag
         // if multiple > prompt scelta - no in futuro, ora si unisce tutto e si controlla in un ben fatto search_utility.html
+
+        if(!ProjectMgr.mergeSocialMediaData()){
+            d$('ProjectMgr.mergeSocialMediaData returned an error');
+            return cliNextCb(cliData.error_code);
+        }
+
         if(!ProjectMgr.generateSearchUtility()){
             d$('ProjectMgr.generateSearchUtility returned an error');
             return cliNextCb(cliData.error_code);
@@ -69,11 +77,11 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     }
 
     if(ProjectMgr.checkFinalDataExists()){
-        cliData.ui.warning('Final data already exists.');
+        cliData.ui.warning('Project already initialized and final data ready.');
         cliReference.prompt({
             type: 'input',
             name: 'answer',
-            message: 'It will be deleted. Do you want to proceed? [y/n] '
+            message: 'Processed files will be deleted. Do you want to proceed? [y/n] '
         }, function (result) {
             if(result.answer !== 'y'){
                 return cliNextCb(cliData.success_code);

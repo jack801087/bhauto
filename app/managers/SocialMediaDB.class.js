@@ -2,6 +2,9 @@
 class SocialMediaDB {
 
     constructor(dbpath){
+        this._dbpath = dbpath;
+        this._collection = {};
+        this._lastkey = {};
         // set DataHolder
         /*
         db = {
@@ -20,33 +23,30 @@ class SocialMediaDB {
         */
     }
 
-    _gethash(key){
-        /*
-        NOT NEEDED FOR NOW
-        var sha1 = require('sha1');
-        var hash = sha1("my message");
-        console.log(hash); // 104ab42f1193c336aa2cf08a2c946d5c6fd0fcdb
+    get dbpath(){ return this._dbpath; }
 
-        var md5 = require('md5');
-        var hash = md5("my message");
-        console.log(hash); // 8ba6c19dc1def5702ff5acbf2aeea5aa
-        */
+
+    _getID(key){
+        if(!_.isString(key) || key.length===0) return null;
+        key = _.trim(key);
+        if(key === this._lastkey.key){
+            return this._lastkey.hash;
+        }
+        this._lastkey = { key:key, hash:SHA1(key) };
+        return this._lastkey.hash;
     }
+
 
     get(key){
-        // return array of objects
-        /*
-        [
-            {
-                key:'abc def gfh',
-                instagram:['abc','ddd',hhh'],
-                facebook:['abc','ddd',hhh']
-            }
-        ]
-        */
+        let _id = this._getID(key);
+        if(_id===null) return null;
+        return this._collection[key];
     }
 
-    set(key,tags,reset){
+
+    set(key, field, data, reset){
+        let _id = this._getID(key);
+        if(_id===null) return false;
         //reset=false default
         //tags object - merged with existent
         /*
@@ -55,10 +55,21 @@ class SocialMediaDB {
             facebook:['abc','ddd',hhh']
         }
         */
+        return true;
+    }
+
+
+    mergeArrayFields(qobj, field){
+        let arrF = [];
+        if(!_.isArray(qobj)) return [];
+        qobj.forEach((v)=>{
+            arrF = _.union(arrF,v[field]);
+        });
+        return arrF;
     }
 
 
 
 }
 
-module.exports = new SocialMediaDB();
+module.exports = SocialMediaDB;

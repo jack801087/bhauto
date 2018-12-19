@@ -1,13 +1,16 @@
+const Beatport_TrackSource = require('./adapters/Beatport.TrackSource.class.js');
+
 
 class ProjectManager {
 
     constructor(){
-
+        this._assets_path = Utils.File.pathJoin(Utils.File.getAbsPath(),'assets');
 
         // from config
     }
 
     _init(){
+        this._current_project_data = null;
         this.project_name = null;
         this.project_path = null;
         this.path_utilsdata = null;
@@ -19,7 +22,7 @@ class ProjectManager {
 
     newProject(project_path){
         this._init();
-        let export_project_path = ConfigMgr.cfg_paths('ExportDirectory');
+        let export_project_path = ConfigMgr.cfg_path('ExportDirectory');
         if(export_project_path===null){
             clUI.error('No export path configured; set ExportDirectory');
             return null;
@@ -38,7 +41,7 @@ class ProjectManager {
 
 
     resumeProject(){
-        let current_project_path = ConfigMgr.cfg_paths('CurrentProject');
+        let current_project_path = ConfigMgr.cfg_path('CurrentProject');
         if(current_project_path===null){
             clUI.error('No current project path configured; set CurrentProject');
             return null;
@@ -57,7 +60,7 @@ class ProjectManager {
             return false;
         }
 
-        let utilsdata_path = Utils.File.pathJoin(Utils.File.getAbsPath(),'assets','utils_data');
+        let utilsdata_path = Utils.File.pathJoin(this._assets_path,'utils_data');
         this.path_utilsdata = Utils.File.pathJoin(this.project_path,'utils_data');
         let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.path_utilsdata,{ overwrite:true });
         if(_cpresult.err!==null){
@@ -83,67 +86,89 @@ class ProjectManager {
     }
 
 
+    cleanFinalData(){
+        Utils.File.removeFileSync(this.path_utilsdata_finaldata);
+        Utils.File.removeFileSync(this.path_utilsdata_searchutility);
+    }
+
+
     setFromRawData(){
         let raw_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_rawdata);
         if(!_.isObject(raw_data_json)) return null;
 
         let TrackSource_class = null;
         if(raw_data_json.datasource === 'beatport_cart'){
-            TrackSource_class = BeatportTrackSource;
+            TrackSource_class = Beatport_TrackSource;
         }else{
             d$('Unknown datasource in the raw data object:',raw_data_json.datasource);
             return null;
         }
 
-        let final_data_json = [];
+        let fdObj = {};
+        let processed_data_json = [];
         let raw_data_error = [];
         raw_data_json.collection.forEach((v,i,a)=>{
-            let newv = new TrackSource_class();
-            if(newv.fromRawData(v)===false){
+            let tsObj = new TrackSource_class();
+            if(tsObj.fromRawData(v)===false){
                 raw_data_error.push(v);
                 return;
             }
-            final_data_json.push(newv);
+            processed_data_json.push(tsObj);
         });
 
-        return {
-            raw_data_error:raw_data_error,
-            data:final_data_json
-        };
+        fdObj.raw_data_error = raw_data_error;
+        fdObj.data = processed_data_json;
+        this._current_project_data = processed_data_json;
 
-        let prwdResult = BeatportAdapter.processRawData(raw_data_json.collection).forEach();
-
-        Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,raw_data_json);
-
-        // call adapter and process
-        // Beatport.adapter.processRawData - arrange data, split artists, split labels
-
-        // for each
-            // set inst tags label
-            // set inst tags artist
-            // future other socials
-
-        // store final-json in the object
-        return true;
+        return fdObj;
     }
 
 
-    saveFinalData(final_data){
-        let final_data_json = [];
-        final_data.forEach((v)=>{
-            final_data_json.push(v.toJSON());
-        });
-        return Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data_json);
+    mergeSocialMediaData(fdObj){
+        if(!_.isObject(this._current_project_data)) return false;
+        for(let i=0; i<this._current_project_data.length; i++){
+            let tsObj = this._current_project_data[i];
+
+            let artistInfo = SMDB_Artists.get(tsObj.artist);
+            if(artistInfo.length>0){
+                let artistInstagramTags = SMDB_Artists.mergeArrayFields(artistInfo,'instagramTags');
+                if(artistInstagramTags.length>0) {
+                    tsObj.addArtistInstagramTags(artistInstagramTags);
+                }
+            }
+
+            let labelInfo = SMDB_Artists.get(tsObj.artist);
+            if(labelInfo.length>0){
+                let labelInstagramTags = SMDB_Artists.mergeArrayFields(labelInfo,'instagramTags');
+                if(labelInstagramTags.length>0) {
+                    tsObj.addLabelInstagramTags(labelInstagramTags);
+                }
+            }
+        }
+        return true;
     }
 
 
     generateSearchUtility(){
+        if(!_.isObject(this._current_project_data)) return false;
+        let templates_path = Utils.File.pathJoin(this._assets_path,'templates','searchutility_template1.html');
+        let psutility_path = Utils.File.pathJoin(this.project_path,'utils_data','search_utility.html');
+
+        let searchutility_template1 = Utils.File.readTextFileSync(templates_path);
+        let final_output = Mustache.render(searchutility_template1, { tracks_content: this._current_project_data });
+
+        Utils.File.writeTextFileSync(psutility_path,final_output);
         return true;
     }
 
+
     generateDataCollection(){
-        //solo json stringify
-        return true;
+        if(!_.isObject(this._current_project_data)) return false;
+        let final_data_json = [];
+        this._current_project_data.forEach((tsObj)=>{
+            final_data_json.push(tsObj.toJSON());
+        });
+        return Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data_json);
     }
 
 }

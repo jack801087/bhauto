@@ -367,7 +367,11 @@ class Utils_Files {
     }
 
     removeDirSync(path_string){
-        return this._RIMRAF.sync(path_string);
+        try{
+            return this._RIMRAF.sync(path_string);
+        }catch(e){
+            d$(e.message);
+        }
     }
 
 
@@ -376,7 +380,11 @@ class Utils_Files {
     /* FileSystem R/W - SYNC   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
     removeFileSync(path_string){
-        return this._FS.unlinkSync(path_string);
+        try{
+            return this._FS.unlinkSync(path_string);
+        }catch(e){
+            d$(e.message);
+        }
     }
 
     copyFileSync(path_from, path_to, options){

@@ -1,5 +1,8 @@
 require('./config.js');
 
+global.SHA1 = require('sha1');
+global.Mustache = require('mustache');
+
 /* Project Modules */
 // global.SamplesMgr = require('./managers/SamplesManager.js');
 // global.DirCommand = require('./managers/Dir.command.js');
@@ -7,6 +10,10 @@ require('./config.js');
 global.ProjectMgr = require('./managers/ProjectManager.js');
 // global.TQueryMgr = require('./managers/TQueryManager.js');
 // global.ExportMgr = require('./managers/ExportManager.js');
+
+const SocialMediaDB_class = require('./managers/SocialMediaDB.class.js');
+global.SMDB_Artists = new SocialMediaDB_class(ConfigMgr.path('artists_db'));
+global.SMDB_Labels = new SocialMediaDB_class(ConfigMgr.path('labels_db'));
 
 // require('./cli_sections/bookm_cmd.js');
 require('./cli_sections/config_cmd.js');
@@ -19,6 +26,8 @@ require('./cli_sections/initp_cmd.js');
 // require('./cli_sections/save_cmd.js');
 // require('./cli_sections/scan_cmd.js');
 // require('./cli_sections/tquery_cmd.js');
+
+Utils.File.removeFileSync(ConfigMgr.cfg_path('ExportDirectory'));
 
 CliMgr.show('bh');
 

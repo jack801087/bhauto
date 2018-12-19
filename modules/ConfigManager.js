@@ -81,7 +81,7 @@ class ConfigManager {
     }
 
 
-    cfg_paths(label){
+    cfg_path(label){
         return this._cfg_paths[label];
     }
 
