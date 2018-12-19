@@ -76,8 +76,8 @@ class TrackSource {
         fdjson.q_title = this.q_title;
         fdjson.q_artist = this.q_artist;
         fdjson.q_label = this.q_label;
-        fdjson.artist_instagram_tags = this.artist_instagram_tags;
-        fdjson.label_instagram_tags = this.label_instagram_tags;
+        fdjson.artist_instagram_tags = this.artist_instagram_tags.join(', ');
+        fdjson.label_instagram_tags = this.label_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;
         fdjson.beatportlink = this.beatportlink;
         return fdjson;

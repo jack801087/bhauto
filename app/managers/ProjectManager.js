@@ -141,7 +141,11 @@ class ProjectManager {
         let psutility_path = Utils.File.pathJoin(this.project_path,'utils_data','search_utility.html');
 
         let searchutility_template1 = Utils.File.readTextFileSync(templates_path);
-        let final_output = Mustache.render(searchutility_template1, { tracks_content: this._current_project_data });
+        let final_data_json = [];
+        this._current_project_data.forEach((tsObj)=>{
+            final_data_json.push(tsObj.toJSON());
+        });
+        let final_output = Mustache.render(searchutility_template1, { tracks_content: final_data_json });
 
         Utils.File.writeTextFileSync(psutility_path,final_output);
         return true;
