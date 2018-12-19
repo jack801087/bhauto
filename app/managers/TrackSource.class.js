@@ -59,20 +59,12 @@ class TrackSource {
 
 
     addArtistInstagramTags(aitags){
-        aitags.forEach((v)=>{
-            if(this._artist_instagram_tags.indexOf(v)<0){
-                this._artist_instagram_tags.push(v);
-            }
-        });
+        this._artist_instagram_tags = _.union(this._artist_instagram_tags,aitags);
     }
 
 
     addLabelInstagramTags(litags){
-        litags.forEach((v)=>{
-            if(this._label_instagram_tags.indexOf(v)<0){
-                this._label_instagram_tags.push(v);
-            }
-        });
+        this._label_instagram_tags = _.union(this._artist_instagram_tags,litags);
     }
 
     toJSON(){
