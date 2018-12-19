@@ -5,9 +5,10 @@ class SocialMediaDB {
         this._dbpath = dbpath;
         this._collection = {};
         this._lastkey = {};
+        return;
 
         DataMgr.setHolder({
-            label:'config_file',
+            label:'config_filedsdsddsddsdasdasdasd',
             filePath:this._dbpath,
             fileType:'json',
             dataType:'object',

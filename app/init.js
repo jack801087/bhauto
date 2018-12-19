@@ -29,6 +29,8 @@ require('./cli_sections/initp_cmd.js');
 
 Utils.File.removeFileSync(ConfigMgr.cfg_path('ExportDirectory'));
 
+// project manager resume from config
+
 CliMgr.show('bh');
 
 

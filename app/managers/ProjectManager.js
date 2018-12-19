@@ -9,10 +9,10 @@ class ProjectManager {
         // from config
     }
 
-    _init(){
+    _init(project_path){
         this._current_project_data = null;
-        this.project_name = null;
-        this.project_path = null;
+        this.project_name = Utils.File.pathBasename(project_path);
+        this.project_path = project_path;
         this.path_utilsdata = null;
         this.path_utilsdata_rawdata = null;
         this.path_utilsdata_finaldata = null;
@@ -21,7 +21,6 @@ class ProjectManager {
 
 
     newProject(project_path){
-        this._init();
         let export_project_path = ConfigMgr.cfg_path('ExportDirectory');
         if(export_project_path===null){
             clUI.error('No export path configured; set ExportDirectory');
@@ -29,12 +28,9 @@ class ProjectManager {
         }
         Utils.File.ensureDirSync(export_project_path);
         if(!_.isString(project_path)){
-            this.project_name = 'bh_proj_'+Utils.dateToYYYYMMDDhhiiss();
-            this.project_path = Utils.File.pathJoin(export_project_path,this.project_name);
-        }else{
-            this.project_name = Utils.File.pathBasename(project_path);
-            this.project_path = project_path;
+            project_path = Utils.File.pathJoin(export_project_path,'bh_proj_'+Utils.dateToYYYYMMDDhhiiss());
         }
+        this._init(project_path);
         ConfigMgr.set('CurrentProject',this.project_path);
         return this.project_path;
     }
