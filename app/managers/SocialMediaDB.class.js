@@ -5,6 +5,24 @@ class SocialMediaDB {
         this._dbpath = dbpath;
         this._collection = {};
         this._lastkey = {};
+
+        DataMgr.setHolder({
+            label:'config_file',
+            filePath:this._dbpath,
+            fileType:'json',
+            dataType:'object',
+            preLoad:true,
+            logErrorsFn:d$,
+            loadFn:(fileData)=>{
+                if(!_.isObject(fileData)) return { emptydata:true };
+                this._collection = fileData;
+                return fileData;
+            },
+            saveFn:()=>{
+                return this._collection;
+            }
+        });
+
         // set DataHolder
         /*
         db = {
@@ -25,6 +43,8 @@ class SocialMediaDB {
 
     get dbpath(){ return this._dbpath; }
 
+    //TODO: create,remove
+
 
     _getID(key){
         if(!_.isString(key) || key.length===0) return null;
@@ -37,38 +57,27 @@ class SocialMediaDB {
     }
 
 
-    get(key){
+    _get(key){
         let _id = this._getID(key);
         if(_id===null) return null;
         return this._collection[key];
     }
 
+    getInstagramTags(key){
+        let elmt = this._get(key);
+        if(elmt===null) return [];
+        return _.union(elmt.InstagramTags,[]);
+    }
 
-    set(key, field, data, reset){
-        let _id = this._getID(key);
-        if(_id===null) return false;
-        //reset=false default
-        //tags object - merged with existent
-        /*
-        {
-            instagram:['abc','ddd',hhh'],
-            facebook:['abc','ddd',hhh']
+    setInstagramTags(key,values,reset){
+        let elmt = this._get(key);
+        if(elmt===null) return [];
+        if(reset===true){
+            elmt.InstagramTags = [];
         }
-        */
+        elmt.InstagramTags = _.union(elmt.InstagramTags,values);
         return true;
     }
-
-
-    mergeArrayFields(qobj, field){
-        let arrF = [];
-        if(!_.isArray(qobj)) return [];
-        qobj.forEach((v)=>{
-            arrF = _.union(arrF,v[field]);
-        });
-        return arrF;
-    }
-
-
 
 }
 

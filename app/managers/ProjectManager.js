@@ -128,22 +128,8 @@ class ProjectManager {
         if(!_.isObject(this._current_project_data)) return false;
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
-
-            let artistInfo = SMDB_Artists.get(tsObj.artist);
-            if(artistInfo.length>0){
-                let artistInstagramTags = SMDB_Artists.mergeArrayFields(artistInfo,'instagramTags');
-                if(artistInstagramTags.length>0) {
-                    tsObj.addArtistInstagramTags(artistInstagramTags);
-                }
-            }
-
-            let labelInfo = SMDB_Artists.get(tsObj.artist);
-            if(labelInfo.length>0){
-                let labelInstagramTags = SMDB_Artists.mergeArrayFields(labelInfo,'instagramTags');
-                if(labelInstagramTags.length>0) {
-                    tsObj.addLabelInstagramTags(labelInstagramTags);
-                }
-            }
+            tsObj.addArtistInstagramTags(SMDB_Artists.getInstagramTags(tsObj.artist));
+            tsObj.addLabelInstagramTags(SMDB_Labels.getInstagramTags(tsObj.artist));
         }
         return true;
     }
