@@ -22,28 +22,9 @@ class SocialMediaDB {
                 return this._collection;
             }
         });
-
-        // set DataHolder
-        /*
-        db = {
-            prop1:""
-            _09:{
-                array:[
-                    {
-                        name:"abc",
-                        hash:"a3h2hk5g32kh5g2kbc",
-                        inst_tags:[],
-                        fb_tags:[]
-                    }
-                ]
-            }
-        }
-        */
     }
 
     get dbpath(){ return this._dbpath; }
-
-    //TODO: create,remove
 
 
     _getID(key){
@@ -63,15 +44,28 @@ class SocialMediaDB {
         return this._collection[key];
     }
 
+    _cget(key){
+        let elmt = this._get(key);
+        if(elmt===null){
+            elmt={
+                key:this._lastkey.key,
+                hash:this._lastkey.hash
+            };
+            this._collection[elmt.hash] = elmt;
+        }
+        return elmt;
+    }
+
+
     getInstagramTags(key){
         let elmt = this._get(key);
         if(elmt===null) return [];
         return _.union(elmt.InstagramTags,[]);
     }
 
+
     setInstagramTags(key,values,reset){
-        let elmt = this._get(key);
-        if(elmt===null) return [];
+        let elmt = this._cget(key);
         if(reset===true){
             elmt.InstagramTags = [];
         }

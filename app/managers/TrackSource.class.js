@@ -39,9 +39,9 @@ class TrackSource {
     set title(v){ this._title=v; this.q_title=v; return true; }
     set artist(v){ this._artist=v; this.q_artist=v; return true;  }
     set label(v){ this._label=v; this.q_label=v; return true; }
-    set q_title(v){ this._q_title=v; return true; }
-    set q_artist(v){ this._q_artist=v; return true; }
-    set q_label(v){ this._q_label=v; return true; }
+    set q_title(v){ this._q_title=this._q_string(v); return true; }
+    set q_artist(v){ this._q_artist=this._q_string(v); return true; }
+    set q_label(v){ this._q_label=this._q_string(v); return true; }
     set release(v){ this._release=v; return true; }
     set artworklink(v){ this._artworklink=v;return true;  }
     set beatportlink(v){ this._beatportlink=v;return true;  }
@@ -51,6 +51,10 @@ class TrackSource {
 
     fromRawData(spec_raw_json){
         //adapter
+    }
+
+    static _q_string(v){
+        return v.split(' ').splice(0,2).join('+');
     }
 
 
@@ -77,6 +81,9 @@ class TrackSource {
         fdjson.artist = this.artist;
         fdjson.label = this.label;
         fdjson.release = this.release;
+        fdjson.q_title = this.q_title;
+        fdjson.q_artist = this.q_artist;
+        fdjson.q_label = this.q_label;
         fdjson.artist_instagram_tags = this.artist_instagram_tags;
         fdjson.label_instagram_tags = this.label_instagram_tags;
         fdjson.artworklink = this.artworklink;
