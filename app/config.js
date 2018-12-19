@@ -14,6 +14,18 @@
         defaultValue: ''
     });
 
+    ConfigMgr.addField('WeeksCounter', {
+        description:'',
+        datatype: 'integer',
+        defaultValue: 10
+    });
+
+    ConfigMgr.addField('WeeksSplit', {
+        description:'',
+        datatype: 'integer',
+        defaultValue: -1
+    });
+
     //ConfigMgr.addFlag('new_scan_needed_sampledir','New scan needed after changing the samples directory');
     //ConfigMgr.addFlag('new_scan_needed_exts','New scan needed after changing the configuration on file extensions');
 
