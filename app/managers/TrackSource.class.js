@@ -53,7 +53,8 @@ class TrackSource {
         //adapter
     }
 
-    static _q_string(v){
+    _q_string(v){
+        //TODO handle special characters
         return v.split(' ').splice(0,2).join('+');
     }
 

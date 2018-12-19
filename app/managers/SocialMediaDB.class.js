@@ -46,7 +46,7 @@ class SocialMediaDB {
 
     _cget(key){
         let elmt = this._get(key);
-        if(elmt===null){
+        if(_.isNil(elmt)){
             elmt={
                 key:this._lastkey.key,
                 hash:this._lastkey.hash
@@ -59,7 +59,7 @@ class SocialMediaDB {
 
     getInstagramTags(key){
         let elmt = this._get(key);
-        if(elmt===null) return [];
+        if(_.isNil(elmt)) return [];
         return _.union(elmt.InstagramTags,[]);
     }
 
