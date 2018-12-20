@@ -7,16 +7,18 @@ class ProjectManager {
         this._assets_path = Utils.File.pathJoin(Utils.File.getAbsPath(),'assets');
 
         // from config
+        this._init(ConfigMgr.cfg_path('CurrentProject'));
     }
 
     _init(project_path){
+        if(!_.isString(project_path) || project_path.length<2) return;
         this._current_project_data = null;
         this.project_name = Utils.File.pathBasename(project_path);
         this.project_path = project_path;
-        this.path_utilsdata = null;
-        this.path_utilsdata_rawdata = null;
-        this.path_utilsdata_finaldata = null;
-        this.path_utilsdata_searchutility = null;
+        this.path_utilsdata = Utils.File.pathJoin(this.project_path,'utils_data');
+        this.path_utilsdata_rawdata = Utils.File.pathJoin(this.path_utilsdata,'raw_data.json');
+        this.path_utilsdata_finaldata = Utils.File.pathJoin(this.path_utilsdata,'final_data.json');
+        this.path_utilsdata_searchutility = Utils.File.pathJoin(this.path_utilsdata,'search_utility.html');
     }
 
 
@@ -57,16 +59,13 @@ class ProjectManager {
         }
 
         let utilsdata_path = Utils.File.pathJoin(this._assets_path,'utils_data');
-        this.path_utilsdata = Utils.File.pathJoin(this.project_path,'utils_data');
         let _cpresult = Utils.File.copyDirectorySync(utilsdata_path,this.path_utilsdata,{ overwrite:true });
         if(_cpresult.err!==null){
             clUI.error('Error while copying directory:',_cpresult.path_from,' > ',_cpresult.path_to);
             return false;
         }
 
-        this.path_utilsdata_rawdata = Utils.File.pathJoin(this.path_utilsdata,'raw_data.json');
-        this.path_utilsdata_finaldata = Utils.File.pathJoin(this.path_utilsdata,'final_data.json');
-        this.path_utilsdata_searchutility = Utils.File.pathJoin(this.path_utilsdata,'search_utility.html');
+
         return true;
     }
 
@@ -120,8 +119,7 @@ class ProjectManager {
     }
 
 
-    mergeSocialMediaData(fdObj){
-        if(!_.isObject(this._current_project_data)) return false;
+    _mergeSocialMediaData(){
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
             tsObj.addArtistInstagramTags(SMDB_Artists.getInstagramTags(tsObj.artist));
@@ -150,18 +148,22 @@ class ProjectManager {
             return false;
         }
 
-        let final_data_json = this.toJSON();
-        if(!_.isArray(final_data_json) || final_data_json.length===0){
+        if(!this._mergeSocialMediaData()){
+            d$('ProjectMgr.mergeSocialMediaData returned an error');
+        }
+
+        let final_data = this.toJSON();
+        if(!_.isArray(final_data.json) || final_data.json.length===0){
             //cliWarning
             return false;
         }
 
-        if(Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data_json)!==true){
+        if(Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data.minimal_json)!==true){
             //cliWarning
             return false;
         }
 
-        if(this._generateSearchUtility(final_data_json)===false){
+        if(this._generateSearchUtility(final_data.json)===false){
             return false;
         }
 
@@ -170,11 +172,15 @@ class ProjectManager {
 
 
     toJSON(){
-        let final_data_json = [];
+        let jobj = {
+            json:[],
+            minimal_json:[]
+        };
         this._current_project_data.forEach((tsObj)=>{
-            final_data_json.push(tsObj.toJSON());
+            jobj.json.push(tsObj.toJSON());
+            jobj.minimal_json.push(tsObj.toMinimalJSON());
         });
-        return final_data_json;
+        return jobj;
     }
 
 }

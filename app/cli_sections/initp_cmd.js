@@ -48,10 +48,6 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 
     let p2 = (cliReference,cliNextCb,cliData)=>{
-        if(!ProjectMgr.mergeSocialMediaData()){
-            d$('ProjectMgr.mergeSocialMediaData returned an error');
-            return cliNextCb(cliData.error_code);
-        }
         if(!ProjectMgr.generateDataCollection()){
             d$('ProjectMgr.generateDataCollection returned an error');
             return cliNextCb(cliData.error_code);
