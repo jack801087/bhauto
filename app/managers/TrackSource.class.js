@@ -1,20 +1,11 @@
-const Artists_class = require('./micro/Artists.class.js');
-const Labels_class = require('./micro/Labels.class.js');
+const SocialNode_class = require('./micro/SocialNode.class.js');
 
 class TrackSource {
 
-    /*
-    * "artworklink": "https://geo-media.beatport.com/image_size/350x350/8e4452cb-5f60-46e9-8ef3-c455c8a505bf.jpg",
-      "beatportlink": "https://www.beatport.com/track/killing-delirium-original-mix/11302752",
-      "title": "Killing Delirium (Original Mix)",
-      "artist": "Yinn",
-      "label": "Mephyst",
-      "release": "2018-12-10"*/
-
     constructor(){
         this._title = "";
-        this._artists = new Artists_class();
-        this._labels = new Labels_class();
+        this._artists = new SocialNode_class();
+        this._labels = new SocialNode_class();
         this._release = "";
         this._artworklink = "";
         this._beatportlink = "";
@@ -105,6 +96,7 @@ class TrackSource {
         fdjson.beatportlink = this.beatportlink;
         fdjson.artists = this._artists.toArray();
         fdjson.labels = this._labels.toArray();
+        //TODO create empty string in instagram tags array
         return fdjson;
     }
 }

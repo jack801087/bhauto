@@ -1,5 +1,5 @@
 
-class Artists {
+class SocialNode {
 
     constructor(){
         this.collection = [];
@@ -44,4 +44,4 @@ class Artists {
 
 }
 
-module.exports = Artists;
+module.exports = SocialNode;
