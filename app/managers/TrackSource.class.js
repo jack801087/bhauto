@@ -94,8 +94,8 @@ class TrackSource {
         fdjson.release = this.release;
         fdjson.artworklink = this.artworklink;
         fdjson.beatportlink = this.beatportlink;
-        fdjson.artists = this._artists.toArray();
-        fdjson.labels = this._labels.toArray();
+        fdjson.artists = this._artists.toArrayEditable();
+        fdjson.labels = this._labels.toArrayEditable();
         //TODO create empty string in instagram tags array
         return fdjson;
     }

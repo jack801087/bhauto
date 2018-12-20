@@ -161,7 +161,7 @@ class ProjectManager {
             return false;
         }
 
-        if(Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data.minimal_json)!==true){
+        if(Utils.File.writeJsonFileSync(this.path_utilsdata_finaldata,final_data.editable_json)!==true){
             //cliWarning
             return false;
         }
@@ -177,11 +177,11 @@ class ProjectManager {
     toJSON(){
         let jobj = {
             json:[],
-            minimal_json:[]
+            editable_json:[]
         };
         this._current_project_data.forEach((tsObj)=>{
             jobj.json.push(tsObj.toJSON());
-            jobj.minimal_json.push(tsObj.toEditableJSON());
+            jobj.editable_json.push(tsObj.toEditableJSON());
         });
         return jobj;
     }

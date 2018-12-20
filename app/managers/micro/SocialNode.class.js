@@ -18,15 +18,33 @@ class SocialNode {
         return this;
     }
 
-    toArray(){
+    toArray(editCb){
+        let _newObjFn = (o)=>{
+            return {
+                name:o.name,
+                instagram_tags:o.instagram_tags
+            };
+        };
+        let newObjFn = _newObjFn;
+        if(_.isFunction(editCb)){
+            newObjFn = (o)=>{
+                return editCb(_newObjFn(o));
+            };
+        }
         let final = [];
         this.collection.forEach((cobj)=>{
-            final.push({
-                name:cobj.name,
-                instagram_tags:cobj.instagram_tags
-            });
+            final.push(newObjFn(cobj));
         });
         return final;
+    }
+
+
+    toArrayEditable(){
+        return this.toArray((b)=>{
+            b.instagram_tags.push("");
+            b.instagram_tags.push("");
+            return b;
+        });
     }
 
 

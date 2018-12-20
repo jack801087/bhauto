@@ -4,6 +4,7 @@ class Utils {
 
     constructor(){
         this.File = require('./extensions/Utils.File');
+        this.String = require('./extensions/Utils.String');
         this.SystemInfo = require('./extensions/Utils.SystemInfo');
     }
 
