@@ -148,6 +148,9 @@ class ProjectManager {
             return false;
         }
 
+        // Randomize array
+        this._current_project_data = Utils.shuffleArray(this._current_project_data);
+
         if(!this._mergeSocialMediaData()){
             d$('ProjectMgr.mergeSocialMediaData returned an error');
         }
@@ -178,7 +181,7 @@ class ProjectManager {
         };
         this._current_project_data.forEach((tsObj)=>{
             jobj.json.push(tsObj.toJSON());
-            jobj.minimal_json.push(tsObj.toMinimalJSON());
+            jobj.minimal_json.push(tsObj.toEditableJSON());
         });
         return jobj;
     }

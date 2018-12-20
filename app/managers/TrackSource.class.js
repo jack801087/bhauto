@@ -1,3 +1,5 @@
+const Artists_class = require('./micro/Artists.class.js');
+const Labels_class = require('./micro/Labels.class.js');
 
 class TrackSource {
 
@@ -11,8 +13,8 @@ class TrackSource {
 
     constructor(){
         this._title = "";
-        this._artists = [];
-        this._labels = [];
+        this._artists = new Artists_class();
+        this._labels = new Labels_class();
         this._release = "";
         this._artworklink = "";
         this._beatportlink = "";
@@ -23,28 +25,40 @@ class TrackSource {
 
 
     get title(){ return this._title; }
-    get artists(){ return this._artists; }
-    get labels(){ return this._labels; }
+    get artists(){ return this._artists.toString(); }
+    get labels(){ return this._labels.toString(); }
+    get artists_instagram_tags(){ }
+    get labels_instagram_tags(){  }
     get q_title(){ return this._q_title; }
     get q_artists(){ return this._q_artists; }
     get q_labels(){ return this._q_labels; }
     get release(){ return this._release; }
     get artworklink(){ return this._artworklink; }
     get beatportlink(){ return this._beatportlink; }
-    get artists_instagram_tags(){ }
-    get label_instagram_tags(){  }
 
     set title(v){ this._title=v; this.q_title=v; return true; }
-    set artists(v){ this._artists=v; this.q_artists=v; return true;  }
-    set labels(v){ this._labels=v; this.q_labels=v; return true; }
+    set artists(v){
+        if(_.isArray(v)){
+            this._artists.fromArray(v);
+            this.q_artists=this._artists.toString();
+            return true;
+        }
+        return false;
+    }
+    set labels(v){
+        if(_.isArray(v)){
+            this._labels.fromArray(v);
+            this.q_labels=this._labels.toString();
+            return true;
+        }
+        return false;
+    }
     set q_title(v){ this._q_title=this._q_string(v); return true; }
     set q_artists(v){ this._q_artists=this._q_string(v); return true; }
     set q_labels(v){ this._q_labels=this._q_string(v); return true; }
     set release(v){ this._release=v; return true; }
     set artworklink(v){ this._artworklink=v;return true;  }
     set beatportlink(v){ this._beatportlink=v;return true;  }
-    set artist_instagram_tags(v){ return true;  }
-    set label_instagram_tags(v){ return true;  }
 
 
     fromRawData(spec_raw_json){
@@ -70,29 +84,27 @@ class TrackSource {
     toJSON(){
         let fdjson = {};
         fdjson.title = this.title;
-        fdjson.artists = this.artists;
-        fdjson.labels = this.labels;
+        fdjson.artists = this._artists.toString();
+        fdjson.labels = this._labels.toString();
         fdjson.release = this.release;
         fdjson.q_title = this.q_title;
         fdjson.q_artists = this.q_artists;
         fdjson.q_labels = this.q_labels;
-        fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
-        fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
+        //fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
+        //fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;
         fdjson.beatportlink = this.beatportlink;
         return fdjson;
     }
 
-    toMinimalJSON(){
+    toEditableJSON(){
         let fdjson = {};
         fdjson.title = this.title;
-        fdjson.artists = this.artists;
-        fdjson.labels = this.labels;
         fdjson.release = this.release;
-        fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
-        fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;
         fdjson.beatportlink = this.beatportlink;
+        fdjson.artists = this._artists.toArray();
+        fdjson.labels = this._labels.toArray();
         return fdjson;
     }
 }
