@@ -49,18 +49,23 @@
         <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title}}+"{{q_artist}}"&oq={{q_title}}+"{{q_artist}}"' target="_blank">Artwork</a>
     </div>
 
+    {{#artists}}
     <div class="row_info">
-        <strong>Artists</strong>
-        <span>{{artists}}</span>
-        <a href='https://www.google.com/search?q="instagram"+"{{q_artists}}"&oq="instagram"+"{{q_artists}}"' target="_blank">Google</a>
-        <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_artists}}"&oq="instagram"+{{q_title}}+"{{q_artists}}"' target="_blank">Google2</a>
+        <strong>Artist</strong>
+        <span>{{name}}</span>
+        <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
+        <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
     </div>
+    {{/artists}}
 
+
+    {{#labels}}
     <div class="row_info">
-        <strong>Labels</strong>
-        <span>{{labels}}</span>
-        <a href='https://www.google.com/search?q="instagram"+"{{q_labels}}"&oq="instagram"+"{{q_labels}}"' target="_blank">Google</a>
+        <strong>Label</strong>
+        <span>{{name}}</span>
+        <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
     </div>
+    {{/labels}}
 
 </section>
 {{/tracks_content}}

@@ -5,6 +5,13 @@ class Utils_String {
     }
 
 
+    html_query_string(v){
+        //TODO handle special characters
+        //v = Utils.onlyLettersNumbers(v);
+        return v.split(' ').splice(0,2).join('+');
+    }
+
+
     php_stripos(fHaystack, fNeedle, fOffset){
         //  discuss at: http://locutus.io/php/stripos/
         let haystack = (fHaystack + '').toLowerCase();

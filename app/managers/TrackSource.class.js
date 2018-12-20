@@ -20,9 +20,6 @@ class TrackSource {
     get labels(){ return this._labels.toString(); }
     get artists_instagram_tags(){ }
     get labels_instagram_tags(){  }
-    get q_title(){ return this._q_title; }
-    get q_artists(){ return this._q_artists; }
-    get q_labels(){ return this._q_labels; }
     get release(){ return this._release; }
     get artworklink(){ return this._artworklink; }
     get beatportlink(){ return this._beatportlink; }
@@ -44,9 +41,6 @@ class TrackSource {
         }
         return false;
     }
-    set q_title(v){ this._q_title=this._q_string(v); return true; }
-    set q_artists(v){ this._q_artists=this._q_string(v); return true; }
-    set q_labels(v){ this._q_labels=this._q_string(v); return true; }
     set release(v){ this._release=v; return true; }
     set artworklink(v){ this._artworklink=v;return true;  }
     set beatportlink(v){ this._beatportlink=v;return true;  }
@@ -54,12 +48,6 @@ class TrackSource {
 
     fromRawData(spec_raw_json){
         //adapter
-    }
-
-    _q_string(v){
-        //TODO handle special characters
-        //v = Utils.onlyLettersNumbers(v);
-        return v.split(' ').splice(0,2).join('+');
     }
 
 
@@ -75,12 +63,10 @@ class TrackSource {
     toJSON(){
         let fdjson = {};
         fdjson.title = this.title;
-        fdjson.artists = this._artists.toString();
-        fdjson.labels = this._labels.toString();
+        fdjson.artists = this._artists.toPlainArray();
+        fdjson.labels = this._labels.toPlainArray();
         fdjson.release = this.release;
-        fdjson.q_title = this.q_title;
-        fdjson.q_artists = this.q_artists;
-        fdjson.q_labels = this.q_labels;
+        fdjson.q_title = Utils.String.html_query_string(this.q_title);
         //fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
         //fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;

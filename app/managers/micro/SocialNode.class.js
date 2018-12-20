@@ -48,6 +48,18 @@ class SocialNode {
     }
 
 
+    toPlainArray(){
+        let final = [];
+        this.collection.forEach((cobj)=>{
+            final.push({
+                name:cobj.name,
+                q_name:Utils.String.html_query_string(cobj.name)
+            });
+        });
+        return final;
+    }
+
+
     fromString(string,sep){
         return this.fromArray(string.split(sep));
     }
