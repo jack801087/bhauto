@@ -1,5 +1,3 @@
-const Beatport_TrackSource = require('./adapters/Beatport.TrackSource.class.js');
-
 
 class ProjectManager {
 
@@ -19,6 +17,35 @@ class ProjectManager {
         this.path_utilsdata_rawdata = Utils.File.pathJoin(this.path_utilsdata,'raw_data.json');
         this.path_utilsdata_finaldata = Utils.File.pathJoin(this.path_utilsdata,'final_data.json');
         this.path_utilsdata_searchutility = Utils.File.pathJoin(this.path_utilsdata,'search_utility.html');
+
+        this.project_date = this.project_name.split('_');
+        this.project_date = this.project_date[this.project_date.length-1];
+
+        this.path_ready_tracks = Utils.File.pathJoin(this.project_path,'ready_tracks');
+    }
+
+    _get_weekly_paths(week_index){
+        let wp = {};
+        wp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+this.project_date);
+        wp.path_tracksweek = Utils.File.pathJoin(wp.path_week,week_index+'_tracksweek');
+        wp.path_tracksweek_instagram_txt = Utils.File.pathJoin(wp.path_tracksweek,'instagram_txt_'+week_index+'_'+this.project_date);
+        wp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_artist_'+week_index+'_'+this.project_date);
+        wp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_titles_'+week_index+'_'+this.project_date);
+        return wp;
+    }
+
+
+    _get_daily_paths(path_week, day_index){
+        /*
+        - ready/w8_201809110838/
+
+        - ready/w8_201809110838/T1_artist_title_20180911
+        - ready/w8_201809110838/T1_artist_title_20180911/artwork_T1_artist_title_20180911
+        - ready/w8_201809110838/T1_artist_title_20180911/instagram_txt_T1_artist_title_20180911
+         */
+        let wdp = {};
+        wdp.path_day = Utils.File.pathJoin(path_week,week_index+'_'+this.project_date);
+        return wdp;
     }
 
 
@@ -91,10 +118,8 @@ class ProjectManager {
         let raw_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_rawdata);
         if(!_.isObject(raw_data_json)) return null;
 
-        let TrackSource_class = null;
-        if(raw_data_json.datasource === 'beatport_cart'){
-            TrackSource_class = Beatport_TrackSource;
-        }else{
+        let TrackSource_class = TrackSource.getClass(raw_data_json.datasource);
+        if(!TrackSource_class){
             d$('Unknown datasource in the raw data object:',raw_data_json.datasource);
             return null;
         }
@@ -103,7 +128,7 @@ class ProjectManager {
         let processed_data_json = [];
         let raw_data_error = [];
         raw_data_json.collection.forEach((v,i,a)=>{
-            let tsObj = new TrackSource_class();
+            let tsObj = new TrackSource_class(raw_data_json.datasource);
             if(tsObj.fromRawData(v)===false){
                 raw_data_error.push(v);
                 return;
@@ -172,6 +197,16 @@ class ProjectManager {
 
         return true;
     }
+
+
+
+    prepareReadyProject(){
+        if(!_.isObject(this._current_project_data)){
+            //cliWarning
+            return false;
+        }
+    }
+
 
 
     toJSON(){

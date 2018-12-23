@@ -1,8 +1,8 @@
-const TrackSource_class = require('../TrackSource.class.js');
-class Beatport_TrackSource extends TrackSource_class {
 
-    constructor(){
-        super();
+class Beatport_TrackSource extends TrackSource {
+
+    constructor(datasource){
+        super(datasource);
         this._regex_remix = /\(([^)]+\sremix)\)/gi;
     }
 

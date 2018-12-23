@@ -1,17 +1,27 @@
-const SocialNode_class = require('./micro/SocialNode.class.js');
 
 class TrackSource {
 
-    constructor(){
+    constructor(datasource){
+        this._datasource = datasource;
         this._title = "";
-        this._artists = new SocialNode_class();
-        this._labels = new SocialNode_class();
+        this._artists = new SocialNode();
+        this._labels = new SocialNode();
         this._release = "";
         this._artworklink = "";
         this._beatportlink = "";
         this._q_artists = "";
         this._q_title = "";
         this._q_labels = "";
+    }
+
+
+    static getClass(data_source){
+        if(data_source === 'beatport_cart'){
+            return Beatport_TrackSource;
+        }else{
+            //d$('Unknown datasource in the raw data object:',datasource);
+            return null;
+        }
     }
 
 
@@ -62,6 +72,7 @@ class TrackSource {
 
     toJSON(){
         let fdjson = {};
+        fdjson.datasource = this._datasource;
         fdjson.title = this.title;
         fdjson.artists = this._artists.toPlainArray();
         fdjson.labels = this._labels.toPlainArray();
@@ -76,6 +87,7 @@ class TrackSource {
 
     toEditableJSON(){
         let fdjson = {};
+        fdjson.datasource = this._datasource;
         fdjson.title = this.title;
         fdjson.release = this.release;
         fdjson.artworklink = this.artworklink;
@@ -84,6 +96,12 @@ class TrackSource {
         fdjson.labels = this._labels.toArrayEditable();
         //TODO create empty string in instagram tags array
         return fdjson;
+    }
+
+
+    fromEditableJSON(fdjson){
+        //if(fdjson.datasource===...)
+
     }
 }
 
