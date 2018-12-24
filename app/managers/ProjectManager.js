@@ -195,6 +195,35 @@ class ProjectManager {
     }
 
 
+    generateReadyDirectory(){
+
+        this.path_ready_tracks = Utils.File.checkAndSetDuplicatedDirectoryNameSync(this.path_ready_tracks);
+        Utils.File.ensureDirSync(this.path_ready_tracks);
+
+        /*
+        leggi finaldata se _current_project_data null
+            projectMgr from JSON
+            > tracksource fromEditableJSON
+
+        Xcheck directory ready
+        X    ask confirm delete rimraf
+        X   impostare dir ready name con utils no duplicated per sicurezza
+
+        X leggi config weeks
+            leggi lenght di _current_project_data
+            divisione non %5 chiedi conferma perche weeks non uniformi
+
+        _current_project_data.forEach
+            ogni x cambiare ddati weekly
+            dati daily
+                add social tags to db
+                for interno creare dir daily
+            for esterno accumulare dati per dati finali week
+
+         */
+    }
+
+
     _mergeSocialMediaData(){
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];

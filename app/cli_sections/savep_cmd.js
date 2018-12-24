@@ -17,52 +17,69 @@ Manually...
 
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
-    /*
-    leggi finaldata se _current_project_data null
-        projectMgr from JSON
-        > tracksource fromEditableJSON
+        let p1 = (cliReference,cliNextCb,cliData)=>{
+            ProjectMgr.cleanReadyData();
 
-    check directory ready
-        ask confirm delete rimraf
-    impostare dir ready name con utils no duplicated per sicurezza
+            if(!ProjectMgr.hasData()){
+                let fdObj = ProjectMgr.setFromFinalData();
+                if(!_.isObject(fdObj)){
+                    d$('ProjectMgr.setFromFinalData returned an error');
+                    return cliNextCb(cliData.error_code);
+                }
 
-    leggi config weeks
-        leggi lenght di _current_project_data
-        divisione non %5 chiedi conferma perche weeks non uniformi
+                if(fdObj.data_error.length>0){
+                    cliData.ui.warning(fdObj.data_error);
+                    cliData.ui.warning('Some errors occurred while reading the final data showed above.');
+                    cliReference.prompt({
+                        type: 'input',
+                        name: 'answer',
+                        message: 'Do you want to continue? [y/n] '
+                    }, function (result) {
+                        if(result.answer !== 'y'){
+                            return cliNextCb(cliData.success_code);
+                        }
+                        p2(cliReference,cliNextCb,cliData);
+                    });
+                    return;
+                }
+            }
 
-    _current_project_data.forEach
-        ogni x cambiare ddati weekly
-        dati daily
-            add social tags to db
-            for interno creare dir daily
-        for esterno accumulare dati per dati finali week
+            p2(cliReference,cliNextCb,cliData);
 
-     */
+        };
 
-    let project_path = ProjectMgr.newProject();
-    if(project_path === null) return;
+        let p2 = (cliReference,cliNextCb,cliData)=>{
+            if(!ProjectMgr.checkWeeks()){
+                d$('ProjectMgr.checkWeeks returned an error');
+                return cliNextCb(cliData.error_code);
+            }
+            if(!ProjectMgr.generateReadyDirectory()){
+                d$('ProjectMgr.generateReadyDirectory returned an error');
+                return cliNextCb(cliData.error_code);
+            }
+            return cliNextCb(cliData.success_code);
+        };
 
-    let p1 = (cliReference,cliNextCb,cliData)=>{
-        ProjectMgr.newProjectStructure();
-    };
+    /*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
-    if(Utils.File.directoryExistsSync(project_path)){
-        clUI.print('The project directory already exists:',project_path);
+    if(!ProjectMgr.checkFinalDataExists()){
+        cliData.ui.error('Final data file does not exits!');
+        return cliNextCb(cliData.error_code);
+    }
 
+    if(ProjectMgr.checkReadyDataExists()){
+        cliData.ui.warning('Project already saved and directories generated.');
         cliReference.prompt({
             type: 'input',
             name: 'answer',
-            message: 'It will be deleted. Do you want to proceed? [y/n] '
+            message: 'Saved files will be deleted. Do you want to proceed? [y/n] '
         }, function (result) {
             if(result.answer !== 'y'){
                 return cliNextCb(cliData.success_code);
             }
             p1(cliReference,cliNextCb,cliData);
-            return cliNextCb(cliData.success_code);
         });
         return;
     }
-
     p1(cliReference,cliNextCb,cliData);
-    return cliNextCb(cliData.success_code);
 });
