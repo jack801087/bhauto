@@ -59,16 +59,7 @@ class TrackSource {
     fromRawData(spec_raw_json){
         //adapter
     }
-
-
-    addArtistInstagramTags(aitags){
-        this._artists_instagram_tags = _.union(this._artists_instagram_tags,aitags);
-    }
-
-
-    addLabelInstagramTags(litags){
-        this._labels_instagram_tags = _.union(this._artists_instagram_tags,litags);
-    }
+    
 
     toJSON(){
         let fdjson = {};

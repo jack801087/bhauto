@@ -6,6 +6,15 @@ class SocialNode {
     }
 
 
+    mergeSocialMediaDataFromDB(dbObject){
+        this.collection.forEach((v,i)=>{
+            let it_array = dbObject.getInstagramTags(v.name);
+
+            v.instagram_tags = _.union(v.instagram_tags,it_array);
+        });
+    }
+
+
     fromArray(a){
         this.collection = [];
         a.forEach((v)=>{

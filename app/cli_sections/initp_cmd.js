@@ -16,8 +16,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
             return cliNextCb(cliData.error_code);
         }
 
-        if(fdObj.raw_data_error.length>0){
-            cliData.ui.warning(fdObj.raw_data_error);
+        if(fdObj.data_error.length>0){
+            cliData.ui.warning(fdObj.data_error);
             cliData.ui.warning('Some errors occurred while reading the raw data showed above.');
             cliReference.prompt({
                 type: 'input',

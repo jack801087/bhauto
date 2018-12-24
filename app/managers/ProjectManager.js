@@ -8,6 +8,7 @@ class ProjectManager {
         this._init(ConfigMgr.cfg_path('CurrentProject'));
     }
 
+
     _init(project_path){
         if(!_.isString(project_path) || project_path.length<2) return;
         this._current_project_data = null;
@@ -24,29 +25,43 @@ class ProjectManager {
         this.path_ready_tracks = Utils.File.pathJoin(this.project_path,'ready_tracks');
     }
 
-    _get_weekly_paths(week_index){
-        let wp = {};
-        wp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+this.project_date);
-        wp.path_tracksweek = Utils.File.pathJoin(wp.path_week,week_index+'_tracksweek');
-        wp.path_tracksweek_instagram_txt = Utils.File.pathJoin(wp.path_tracksweek,'instagram_txt_'+week_index+'_'+this.project_date);
-        wp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_artist_'+week_index+'_'+this.project_date);
-        wp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_titles_'+week_index+'_'+this.project_date);
+
+    _get_weekly_paths(week_index, project_date){
+        /*
+        - ready/w8_201809110838/
+        - ready/w8_201809110838/w8_tracksweek/
+        - ready/w8_201809110838/w8_tracksweek/instagram_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_artists_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
+         */
+        let weeklyp = {};
+        weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
+        weeklyp.path_tracksweek = Utils.File.pathJoin(wp.path_week,week_index+'_tracksweek');
+        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(wp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_artist_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_titles_'+week_index+'_'+project_date+'.txt');
         return wp;
     }
 
 
-    _get_daily_paths(path_week, day_index){
+    _get_daily_paths(project_date, path_week, day_index, artist, title){
         /*
-        - ready/w8_201809110838/
+        (path_week) ready/w8_201809110838/
 
         - ready/w8_201809110838/T1_artist_title_20180911
         - ready/w8_201809110838/T1_artist_title_20180911/artwork_T1_artist_title_20180911
         - ready/w8_201809110838/T1_artist_title_20180911/instagram_txt_T1_artist_title_20180911
          */
-        let wdp = {};
-        wdp.path_day = Utils.File.pathJoin(path_week,week_index+'_'+this.project_date);
+        let dailyp = {};
+        artist = Utils.onlyLettersNumbers(artist).substring(12);
+        title = Utils.onlyLettersNumbers(title).substring(12);
+        let suffix = 'T'+day_index+'_'+artist+'_'+title+'_'+project_date;
+        dailyp.path_day = Utils.File.pathJoin(path_week,suffix);
+        dailyp.path_day_artwork = Utils.File.pathJoin(wdp.path_day,'artwork_'+suffix); /*ext added after*/
+        dailyp.path_day_instagram_txt = Utils.File.pathJoin(wdp.path_day,'instagram_txt_'+suffix+'.txt');
         return wdp;
     }
+
 
 
     newProject(project_path){
@@ -65,20 +80,6 @@ class ProjectManager {
     }
 
 
-    resumeProject(){
-        let current_project_path = ConfigMgr.cfg_path('CurrentProject');
-        if(current_project_path===null){
-            clUI.error('No current project path configured; set CurrentProject');
-            return null;
-        }
-        if(!Utils.File.directoryExistsSync(current_project_path)){
-            clUI.error('The configured current project path does not exist',current_project_path);
-            return null;
-        }
-        return this.newProject(current_project_path);
-    }
-
-
     newProjectStructure(){
         if(Utils.File.directoryExistsSync(this.project_path) && !Utils.File.removeDirSync(this.project_path)){
             clUI.error('Error while removing directory:',this.project_path);
@@ -91,7 +92,6 @@ class ProjectManager {
             clUI.error('Error while copying directory:',_cpresult.path_from,' > ',_cpresult.path_to);
             return false;
         }
-
 
         return true;
     }
@@ -136,7 +136,37 @@ class ProjectManager {
             processed_data_json.push(tsObj);
         });
 
-        fdObj.raw_data_error = raw_data_error;
+        fdObj.data_error = raw_data_error;
+        fdObj.data = processed_data_json;
+        this._current_project_data = processed_data_json;
+
+        return fdObj;
+    }
+
+
+    setFromFinalData(){
+        let final_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_finaldata);
+        if(!_.isObject(final_data_json)) return null;
+
+        let TrackSource_class = TrackSource.getClass(final_data_json.datasource);
+        if(!TrackSource_class){
+            d$('Unknown datasource in the raw data object:',final_data_json.datasource);
+            return null;
+        }
+
+        let fdObj = {};
+        let processed_data_json = [];
+        let final_data_error = [];
+        raw_data_json.collection.forEach((v,i,a)=>{
+            let tsObj = new TrackSource_class(final_data_json.datasource);
+            if(tsObj.fromEditableJSON(v)===false){
+                final_data_error.push(v);
+                return;
+            }
+            processed_data_json.push(tsObj);
+        });
+
+        fdObj.data_error = final_data_error;
         fdObj.data = processed_data_json;
         this._current_project_data = processed_data_json;
 
@@ -147,8 +177,8 @@ class ProjectManager {
     _mergeSocialMediaData(){
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
-            tsObj.addArtistInstagramTags(SMDB_Artists.getInstagramTags(tsObj.artist));
-            tsObj.addLabelInstagramTags(SMDB_Labels.getInstagramTags(tsObj.artist));
+            tsObj.artists.mergeSocialMediaDataFromDB(SMDB_Artists);
+            tsObj.labels.mergeSocialMediaDataFromDB(SMDB_Labels);
         }
         return true;
     }
