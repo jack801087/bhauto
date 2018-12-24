@@ -21,7 +21,6 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     leggi finaldata se _current_project_data null
         projectMgr from JSON
         > tracksource fromEditableJSON
-        add social tags to db
 
     check directory ready
         ask confirm delete rimraf
@@ -34,6 +33,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     _current_project_data.forEach
         ogni x cambiare ddati weekly
         dati daily
+            add social tags to db
             for interno creare dir daily
         for esterno accumulare dati per dati finali week
 

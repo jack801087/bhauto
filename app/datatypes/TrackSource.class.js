@@ -59,7 +59,7 @@ class TrackSource {
     fromRawData(spec_raw_json){
         //adapter
     }
-    
+
 
     toJSON(){
         let fdjson = {};
@@ -85,14 +85,19 @@ class TrackSource {
         fdjson.beatportlink = this.beatportlink;
         fdjson.artists = this._artists.toArrayEditable();
         fdjson.labels = this._labels.toArrayEditable();
-        //TODO create empty string in instagram tags array
         return fdjson;
     }
 
 
     fromEditableJSON(fdjson){
-        //if(fdjson.datasource===...)
-
+        this._datasource = fdjson.datasource;
+        this.title = fdjson.title;
+        this.release = fdjson.release;
+        this.artworklink = fdjson.artworklink;
+        this.beatportlink = fdjson.beatportlink;
+        this._artists.fromArrayEditable(fdjson.artists);
+        this._labels.fromArrayEditable(fdjson.labels);
+        return true;
     }
 }
 

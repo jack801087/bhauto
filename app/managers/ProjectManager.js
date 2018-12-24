@@ -63,6 +63,17 @@ class ProjectManager {
     }
 
 
+    hasData(){
+        return (_.isArray(this._current_project_data) && this._current_project_data.length>0);
+    }
+
+
+    checkWeeks(){
+        if(ConfigMgr.get('WeeksSplit')<1) return true;
+        return ((this._current_project_data.length % ConfigMgr.get('WeeksSplit'))===0);
+    }
+
+
 
     newProject(project_path){
         let export_project_path = ConfigMgr.cfg_path('ExportDirectory');
@@ -107,10 +118,20 @@ class ProjectManager {
         return Utils.File.fileExistsSync(this.path_utilsdata_finaldata);
     }
 
+    checkReadyDataExists(){
+        if(!this.path_ready_tracks) return false;
+        return Utils.File.fileExistsSync(this.path_ready_tracks);
+    }
+
 
     cleanFinalData(){
         Utils.File.removeFileSync(this.path_utilsdata_finaldata);
         Utils.File.removeFileSync(this.path_utilsdata_searchutility);
+    }
+
+
+    cleanReadyData(){
+        return Utils.File.removeDirSync(this.path_ready_tracks);
     }
 
 
@@ -157,7 +178,7 @@ class ProjectManager {
         let fdObj = {};
         let processed_data_json = [];
         let final_data_error = [];
-        raw_data_json.collection.forEach((v,i,a)=>{
+        final_data_json.collection.forEach((v,i,a)=>{
             let tsObj = new TrackSource_class(final_data_json.datasource);
             if(tsObj.fromEditableJSON(v)===false){
                 final_data_error.push(v);
