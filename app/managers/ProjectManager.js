@@ -35,12 +35,13 @@ class ProjectManager {
         - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
          */
         let weeklyp = {};
+        week_index = 'W'+week_index;
         weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
-        weeklyp.path_tracksweek = Utils.File.pathJoin(wp.path_week,week_index+'_tracksweek');
-        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(wp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_artist_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_titles_'+week_index+'_'+project_date+'.txt');
-        return wp;
+        weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
+        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artist_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_titles_'+week_index+'_'+project_date+'.txt');
+        return weeklyp;
     }
 
 
@@ -53,13 +54,93 @@ class ProjectManager {
         - ready/w8_201809110838/T1_artist_title_20180911/instagram_txt_T1_artist_title_20180911
          */
         let dailyp = {};
-        artist = Utils.onlyLettersNumbers(artist).substring(12);
-        title = Utils.onlyLettersNumbers(title).substring(12);
+        artist = Utils.onlyLettersNumbers(artist).substring(0,12);
+        title = Utils.onlyLettersNumbers(title).substring(0,12);
         let suffix = 'T'+day_index+'_'+artist+'_'+title+'_'+project_date;
         dailyp.path_day = Utils.File.pathJoin(path_week,suffix);
-        dailyp.path_day_artwork = Utils.File.pathJoin(wdp.path_day,'artwork_'+suffix); /*ext added after*/
+        dailyp.path_day_artwork = Utils.File.pathJoin(dailyp.path_day,'artwork_'+suffix); /*ext added after*/
+        dailyp.path_day_instagram_txt = Utils.File.pathJoin(dailyp.path_day,'instagram_txt_'+suffix+'.txt');
+        return dailyp;
+    }
+
+
+    generateReadyDirectory(){
+
+        //this.path_ready_tracks = Utils.File.checkAndSetDuplicatedDirectoryNameSync(this.path_ready_tracks);
+        Utils.File.ensureDirSync(this.path_ready_tracks);
+
+        let WeeksSplit = ConfigMgr.get('WeeksSplit');
+        let WeeksCounter = ConfigMgr.get('WeeksCounter');
+        let DayCounter = 0;
+        let DataLastIndex = this._current_project_data.length-1;
+        let project_date = Utils.dateToYYYYMMDD();
+        /*
+
+        weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
+        weeklyp.path_tracksweek = Utils.File.pathJoin(wp.path_week,week_index+'_tracksweek');
+        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(wp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(wp.path_tracksweek,'ps_artist_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_titles_txt =
+
+        dailyp.path_day = Utils.File.pathJoin(path_week,suffix);
+        dailyp.path_day_artwork = Utils.File.pathJoin(wdp.path_day,'artwork_'+suffix)
         dailyp.path_day_instagram_txt = Utils.File.pathJoin(wdp.path_day,'instagram_txt_'+suffix+'.txt');
-        return wdp;
+         */
+
+        let weeklyp, dailyp;
+        let tracksweek_instagram_txt,
+            tracksweek_ps_artists_txt,
+            tracksweek_ps_titles_txt,
+            path_day_instagram_txt;
+
+        this._current_project_data.forEach((v,i)=>{
+
+            let _tmod = (i)%WeeksSplit===0;
+            let _nxmod = (i+1)%WeeksSplit===0;
+
+            if(_tmod || (!_nxmod && i===DataLastIndex)){
+                tracksweek_instagram_txt={};
+                tracksweek_ps_artists_txt={};
+                tracksweek_ps_titles_txt={};
+
+                weeklyp = this._get_weekly_paths(WeeksCounter, project_date);
+                Utils.File.ensureDirSync(weeklyp.path_week);
+                Utils.File.ensureDirSync(weeklyp.path_tracksweek);
+
+                WeeksCounter++;
+            }
+
+            dailyp = this._get_daily_paths(project_date, weeklyp.path_week, (i+1), v.artists, v.title);
+            Utils.File.ensureDirSync(dailyp.path_day);
+
+
+            if(_nxmod || i===DataLastIndex){
+
+                /*week data*/
+            }
+        });
+
+        /*
+        X leggi finaldata se _current_project_data null
+        X    projectMgr from JSON
+        X    > tracksource fromEditableJSON
+
+        Xcheck directory ready
+        X    ask confirm delete rimraf
+        X   impostare dir ready name con utils no duplicated per sicurezza
+
+        X leggi config weeks
+            leggi lenght di _current_project_data
+            divisione non %5 chiedi conferma perche weeks non uniformi
+
+        _current_project_data.forEach
+            ogni x cambiare ddati weekly
+            dati daily
+                add social tags to db
+                for interno creare dir daily
+            for esterno accumulare dati per dati finali week
+
+         */
     }
 
 
@@ -169,17 +250,18 @@ class ProjectManager {
         let final_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_finaldata);
         if(!_.isObject(final_data_json)) return null;
 
-        let TrackSource_class = TrackSource.getClass(final_data_json.datasource);
-        if(!TrackSource_class){
-            d$('Unknown datasource in the raw data object:',final_data_json.datasource);
-            return null;
-        }
-
         let fdObj = {};
         let processed_data_json = [];
         let final_data_error = [];
-        final_data_json.collection.forEach((v,i,a)=>{
-            let tsObj = new TrackSource_class(final_data_json.datasource);
+        final_data_json.forEach((v,i,a)=>{
+            let TrackSource_class = TrackSource.getClass(v.datasource);
+            if(!TrackSource_class){
+                d$('Unknown datasource in the final data object:',v.datasource);
+                final_data_error.push(v);
+                return;
+            }
+
+            let tsObj = new TrackSource_class(v.datasource);
             if(tsObj.fromEditableJSON(v)===false){
                 final_data_error.push(v);
                 return;
@@ -191,53 +273,15 @@ class ProjectManager {
         fdObj.data = processed_data_json;
         this._current_project_data = processed_data_json;
 
+        d$('setFromFinalData','data errors',final_data_error.length);
+        d$('setFromFinalData','final collection',processed_data_json.length);
+
         return fdObj;
     }
 
 
-    generateReadyDirectory(){
-
-        this.path_ready_tracks = Utils.File.checkAndSetDuplicatedDirectoryNameSync(this.path_ready_tracks);
-        Utils.File.ensureDirSync(this.path_ready_tracks);
-
-        let WeeksSplit = ConfigMgr.get('WeeksSplit');
-        let WeeksCounter = ConfigMgr.get('WeeksCounter');
-        let DayCounter = 0;
-        let project_date = Utils.dateToYYYYMMDD();
-        
-        this._current_project_data.forEach(v,i){
-            let wkp, dlp;
-            if(i===0 || i % WeeksSplit ===0){
-                wkp = this._get_weekly_paths(WeeksCounter, project_date);
-            }
-            dlp = this._get_daily_paths(project_date, wkp.path_week, (i+1), v.artists, v.title);
-        }
-
-        /*
-        X leggi finaldata se _current_project_data null
-        X    projectMgr from JSON
-        X    > tracksource fromEditableJSON
-
-        Xcheck directory ready
-        X    ask confirm delete rimraf
-        X   impostare dir ready name con utils no duplicated per sicurezza
-
-        X leggi config weeks
-            leggi lenght di _current_project_data
-            divisione non %5 chiedi conferma perche weeks non uniformi
-
-        _current_project_data.forEach
-            ogni x cambiare ddati weekly
-            dati daily
-                add social tags to db
-                for interno creare dir daily
-            for esterno accumulare dati per dati finali week
-
-         */
-    }
-
-
     _mergeSocialMediaData(){
+        return true;
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
             tsObj.artists.mergeSocialMediaDataFromDB(SMDB_Artists);

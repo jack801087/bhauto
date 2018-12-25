@@ -27,6 +27,23 @@ class SocialNode {
         return this;
     }
 
+    fromArrayEditable(dt){
+        this.collection = [];
+        dt.forEach((v)=>{
+            let instagram_tags = [];
+            v.instagram_tags.forEach((it)=>{
+                it = _.trim(it);
+                if(it.length<2) return;
+                instagram_tags.push(it);
+            });
+            this.collection.push({
+                name:v.name,
+                instagram_tags:instagram_tags
+            });
+        });
+    }
+
+
     toArray(editCb){
         let _newObjFn = (o)=>{
             return {
