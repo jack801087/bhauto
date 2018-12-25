@@ -73,12 +73,13 @@ class SocialNode {
         return this.fromArray(string.split(sep));
     }
 
-    toString(){
+    toString(join_str){
         let names = [];
         this.collection.forEach((cobj)=>{
             names.push(cobj.name);
         });
-        return names.join(', ');
+        if(!_.isString(join_str)) join_str=', ';
+        return names.join(join_str);
     }
 
 }

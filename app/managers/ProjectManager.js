@@ -200,10 +200,23 @@ class ProjectManager {
         this.path_ready_tracks = Utils.File.checkAndSetDuplicatedDirectoryNameSync(this.path_ready_tracks);
         Utils.File.ensureDirSync(this.path_ready_tracks);
 
+        let WeeksSplit = ConfigMgr.get('WeeksSplit');
+        let WeeksCounter = ConfigMgr.get('WeeksCounter');
+        let DayCounter = 0;
+        let project_date = Utils.dateToYYYYMMDD();
+        
+        this._current_project_data.forEach(v,i){
+            let wkp, dlp;
+            if(i===0 || i % WeeksSplit ===0){
+                wkp = this._get_weekly_paths(WeeksCounter, project_date);
+            }
+            dlp = this._get_daily_paths(project_date, wkp.path_week, (i+1), v.artists, v.title);
+        }
+
         /*
-        leggi finaldata se _current_project_data null
-            projectMgr from JSON
-            > tracksource fromEditableJSON
+        X leggi finaldata se _current_project_data null
+        X    projectMgr from JSON
+        X    > tracksource fromEditableJSON
 
         Xcheck directory ready
         X    ask confirm delete rimraf
