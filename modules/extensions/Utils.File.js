@@ -3,7 +3,6 @@ const fs = require('fs');
 const fs_extra = require('fs-extra');
 const rimraf = require('rimraf'); //A "rm -rf" util for nodejs
 const _ = require('lodash');
-const imagedownloader = require('image-downloader');
 const iconv = require('iconv-lite');
 
 class Utils_Files {
@@ -15,6 +14,7 @@ class Utils_Files {
         this._RIMRAF = rimraf;
 
         this.pathBasename = path.basename;
+        this.pathExtname = path.extname;
         this.pathDirname = path.dirname;
         this.pathParse = path.parse;
         this.pathJoin = path.join;

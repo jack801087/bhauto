@@ -6,6 +6,7 @@ class Utils {
         this.File = require('./extensions/Utils.File');
         this.String = require('./extensions/Utils.String');
         this.SystemInfo = require('./extensions/Utils.SystemInfo');
+        this.Network = require('./extensions/Utils.Network');
     }
 
     EXIT(message,data){

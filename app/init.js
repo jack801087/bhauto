@@ -1,7 +1,8 @@
 require('./config.js');
 
-global.SHA1 = require('sha1');
-global.Mustache = require('mustache');
+global.appLibs = {};
+global.appLibs.SHA1 = require('sha1');
+global.appLibs.Mustache = require('mustache');
 
 
 /* Project Modules */

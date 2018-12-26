@@ -34,7 +34,7 @@ class SocialMediaDB {
         if(key === this._lastkey.key){
             return this._lastkey.hash;
         }
-        this._lastkey = { key:key, hash:SHA1(key) };
+        this._lastkey = { key:key, hash:appLibs.SHA1(key) };
         return this._lastkey.hash;
     }
 

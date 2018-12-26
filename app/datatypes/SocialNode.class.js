@@ -79,6 +79,7 @@ class SocialNode {
         this.collection.forEach((cobj)=>{
             final.push({
                 name:cobj.name,
+                instagram_tags:cobj.instagram_tags,
                 q_name:Utils.String.html_query_string(cobj.name)
             });
         });
