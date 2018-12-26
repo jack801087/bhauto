@@ -8,6 +8,7 @@ class TrackSource {
         this._labels = new SocialNode();
         this._release = "";
         this._artworklink = "";
+        this._buylinks = [];
         this._beatportlink = "";
         this._q_artists = "";
         this._q_title = "";
@@ -26,13 +27,13 @@ class TrackSource {
 
 
     get title(){ return this._title; }
-    get artists(){ return this._artists.toString(); }
-    get labels(){ return this._labels.toString(); }
+    get artists(){ return this._artists; }
+    get labels(){ return this._labels; }
     get artists_instagram_tags(){ }
     get labels_instagram_tags(){  }
     get release(){ return this._release; }
     get artworklink(){ return this._artworklink; }
-    get beatportlink(){ return this._beatportlink; }
+    get buylinks(){ return this._buylinks; }
 
     set title(v){ this._title=v; this.q_title=v; return true; }
     set artists(v){
@@ -53,7 +54,11 @@ class TrackSource {
     }
     set release(v){ this._release=v; return true; }
     set artworklink(v){ this._artworklink=v;return true;  }
-    set beatportlink(v){ this._beatportlink=v;return true;  }
+    set buylinks(v){
+        if(v===null)  this._buylinks=[];
+        else this._buylinks.push(v);
+        return true;
+    }
 
 
     fromRawData(spec_raw_json){
@@ -72,9 +77,35 @@ class TrackSource {
         //fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
         //fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;
-        fdjson.beatportlink = this.beatportlink;
+        fdjson.buylinks = this.buylinks;
         return fdjson;
     }
+
+
+    toPrintableJSON(){
+        let fdjson = {};
+        fdjson.datasource = this._datasource;
+        fdjson.title = this.title;
+        fdjson.release = this.release;
+        fdjson.artworklink = this.artworklink;
+        fdjson.buylinks = "";
+        this.buylinks.forEach((v)=>{
+            fdjson.buylinks += v.label+' > '+v.url+"\r\n";
+        });
+
+        fdjson.artists_list = this._artists.toString();
+        fdjson.labels_list = this._labels.toString();
+        fdjson.ig_tags_list = [];
+        let _tmpInstTagsToString;
+        _tmpInstTagsToString = this._artists.instagramTagsToString(' ');
+        if(_tmpInstTagsToString.length>2) fdjson.ig_tags_list.push(_tmpInstTagsToString);
+        _tmpInstTagsToString = this._labels.instagramTagsToString(' ');
+        if(_tmpInstTagsToString.length>2) fdjson.ig_tags_list.push(_tmpInstTagsToString);
+        fdjson.ig_tags_array = fdjson.ig_tags_list;
+        fdjson.ig_tags_list = fdjson.ig_tags_list.join(' ');
+        return fdjson;
+    }
+
 
     toEditableJSON(){
         let fdjson = {};
@@ -82,7 +113,9 @@ class TrackSource {
         fdjson.title = this.title;
         fdjson.release = this.release;
         fdjson.artworklink = this.artworklink;
-        fdjson.beatportlink = this.beatportlink;
+        fdjson.buylinks = this.buylinks;
+        fdjson.buylinks.push({label:"", url:""});
+        fdjson.buylinks.push({label:"", url:""});
         fdjson.artists = this._artists.toArrayEditable();
         fdjson.labels = this._labels.toArrayEditable();
         return fdjson;
@@ -94,7 +127,11 @@ class TrackSource {
         this.title = fdjson.title;
         this.release = fdjson.release;
         this.artworklink = fdjson.artworklink;
-        this.beatportlink = fdjson.beatportlink;
+        this.buylinks = null;
+        fdjson.buylinks.forEach((v)=>{
+            if(v.label.length<1) return;
+            this.buylinks = v;
+        });
         this._artists.fromArrayEditable(fdjson.artists);
         this._labels.fromArrayEditable(fdjson.labels);
         return true;

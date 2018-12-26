@@ -1,13 +1,16 @@
-{{artist}} - {{title}}
-Label: {{label}}
+{{artists_list}} - {{title}}
+Label: {{labels_list}}
 Released: {{release}}
-{{tags}}
-
-
+{{ig_tags_list}}
+ .
+ .
+ .
 Supported by BlackHart selections, the finest hard melodic techno.
-
-
-{{link_label}} > {{link}}
-
-
+ .
+ .
+ .
+{{buylinks}}
+ .
+ .
+ .
 #techno #underground #idm #dj #melodictechno #hardtechno #electronicmusic #industrial #industrialtechno #hardcore #technorelease #release #technotrack #track #synth #synthesizer #musicproduction #acid #acidtechno #303 #909 #analog #modular #leftfieldtechno #leftfieldhouse

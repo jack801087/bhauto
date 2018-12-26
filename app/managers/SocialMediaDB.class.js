@@ -3,12 +3,12 @@ class SocialMediaDB {
 
     constructor(dbpath){
         this._dbpath = dbpath;
+        this._dblabel = Utils.File.pathBasename(dbpath);
         this._collection = {};
         this._lastkey = {};
-        return;
 
         DataMgr.setHolder({
-            label:'config_filedsdsddsddsdasdasdasd',
+            label:this._dblabel,
             filePath:this._dbpath,
             fileType:'json',
             dataType:'object',
@@ -27,6 +27,9 @@ class SocialMediaDB {
 
     get dbpath(){ return this._dbpath; }
 
+    save(){
+        DataMgr.save(this._dblabel);
+    }
 
     _getID(key){
         if(!_.isString(key) || key.length===0) return null;
@@ -42,7 +45,7 @@ class SocialMediaDB {
     _get(key){
         let _id = this._getID(key);
         if(_id===null) return null;
-        return this._collection[key];
+        return this._collection[_id];
     }
 
     _cget(key){

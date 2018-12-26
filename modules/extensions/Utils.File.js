@@ -251,7 +251,7 @@ class Utils_Files {
         if(!_.isObject(json_obj)) return false;
 
         if(space===false) space=null;
-        else space='\t';
+        else space="\t";
 
         let file_content = '';
         try{

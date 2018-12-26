@@ -39,8 +39,8 @@ class ProjectManager {
         weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
         weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_artists_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artist_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_titles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_titles_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_index+'_'+project_date+'.txt');
         return weeklyp;
     }
 
@@ -64,19 +64,41 @@ class ProjectManager {
     }
 
 
+
+    _renderTemplate(template_path, output_path, template_data, escapeFn){
+        let MustacheEscape = appLibs.Mustache.escape;
+        if(escapeFn===false){
+            appLibs.Mustache.escape = function(x){ return x; };
+        }else if (_.isFunction(escapeFn)) {
+            appLibs.Mustache.escape = escapeFn;
+        }
+
+        let tpl_content = Utils.File.readTextFileSync(template_path);
+        let final_output = appLibs.Mustache.render(tpl_content, template_data);
+        appLibs.Mustache.escape = MustacheEscape;
+
+        if(!_.isString(final_output) || Utils.File.writeTextFileSync(output_path,final_output)!==true){
+            //cliWarning
+            return false;
+        }
+        return true;
+    }
+
+
     _generateReadyTrack(track_info,dailyp){
         // download dailyp.path_day_artwork
         // template dailyp.path_day_instagram_txt
 
         Utils.Network.downloadImage(track_info.artworklink,dailyp.path_day_artwork);
 
-        let sti_tpl_path = Utils.File.pathJoin(this._assets_path,'templates','single_track_info.txt');
-        let sti_tpl_content = Utils.File.readTextFileSync(sti_tpl_path);
-        let final_output = appLibs.Mustache.render(sti_tpl_content, track_info);
-        if(!_.isString(final_output) || Utils.File.writeTextFileSync(dailyp.path_day_instagram_txt,final_output)!==true){
-            //cliWarning
-            return false;
-        }
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','single_track_info.txt'),
+            dailyp.path_day_instagram_txt,
+            track_info,
+            false /*no escape*/
+        );
+
+        return true;
     }
 
 
@@ -93,21 +115,28 @@ class ProjectManager {
             return false;
         }
 
-        let twpa_tpl_path = Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_artists.txt');
-        let twpa_tpl_content = Utils.File.readTextFileSync(twpa_tpl_path);
-        let twpa_tpl_output = appLibs.Mustache.render(twpa_tpl_content, { tracks_info: tracks_info });
-        if(!_.isString(twpa_tpl_output) || Utils.File.writeTextFileSync(weeklyp.path_tracksweek_ps_artists_txt,twpa_tpl_output)!==true){
-            //cliWarning
-            return false;
-        }
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info.txt'),
+            weeklyp.path_tracksweek_instagram_txt,
+            { tracks_info: tracks_info },
+            false /*no escape*/
+        );
 
-        let twpt_tpl_path = Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_titles.txt');
-        let twpt_tpl_content = Utils.File.readTextFileSync(twpt_tpl_path);
-        let twpt_tpl_output = appLibs.Mustache.render(twpt_tpl_content, { tracks_info: tracks_info });
-        if(!_.isString(twpt_tpl_output) || Utils.File.writeTextFileSync(weeklyp.path_tracksweek_ps_titles_txt,twpt_tpl_output)!==true){
-            //cliWarning
-            return false;
-        }
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_artiststitles.txt'),
+            weeklyp.path_tracksweek_ps_artiststitles_txt,
+            { tracks_info: tracks_info },
+            false /*no escape*/
+        );
+
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_labels.txt'),
+            weeklyp.path_tracksweek_ps_labels_txt,
+            { tracks_info: tracks_info },
+            false /*no escape*/
+        );
+
+        return true;
     }
 
 
@@ -140,10 +169,11 @@ class ProjectManager {
                 WeeksCounter++;
             }
 
-            dailyp = this._get_daily_paths(project_date, weeklyp.path_week, (i+1), v.artists, v.title);
+            dailyp = this._get_daily_paths(project_date, weeklyp.path_week, (i+1), v.artists.toString(), v.title);
             Utils.File.ensureDirSync(dailyp.path_day);
 
-            let this_track = v.toJSON();
+            let this_track = v.toPrintableJSON();
+            this_track.id=i+1;
             //d$(this_track);
             tracks_array.push(this_track);
 
@@ -156,27 +186,10 @@ class ProjectManager {
             }
         });
 
-        /*
-        X leggi finaldata se _current_project_data null
-        X    projectMgr from JSON
-        X    > tracksource fromEditableJSON
 
-        Xcheck directory ready
-        X    ask confirm delete rimraf
-        X   impostare dir ready name con utils no duplicated per sicurezza
+        this._addSocialMediaData();
 
-        X leggi config weeks
-            leggi lenght di _current_project_data
-            divisione non %5 chiedi conferma perche weeks non uniformi
-
-        _current_project_data.forEach
-            ogni x cambiare ddati weekly
-            dati daily
-                add social tags to db
-                for interno creare dir daily
-            for esterno accumulare dati per dati finali week
-
-         */
+        return true;
     }
 
 
@@ -316,8 +329,19 @@ class ProjectManager {
     }
 
 
-    _mergeSocialMediaData(){
+    _addSocialMediaData(){
+        for(let i=0; i<this._current_project_data.length; i++){
+            let tsObj = this._current_project_data[i];
+            tsObj.artists.addSocialMediaDataToDB(SMDB_Artists);
+            tsObj.labels.addSocialMediaDataToDB(SMDB_Labels);
+        }
+        SMDB_Artists.save();
+        SMDB_Labels.save();
         return true;
+    }
+
+
+    _mergeSocialMediaData(){
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
             tsObj.artists.mergeSocialMediaDataFromDB(SMDB_Artists);
@@ -328,6 +352,11 @@ class ProjectManager {
 
 
     _generateSearchUtility(final_data_json){
+        d$(final_data_json[0].artists);
+        d$(final_data_json[1].artists);
+        d$(final_data_json[2].artists);
+        d$(final_data_json[3].artists);
+        d$(final_data_json[4].artists);
         let templates_path = Utils.File.pathJoin(this._assets_path,'templates','searchutility_template1.html');
         let psutility_path = Utils.File.pathJoin(this.project_path,'utils_data','search_utility.html');
         let searchutility_template1 = Utils.File.readTextFileSync(templates_path);
@@ -387,8 +416,10 @@ class ProjectManager {
             json:[],
             editable_json:[]
         };
-        this._current_project_data.forEach((tsObj)=>{
-            jobj.json.push(tsObj.toJSON());
+        this._current_project_data.forEach((tsObj,i)=>{
+            let _toJson = tsObj.toJSON();
+            _toJson.id = i+1;
+            jobj.json.push(_toJson);
             jobj.editable_json.push(tsObj.toEditableJSON());
         });
         return jobj;

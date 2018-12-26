@@ -6,10 +6,16 @@ class SocialNode {
     }
 
 
+    addSocialMediaDataToDB(dbObject){
+        this.collection.forEach((v,i)=>{
+            dbObject.setInstagramTags(v.name,v.instagram_tags);
+        });
+    }
+
+
     mergeSocialMediaDataFromDB(dbObject){
         this.collection.forEach((v,i)=>{
             let it_array = dbObject.getInstagramTags(v.name);
-
             v.instagram_tags = _.union(v.instagram_tags,it_array);
         });
     }
@@ -48,7 +54,7 @@ class SocialNode {
         let _newObjFn = (o)=>{
             return {
                 name:o.name,
-                instagram_tags:o.instagram_tags
+                instagram_tags:_.union(o.instagram_tags,[])
             };
         };
         let newObjFn = _newObjFn;
@@ -97,6 +103,17 @@ class SocialNode {
             names.push(cobj.name);
         });
         if(!_.isString(join_str)) join_str=', ';
+        return names.join(join_str);
+    }
+
+    instagramTagsToString(join_str){
+        let names = [];
+        if(!_.isString(join_str)) join_str=', ';
+        this.collection.forEach((cobj)=>{
+            cobj.instagram_tags.forEach((v)=>{
+                names.push('@'+v);
+            });
+        });
         return names.join(join_str);
     }
 

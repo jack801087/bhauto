@@ -1,0 +1,5 @@
+{{#tracks_info}}
+{{artists_list}} - {{title}}
+
+
+{{/tracks_info}}
