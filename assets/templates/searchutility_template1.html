@@ -14,8 +14,9 @@
     a {
         color:#00307f;
     }
+    p { margin:0.6em 0; }
     ul,ol,li{ margin:0; padding:0;}
-    ul,ol{ margin:0.4em 0 1em 2.4em; }
+    ul,ol{ margin:0em 0 1.2em 2.6em; }
     section.row {
         padding: 1.6em 1.6em;
         border-bottom:1px solid #CCCCCC;
@@ -27,7 +28,7 @@
         background-color:#F6F6F6;
     }
     div.row_info {
-        margin-bottom:0.3em;
+
     }
   </style>
 </head>
@@ -38,34 +39,41 @@
 <section class="row">
 
     <div class="row_info">
-        <strong>Track #{{id}}</strong>
+        <p><strong>Track #{{id}}</strong></p>
     </div>
 
     <div class="row_info">
-        <strong>Title</strong>
-        <span>{{title}}</span>
-        [
-        <a href="https://www.beatport.com/search/tracks?q={{q_artist}}+{{q_title}}" target="_blank">Beatport</a>
-        <a href="https://www.beatport.com/search/tracks?q={{q_title}}" target="_blank">Beatport2</a>
-        <a href="https://soundcloud.com/search/sounds?q={{q_artist}}+{{q_title}}" target="_blank">Soundcloud</a>
-        <a href="https://soundcloud.com/search/sounds?q={{q_title}}" target="_blank">Soundcloud2</a>
-        <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title}}+"{{q_artist}}"&oq={{q_title}}+"{{q_artist}}"' target="_blank">Artwork</a>
-        ]
+        <p>
+            <strong>Title</strong>
+            <span>{{title}}</span>
+            [
+            <a href="https://www.beatport.com/search/tracks?q={{q_artist}}+{{q_title}}" target="_blank">Beatport</a>
+            <a href="https://www.beatport.com/search/tracks?q={{q_title}}" target="_blank">Beatport2</a>
+            <a href="https://soundcloud.com/search/sounds?q={{q_artist}}+{{q_title}}" target="_blank">Soundcloud</a>
+            <a href="https://soundcloud.com/search/sounds?q={{q_title}}" target="_blank">Soundcloud2</a>
+            <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title}}+"{{q_artist}}"&oq={{q_title}}+"{{q_artist}}"' target="_blank">Artwork</a>
+            ]
+        </p>
     </div>
 
     {{#artists}}
     <div class="row_info">
-        <strong>Artists</strong>
-        <span>{{name}}</span>
-        [
-        <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
-        <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
-        ]
-        <br/>
-        <strong>Social profiles</strong>
-        {{^instagram_tags.length}}
-        <strong style="color:#FF0000;">-empty-</strong>
-        {{/instagram_tags.length}}
+        <p>
+            <strong>Artist</strong>
+            <span>{{name}}</span>
+            [
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
+            ]
+        </p>
+
+        <p>
+            <strong>Artist {{name}}: social profiles</strong>
+            {{^instagram_tags.length}}
+            <small><strong style="color:#FF0000;">[empty]</strong></small>
+            {{/instagram_tags.length}}
+        </p>
+
         {{#instagram_tags.length}}
         <ul>
             {{#instagram_tags}}
@@ -80,16 +88,20 @@
 
     {{#labels}}
     <div class="row_info">
-        <strong>Label</strong>
-        <span>{{name}}</span>
-        [
-        <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
-        ]
-        <br/>
-        <strong>Social profiles</strong>
-        {{^instagram_tags.length}}
-        <strong style="color:#FF0000;">-empty-</strong>
-        {{/instagram_tags.length}}
+        <p>
+            <strong>Label</strong>
+            <span>{{name}}</span>
+            [
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
+            ]
+        </p>
+        <p>
+            <strong>Label {{name}}: social profiles</strong>
+            {{^instagram_tags.length}}
+            <small><strong style="color:#FF0000;">[empty]</strong></small>
+            {{/instagram_tags.length}}
+        </p>
+
         {{#instagram_tags.length}}
         <ul>
             {{#instagram_tags}}

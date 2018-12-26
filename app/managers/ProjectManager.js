@@ -352,11 +352,6 @@ class ProjectManager {
 
 
     _generateSearchUtility(final_data_json){
-        d$(final_data_json[0].artists);
-        d$(final_data_json[1].artists);
-        d$(final_data_json[2].artists);
-        d$(final_data_json[3].artists);
-        d$(final_data_json[4].artists);
         let templates_path = Utils.File.pathJoin(this._assets_path,'templates','searchutility_template1.html');
         let psutility_path = Utils.File.pathJoin(this.project_path,'utils_data','search_utility.html');
         let searchutility_template1 = Utils.File.readTextFileSync(templates_path);
