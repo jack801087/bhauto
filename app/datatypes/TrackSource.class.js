@@ -5,6 +5,7 @@ class TrackSource {
         this._datasource = datasource;
         this._title = "";
         this._artists = new SocialNode();
+        this._remixers = new SocialNode();
         this._labels = new SocialNode();
         this._release = "";
         this._artworklink = "";
@@ -28,6 +29,7 @@ class TrackSource {
 
     get title(){ return this._title; }
     get artists(){ return this._artists; }
+    get remixers(){ return this._remixers; }
     get labels(){ return this._labels; }
     get artists_instagram_tags(){ }
     get labels_instagram_tags(){  }
@@ -40,6 +42,14 @@ class TrackSource {
         if(_.isArray(v)){
             this._artists.fromArray(v);
             this.q_artists=this._artists.toString();
+            return true;
+        }
+        return false;
+    }
+    set remixers(v){
+        if(_.isArray(v)){
+            this._remixers.fromArray(v);
+            this.q_remixers=this._remixers.toString();
             return true;
         }
         return false;
@@ -71,6 +81,7 @@ class TrackSource {
         fdjson.datasource = this._datasource;
         fdjson.title = this.title;
         fdjson.artists = this._artists.toPlainArray();
+        fdjson.remixers = this._remixers.toPlainArray();
         fdjson.labels = this._labels.toPlainArray();
         fdjson.release = this.release;
         fdjson.q_title = Utils.String.html_query_string(this.q_title);
@@ -93,17 +104,112 @@ class TrackSource {
             fdjson.buylinks += v.label+' > '+v.url+"\r\n";
         });
 
-        fdjson.artists_list = this._artists.toString();
-        fdjson.labels_list = this._labels.toString();
-        fdjson.ig_tags_list = [];
-        let _tmpInstTagsToString;
-        _tmpInstTagsToString = this._artists.instagramTagsToString(' ');
-        if(_tmpInstTagsToString.length>2) fdjson.ig_tags_list.push(_tmpInstTagsToString);
-        _tmpInstTagsToString = this._labels.instagramTagsToString(' ');
-        if(_tmpInstTagsToString.length>2) fdjson.ig_tags_list.push(_tmpInstTagsToString);
-        fdjson.ig_tags_array = fdjson.ig_tags_list;
-        fdjson.ig_tags_list = fdjson.ig_tags_list.join(' ');
+        fdjson.artists_array = this._artists.toSimpleArray();
+        fdjson.artists_list = fdjson.artists_array.join(', ');
+        fdjson.remixers_array = this._remixers.toSimpleArray();
+        fdjson.remixers_list = fdjson.remixers_array.join(', ');
+        fdjson.labels_array = this._labels.toSimpleArray();
+        fdjson.labels_list = fdjson.labels_array.join(', ');
+
+        this._toPrintableJSON_instagramTags(fdjson);
+
+        this._toPrintableJSON_hashTags(fdjson);
+
         return fdjson;
+    }
+
+    __toPrintableJSON_EnhanceHashtags(fdjson){
+
+        const __addToArray = (arr,v)=>{
+            v = Utils.onlyLettersNumbers(_.toLower(v));
+            //arr.push(v); return;
+            if(arr.indexOf(v)<0 && v.length<29) arr.push(v);
+        };
+
+        const __addToArrayCheck = (arr,v,ck,fin)=>{
+            v = Utils.onlyLettersNumbers(_.toLower(v));
+            fin = Utils.onlyLettersNumbers(_.toLower(fin));
+            if(ck.length>4) ck=ck.substring(0,ck.length-1);
+            if(Utils.String.php_stripos(v,ck)!==false) return;
+            if(arr.indexOf(fin)<0 && fin.length<29) arr.push(fin);
+        };
+
+        // labels instagram_profiles to hashtags
+        fdjson.ig_tags_labels_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_labels_array,v);
+        });
+
+        // labels to hashtags
+        fdjson.labels_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_labels_array,v);
+            __addToArrayCheck(fdjson.hash_tags_labels_array,v,'recor',v+'records');
+            __addToArrayCheck(fdjson.hash_tags_labels_array,v,'recor',v+'recordings');
+            __addToArrayCheck(fdjson.hash_tags_labels_array,v,'label',v+'label');
+        });
+
+        // artists instagram_profiles to hashtags
+        fdjson.ig_tags_artists_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_artists_array,v);
+        });
+
+        // artists to hashtags
+        fdjson.artists_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_artists_array,v);
+            __addToArrayCheck(fdjson.hash_tags_artists_array,v,'musi',v+'music');
+            __addToArrayCheck(fdjson.hash_tags_artists_array,v,'dj',v+'dj');
+        });
+
+        // remixers instagram_profiles to hashtags
+        fdjson.ig_tags_remixers_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_remixers_array,v);
+        });
+
+        // remixers to hashtags
+        fdjson.remixers_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_remixers_array,v);
+            __addToArrayCheck(fdjson.hash_tags_remixers_array,v,'musi',v+'music');
+            __addToArrayCheck(fdjson.hash_tags_remixers_array,v,'dj',v+'dj');
+        });
+    }
+
+    _toPrintableJSON_instagramTags(fdjson){
+        fdjson.ig_tags_artists_array = [];
+        fdjson.ig_tags_remixers_array = [];
+        fdjson.ig_tags_labels_array = [];
+
+        fdjson.ig_tags_artists_array = this._artists.instagramTagsToArray();
+        fdjson.ig_tags_remixers_array = this._remixers.instagramTagsToArray();
+        fdjson.ig_tags_labels_array = this._labels.instagramTagsToArray();
+
+        fdjson.ig_tags_list = "";
+        fdjson.ig_tags_array = _.union(fdjson.ig_tags_artists_array,fdjson.ig_tags_remixers_array,fdjson.ig_tags_labels_array);
+        fdjson.ig_tags_array.forEach((v)=>{ fdjson.ig_tags_list+='@'+v+' '; });
+    }
+
+    _toPrintableJSON_hashTags(fdjson){
+        fdjson.hash_tags_artists_array = [];
+        fdjson.hash_tags_remixers_array = [];
+        fdjson.hash_tags_labels_array = [];
+
+        fdjson.hash_tags_artists_array = this._artists.hashtagsToArray();
+        fdjson.hash_tags_remixers_array = this._artists.hashtagsToArray();
+        fdjson.hash_tags_labels_array = this._labels.hashtagsToArray();
+
+        // d$('fdjson.artists_array',fdjson.artists_array);
+        // d$('fdjson.labels_array',fdjson.labels_array);
+        // d$('fdjson.hash_tags_artists_array',fdjson.hash_tags_artists_array);
+        // d$('fdjson.hash_tags_labels_array',fdjson.hash_tags_labels_array);
+
+        this.__toPrintableJSON_EnhanceHashtags(fdjson);
+
+        // d$('fdjson.hash_tags_artists_array',fdjson.hash_tags_artists_array);
+        // d$('fdjson.hash_tags_labels_array',fdjson.hash_tags_labels_array);
+        // d$('______');
+        // d$(' ');
+
+        fdjson.hash_tags_list = "";
+        fdjson.hash_tags_array = _.union(fdjson.hash_tags_artists_array,fdjson.hash_tags_remixers_array,fdjson.hash_tags_labels_array);
+        fdjson.hash_tags_array.forEach((v)=>{ fdjson.hash_tags_list+='#'+v+' '; });
     }
 
 
@@ -117,6 +223,7 @@ class TrackSource {
         fdjson.buylinks.push({label:"", url:""});
         fdjson.buylinks.push({label:"", url:""});
         fdjson.artists = this._artists.toArrayEditable();
+        fdjson.remixers = this._remixers.toArrayEditable();
         fdjson.labels = this._labels.toArrayEditable();
         return fdjson;
     }
@@ -133,6 +240,7 @@ class TrackSource {
             this.buylinks = v;
         });
         this._artists.fromArrayEditable(fdjson.artists);
+        this._remixers.fromArrayEditable(fdjson.remixers);
         this._labels.fromArrayEditable(fdjson.labels);
         return true;
     }

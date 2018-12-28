@@ -53,7 +53,9 @@ class SocialMediaDB {
         if(_.isNil(elmt)){
             elmt={
                 key:this._lastkey.key,
-                hash:this._lastkey.hash
+                hash:this._lastkey.hash,
+                InstagramTags:[],
+                Hashtags:[]
             };
             this._collection[elmt.hash] = elmt;
         }
@@ -68,12 +70,28 @@ class SocialMediaDB {
     }
 
 
+    getHashtags(key){
+        let elmt = this._get(key);
+        if(_.isNil(elmt)) return [];
+        return _.union(elmt.Hashtags,[]);
+    }
+
+
     setInstagramTags(key,values,reset){
         let elmt = this._cget(key);
         if(reset===true){
             elmt.InstagramTags = [];
         }
         elmt.InstagramTags = _.union(elmt.InstagramTags,values);
+        return true;
+    }
+
+    setHashtags(key,values,reset){
+        let elmt = this._cget(key);
+        if(reset===true){
+            elmt.Hashtags = [];
+        }
+        elmt.Hashtags = _.union(elmt.Hashtags,values);
         return true;
     }
 

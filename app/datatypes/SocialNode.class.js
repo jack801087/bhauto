@@ -9,6 +9,7 @@ class SocialNode {
     addSocialMediaDataToDB(dbObject){
         this.collection.forEach((v,i)=>{
             dbObject.setInstagramTags(v.name,v.instagram_tags);
+            dbObject.setHashtags(v.name,v.hashtags);
         });
     }
 
@@ -16,7 +17,8 @@ class SocialNode {
     mergeSocialMediaDataFromDB(dbObject){
         this.collection.forEach((v,i)=>{
             let it_array = dbObject.getInstagramTags(v.name);
-            v.instagram_tags = _.union(v.instagram_tags,it_array);
+            v.instagram_tags = _.union(v.instagram_tags,dbObject.getInstagramTags(v.name));
+            v.hashtags = _.union(v.hashtags,dbObject.getHashtags(v.name));
         });
     }
 
@@ -25,9 +27,11 @@ class SocialNode {
         this.collection = [];
         a.forEach((v)=>{
             v=_.trim(v);
+            if(v.length<2) return;
             this.collection.push({
                 name:v,
-                instagram_tags:[]
+                instagram_tags:[],
+                hashtags:[]
             });
         });
         return this;
@@ -36,15 +40,25 @@ class SocialNode {
     fromArrayEditable(dt){
         this.collection = [];
         dt.forEach((v)=>{
+
             let instagram_tags = [];
             v.instagram_tags.forEach((it)=>{
                 it = _.trim(it);
                 if(it.length<2) return;
                 instagram_tags.push(it);
             });
+
+            let hashtags = [];
+            v.hashtags.forEach((it)=>{
+                it = _.trim(it);
+                if(it.length<2) return;
+                hashtags.push(it);
+            });
+
             this.collection.push({
                 name:v.name,
-                instagram_tags:instagram_tags
+                instagram_tags:instagram_tags,
+                hashtags:hashtags
             });
         });
     }
@@ -54,7 +68,8 @@ class SocialNode {
         let _newObjFn = (o)=>{
             return {
                 name:o.name,
-                instagram_tags:_.union(o.instagram_tags,[])
+                instagram_tags:_.union(o.instagram_tags,[]),
+                hashtags:_.union(o.hashtags,[])
             };
         };
         let newObjFn = _newObjFn;
@@ -75,6 +90,8 @@ class SocialNode {
         return this.toArray((b)=>{
             b.instagram_tags.push("");
             b.instagram_tags.push("");
+            b.hashtags.push("");
+            b.hashtags.push("");
             return b;
         });
     }
@@ -86,6 +103,7 @@ class SocialNode {
             final.push({
                 name:cobj.name,
                 instagram_tags:cobj.instagram_tags,
+                hashtags:cobj.hashtags,
                 q_name:Utils.String.html_query_string(cobj.name)
             });
         });
@@ -97,6 +115,14 @@ class SocialNode {
         return this.fromArray(string.split(sep));
     }
 
+    toSimpleArray(){
+        let names = [];
+        this.collection.forEach((cobj)=>{
+            names.push(cobj.name);
+        });
+        return names;
+    }
+
     toString(join_str){
         let names = [];
         this.collection.forEach((cobj)=>{
@@ -106,12 +132,45 @@ class SocialNode {
         return names.join(join_str);
     }
 
+
+    instagramTagsToArray(){
+        let names = [];
+        this.collection.forEach((cobj)=>{
+            cobj.instagram_tags.forEach((v)=>{
+                names.push(v);
+            });
+        });
+        return names;
+    }
+
+    hashtagsToArray(){
+        let names = [];
+        this.collection.forEach((cobj)=>{
+            cobj.hashtags.forEach((v)=>{
+                names.push(v);
+            });
+        });
+        return names;
+    }
+
+
     instagramTagsToString(join_str){
         let names = [];
         if(!_.isString(join_str)) join_str=', ';
         this.collection.forEach((cobj)=>{
             cobj.instagram_tags.forEach((v)=>{
                 names.push('@'+v);
+            });
+        });
+        return names.join(join_str);
+    }
+
+    hashtagsToString(join_str){
+        let names = [];
+        if(!_.isString(join_str)) join_str=', ';
+        this.collection.forEach((cobj)=>{
+            cobj.hashtags.forEach((v)=>{
+                names.push('#'+v);
             });
         });
         return names.join(join_str);

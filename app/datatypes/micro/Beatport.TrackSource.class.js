@@ -13,6 +13,7 @@ class Beatport_TrackSource extends TrackSource {
 
         this.title = spec_raw_json.title;
         this.artists = spec_raw_json.artists.split(',');
+        this.remixers = spec_raw_json.remixers.split(',');
         this.labels = spec_raw_json.labels.split(',');
         this.release = spec_raw_json.release;
         this.artworklink = spec_raw_json.artworklink;
@@ -21,15 +22,20 @@ class Beatport_TrackSource extends TrackSource {
 
 
     filterTitle(spec_raw_json){
+        let remixers_array = [];
+        spec_raw_json.remixers = '';
+
         let remix_matches = spec_raw_json.title.match(this._regex_remix);
         if(remix_matches){
             remix_matches.forEach((v)=>{
                 let s_pos = Utils.String.php_stripos(v,'remix');
                 if(s_pos===false) return;
                 v = v.substring(1,s_pos-1);
-                spec_raw_json.artists += ', '+v;
+                remixers_array.push(v);
             });
         }
+
+        if(remixers_array.length>0) spec_raw_json.remixers = remixers_array.join(',');
     }
 
 
