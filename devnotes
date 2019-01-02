@@ -1,0 +1,19 @@
+supportare fbtags + bio
+
+spostare esternamente databases
+
+config - aggiungere nextWeekC - contatore settimane
+config - aggiungere nextWeekDD - data yyyymmdd del prossimo lunedi' utile
+config - aggiungere trackCounter - contatore totale tracce prodotte
+
+savep
+produce pre-ready directory
+singole directory 't111_blabla_blabla'
+
+[directory ready ]
+
+weekp
+produce directory 'week'
+selezione casuale di 5 tracce in directory /ready composta manualmente
+dentro le varie directory settimanali
+elimina grossi file multimediali che non servono (es. wav)
