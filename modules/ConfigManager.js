@@ -208,6 +208,32 @@ class ConfigManager {
     }
 
 
+
+    setSharedDirectory(name){
+        this._shareddata_path = Utils.File.setAsAbsPath('../'+name, false /*isFile*/);
+        if(!Utils.File.ensureDirSync(this._shareddata_path)){
+            this._clUI.error('cannot ensure the common data directory or is not a valid path', this._shareddata_path);
+            Utils.EXIT();
+        }
+    }
+
+    addSharedFile(label, rel_path){
+        this._paths[label] = Utils.File.setAsAbsPath(rel_path, true /*isFile*/, this._shareddata_path + Utils.File.pathSeparator);
+        if(!Utils.File.isAbsoluteParentDirSync(this._paths[label],true /*checkExists*/)){
+            this._clUI.error('the parent directory does not exist or is not a valid path', this._paths[label]);
+            Utils.EXIT();
+        }
+    }
+
+    addSharedDirectory(label, rel_path){
+        this._paths[label] = Utils.File.setAsAbsPath(rel_path, false /*isFile*/, this._shareddata_path + Utils.File.pathSeparator);
+        if(!Utils.File.ensureDirSync(this._paths[label])){
+            this._clUI.error('cannot ensure the user directory or is not a valid path', this._paths[label]);
+            Utils.EXIT();
+        }
+    }
+
+
     setUserdataDirectory(name){
         this._userdata_path = Utils.File.setAsAbsPath(name, false /*isFile*/);
         if(!Utils.File.ensureDirSync(this._userdata_path)){

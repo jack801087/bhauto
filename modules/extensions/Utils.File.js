@@ -39,10 +39,11 @@ class Utils_Files {
         return this._abspath;
     }
 
-    setAsAbsPath(rel_path, isFile){
+    setAsAbsPath(rel_path, isFile, absPath){
         rel_path = _.trim(rel_path);
         if(isFile===true && _.endsWith(rel_path,Utils.File.pathSeparator)) rel_path=rel_path.substr(0,rel_path.length-1);
-        return Utils.File.pathJoin(this.getAbsPath(),rel_path,(isFile!==true?Utils.File.pathSeparator:''));
+        if(!absPath) absPath=this.getAbsPath();
+        return Utils.File.pathJoin(absPath,rel_path,(isFile!==true?Utils.File.pathSeparator:''));
     }
 
     equalPaths(p1,p2){
