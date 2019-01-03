@@ -2,6 +2,9 @@
 
 [x] spostare esternamente databases
 
+[ ] config - aggiungere readyDirectory - directory esterna dove copiare le tracce finite e da cui prendere le 5 settimanali
+[ ] config - aggiungere appDirPrefix
+[ ] config - cambiare exportDir in workingDir
 [ ] config - aggiungere nextWeekC - contatore settimane
 [ ] config - aggiungere nextWeekDD - data yyyymmdd del prossimo lunedi' utile
 [ ] config - aggiungere trackCounter - contatore totale tracce prodotte
@@ -16,6 +19,7 @@
 [ ] singole directory 't111_blabla_blabla'
 
 [ ] weekp
+- crea directory allo stesso livello di readyDirectory con appDirPrefix, weekCount, mondayDate
 - option '-r' for random else menu with ids
 - check ready directory
 - min 5 sub directories
