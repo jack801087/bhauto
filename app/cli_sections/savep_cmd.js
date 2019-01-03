@@ -5,16 +5,6 @@ CliMgr.addCommand(cmd_name);
 CliMgr.addCommandHeader(cmd_name)
     .description("Save the project."+"\n");
 
-/*
-- store social tags
-- shows preview (tracks, weeks, etc.)
-
-Manually...
-- ready/w8_201809110838/w8_tracksweek/              <-- instagram_image
-- ready/w8_201809110838/T1_artist_title_20180911    <-- instagram_video
-
-*/
-
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
         let p1 = (cliReference,cliNextCb,cliData)=>{

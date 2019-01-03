@@ -7,13 +7,20 @@
 [ ] config - aggiungere trackCounter - contatore totale tracce prodotte
 
 [ ] savep
-[ ] produce pre-ready directory
+- ensure pre-ready
+- ensure ready
+- for each new track
+    - ask removing
+    - remove
+    - create dir with artwork, txt, json info (tracksource to json)
 [ ] singole directory 't111_blabla_blabla'
 
-[ ] [directory ready ]
-
 [ ] weekp
-[ ] produce directory 'week'
-[ ] selezione casuale di 5 tracce in directory /ready composta manualmente
-[ ] dentro le varie directory settimanali
-[ ] elimina grossi file multimediali che non servono (es. wav)
+- option '-r' for random else menu with ids
+- check ready directory
+- min 5 sub directories
+- ensure w10_bh20181201
+- for each sub directory
+    - move to w10_bh.../t1_...
+    - store track info
+- create tracks week txt files
