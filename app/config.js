@@ -2,7 +2,19 @@
 
 (function(){
 
-    ConfigMgr.addField('ExportDirectory', {
+    ConfigMgr.addField('ProjectsDirectory', {
+        description:'',
+        datatype: 'absdirpath',
+        defaultValue: ''
+    });
+
+    ConfigMgr.addField('ReadyTracksDirectory', {
+        description:'',
+        datatype: 'absdirpath',
+        defaultValue: ''
+    });
+
+    ConfigMgr.addField('WeeklySetsDirectory', {
         description:'',
         datatype: 'absdirpath',
         defaultValue: ''

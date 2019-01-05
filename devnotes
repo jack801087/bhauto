@@ -4,7 +4,7 @@
 
 [ ] config - aggiungere readyDirectory - directory esterna dove copiare le tracce finite e da cui prendere le 5 settimanali
 [ ] config - aggiungere appDirPrefix
-[ ] config - cambiare exportDir in workingDir
+[x] config - cambiare exportDir in workingDir
 [ ] config - aggiungere nextWeekC - contatore settimane
 [ ] config - aggiungere nextWeekDD - data yyyymmdd del prossimo lunedi' utile
 [x] config - aggiungere trackCounter - contatore totale tracce prodotte
@@ -28,3 +28,20 @@
     - move to w10_bh.../t1_...
     - store track info
 - create tracks week txt files
+
+
+_____________
+
+config nextsunday 2018-10-03
+config weekcount 12
+config appdirprefix 'BH'
+
+show list ready TrackS
+empty: random
+list ids: custom selection
+
+crea directory bh_w10_20181003 (appprefix + weekcounter + nextsunday)
+
+copia e rinomina directory: D1__<oldname>
+
+legge json info di tutte le directory e crea tracksweek info

@@ -9,15 +9,33 @@ class ProjectManager {
         this._cache_tracks_week_hashtags = null;
 
         // from config
-        this._init(ConfigMgr.cfg_path('CurrentProject'));
+        this._init();
     }
 
 
-    _init(project_path){
-        if(!_.isString(project_path) || project_path.length<2) return;
+    _init(){
+        let project_path = ConfigMgr.cfg_path('CurrentProject');
+        let ready_tracks_path = ConfigMgr.cfg_path('ReadyTracksDirectory');
+        let weekly_sets_path = ConfigMgr.cfg_path('WeeklySetsDirectory');
+        if(!_.isString(project_path) || project_path.length<2){
+            d$('ProjectManager.init > No CurrentProject path');
+            return;
+        }
+        if(!_.isString(ready_tracks_path) || ready_tracks_path.length<2){
+            d$('ProjectManager.init > No ReadyTracksDirectory path');
+            return;
+        }
+        if(!_.isString(weekly_sets_path) || weekly_sets_path.length<2){
+            d$('ProjectManager.init > No WeeklySetsDirectory path');
+            return;
+        }
+
         this._current_project_data = null;
         this.project_name = Utils.File.pathBasename(project_path);
         this.project_path = project_path;
+        this.path_ready_tracks = ready_tracks_path;
+        this.path_weekly_sets = weekly_sets_path;
+
         this.path_utilsdata = Utils.File.pathJoin(this.project_path,'utils_data');
         this.path_utilsdata_rawdata = Utils.File.pathJoin(this.path_utilsdata,'raw_data.json');
         this.path_utilsdata_finaldata = Utils.File.pathJoin(this.path_utilsdata,'final_data.json');
@@ -28,7 +46,6 @@ class ProjectManager {
         this.project_date = this.project_date[this.project_date.length-1];
 
         this.path_tracks_list = Utils.File.pathJoin(this.project_path,'tracks_list');
-        this.path_ready_tracks = Utils.File.pathJoin(this.project_path,'ready_tracks');
     }
 
 
@@ -314,6 +331,7 @@ class ProjectManager {
 
         /* Destination directory */
         Utils.File.ensureDirSync(this.path_tracks_list);
+        Utils.File.ensureDirSync(this.path_ready_tracks);
 
         let project_date = Utils.dateToYYYYMMDD();
 
@@ -354,9 +372,9 @@ class ProjectManager {
 
 
     newProject(project_path){
-        let export_project_path = ConfigMgr.cfg_path('ExportDirectory');
+        let export_project_path = ConfigMgr.cfg_path('ProjectsDirectory');
         if(export_project_path===null){
-            clUI.error('No export path configured; set ExportDirectory');
+            clUI.error('No export path configured; set ProjectsDirectory');
             return null;
         }
         Utils.File.ensureDirSync(export_project_path);
