@@ -143,8 +143,8 @@ class TrackSource {
         fdjson.labels_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_labels_array,v);
             __addToArrayCheck(fdjson.hash_tags_labels_array,v,'recor',v+'records');
-            __addToArrayCheck(fdjson.hash_tags_labels_array,v,'recor',v+'recordings');
-            __addToArrayCheck(fdjson.hash_tags_labels_array,v,'label',v+'label');
+            //__addToArrayCheck(fdjson.hash_tags_labels_array,v,'recor',v+'recordings');
+            //__addToArrayCheck(fdjson.hash_tags_labels_array,v,'label',v+'label');
         });
 
         // artists instagram_profiles to hashtags
@@ -156,7 +156,7 @@ class TrackSource {
         fdjson.artists_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_artists_array,v);
             __addToArrayCheck(fdjson.hash_tags_artists_array,v,'musi',v+'music');
-            __addToArrayCheck(fdjson.hash_tags_artists_array,v,'dj',v+'dj');
+            //__addToArrayCheck(fdjson.hash_tags_artists_array,v,'dj',v+'dj');
         });
 
         // remixers instagram_profiles to hashtags
@@ -168,7 +168,7 @@ class TrackSource {
         fdjson.remixers_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_remixers_array,v);
             __addToArrayCheck(fdjson.hash_tags_remixers_array,v,'musi',v+'music');
-            __addToArrayCheck(fdjson.hash_tags_remixers_array,v,'dj',v+'dj');
+            //__addToArrayCheck(fdjson.hash_tags_remixers_array,v,'dj',v+'dj');
         });
     }
 
@@ -184,6 +184,17 @@ class TrackSource {
         fdjson.ig_tags_list = "";
         fdjson.ig_tags_array = _.union(fdjson.ig_tags_artists_array,fdjson.ig_tags_remixers_array,fdjson.ig_tags_labels_array);
         fdjson.ig_tags_array.forEach((v)=>{ fdjson.ig_tags_list+='@'+v+' '; });
+    }
+
+    __fairHashtagDistribution(fdjson){
+        let maxLen = Math.max(fdjson.hash_tags_artists_array.length, fdjson.hash_tags_remixers_array.length, fdjson.hash_tags_labels_array.length);
+        let htarray = [];
+        for(let i=0; i<maxLen; i++){
+            if(fdjson.hash_tags_labels_array.length>i) htarray.push(fdjson.hash_tags_labels_array[i]);
+            if(fdjson.hash_tags_artists_array.length>i) htarray.push(fdjson.hash_tags_artists_array[i]);
+            if(fdjson.hash_tags_remixers_array.length>i) htarray.push(fdjson.hash_tags_remixers_array[i]);
+        }
+        return htarray;
     }
 
     _toPrintableJSON_hashTags(fdjson){
@@ -208,8 +219,9 @@ class TrackSource {
         // d$(' ');
 
         fdjson.hash_tags_list = "";
-        fdjson.hash_tags_array = _.union(fdjson.hash_tags_artists_array,fdjson.hash_tags_remixers_array,fdjson.hash_tags_labels_array);
-        fdjson.hash_tags_array.forEach((v)=>{ fdjson.hash_tags_list+='#'+v+' '; });
+        fdjson.hash_tags_array = this.__fairHashtagDistribution(fdjson);
+        //fdjson.hash_tags_array = _.union(fdjson.hash_tags_artists_array,fdjson.hash_tags_remixers_array,fdjson.hash_tags_labels_array);
+        //fdjson.hash_tags_array.forEach((v)=>{ fdjson.hash_tags_list+='#'+v+' '; });
     }
 
 

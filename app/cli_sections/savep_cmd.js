@@ -8,9 +8,8 @@ CliMgr.addCommandHeader(cmd_name)
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
         let p1 = (cliReference,cliNextCb,cliData)=>{
-            ProjectMgr.cleanReadyData();
+            ProjectMgr.cleanTracksListData();
 
-            //if(!ProjectMgr.hasData()){
             let fdObj = ProjectMgr.setFromFinalData();
             if(!_.isObject(fdObj)){
                 d$('ProjectMgr.setFromFinalData returned an error');
@@ -32,18 +31,13 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
                 });
                 return;
             }
-            //}
 
             p2(cliReference,cliNextCb,cliData);
 
         };
 
         let p2 = (cliReference,cliNextCb,cliData)=>{
-            if(!ProjectMgr.checkWeeks()){
-                d$('ProjectMgr.checkWeeks returned an error');
-                return cliNextCb(cliData.error_code);
-            }
-            if(!ProjectMgr.generateReadyDirectory()){
+            if(!ProjectMgr.generateTracksListDirectory()){
                 d$('ProjectMgr.generateReadyDirectory returned an error');
                 return cliNextCb(cliData.error_code);
             }
@@ -57,8 +51,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         return cliNextCb(cliData.error_code);
     }
 
-    if(ProjectMgr.checkReadyDataExists()){
-        cliData.ui.warning('Project already saved and directories generated.');
+    if(ProjectMgr.checkTracksListExists()){
+        cliData.ui.warning('Tracks list already generated.');
         cliReference.prompt({
             type: 'input',
             name: 'answer',

@@ -14,6 +14,12 @@
         defaultValue: ''
     });
 
+    ConfigMgr.addField('TracksCounter', {
+        description:'',
+        datatype: 'integer',
+        defaultValue: 100
+    });
+
     ConfigMgr.addField('WeeksCounter', {
         description:'',
         datatype: 'integer',

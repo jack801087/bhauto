@@ -89,7 +89,7 @@ class SocialNode {
     toArrayEditable(){
         return this.toArray((b)=>{
             b.instagram_tags.push("");
-            b.instagram_tags.push("");
+            //b.instagram_tags.push("");
             b.hashtags.push("");
             b.hashtags.push("");
             return b;

@@ -6,6 +6,8 @@ class Beatport_TrackSource extends TrackSource {
         this._regex_remix = /\(([^)]+\sremix)\)/gi;
     }
 
+    get SourceCode() { return 'BTP'; }
+
 
     fromRawData(spec_raw_json){
         /* see assets/utils_data/beatport_cart.jquery.js */

@@ -7,16 +7,16 @@
 [ ] config - cambiare exportDir in workingDir
 [ ] config - aggiungere nextWeekC - contatore settimane
 [ ] config - aggiungere nextWeekDD - data yyyymmdd del prossimo lunedi' utile
-[ ] config - aggiungere trackCounter - contatore totale tracce prodotte
+[x] config - aggiungere trackCounter - contatore totale tracce prodotte
 
-[ ] savep
+[x] savep
 - ensure pre-ready
 - ensure ready
 - for each new track
     - ask removing
     - remove
     - create dir with artwork, txt, json info (tracksource to json)
-[ ] singole directory 't111_blabla_blabla'
+[x] singole directory 't111_blabla_blabla'
 
 [ ] weekp
 - crea directory allo stesso livello di readyDirectory con appDirPrefix, weekCount, mondayDate

@@ -5,6 +5,14 @@ class Utils_String {
     }
 
 
+    cutByPreservingWords(v,max){
+        if(v.length<max) return v;
+        let i = this.php_stripos(v,' ',max*(-1));
+        if(i===false) return v;
+        return v.substr(0,i+1);
+    }
+
+
     html_query_string(v){
         //TODO handle special characters
         //v = Utils.onlyLettersNumbers(v);
@@ -17,8 +25,15 @@ class Utils_String {
         let haystack = (fHaystack + '').toLowerCase();
         let needle = (fNeedle + '').toLowerCase();
         let index = 0;
-        if ((index = haystack.indexOf(needle, fOffset)) !== -1) {
-            return index;
+        if(fOffset<0){
+            fOffset *= -1;
+            if ((index = (haystack + '').substr(0,fOffset).lastIndexOf(needle)) !== -1) {
+                return index;
+            }
+        }else{
+            if ((index = haystack.indexOf(needle, fOffset)) !== -1) {
+                return index;
+            }
         }
         return false
     }

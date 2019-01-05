@@ -5,6 +5,9 @@ class ProjectManager {
         this._cfg_data = null;
         this._assets_path = Utils.File.pathJoin(Utils.File.getAbsPath(),'assets');
 
+        this._cache_single_track_hashtags = null;
+        this._cache_tracks_week_hashtags = null;
+
         // from config
         this._init(ConfigMgr.cfg_path('CurrentProject'));
     }
@@ -24,6 +27,7 @@ class ProjectManager {
         this.project_date = this.project_name.split('_');
         this.project_date = this.project_date[this.project_date.length-1];
 
+        this.path_tracks_list = Utils.File.pathJoin(this.project_path,'tracks_list');
         this.path_ready_tracks = Utils.File.pathJoin(this.project_path,'ready_tracks');
     }
 
@@ -75,28 +79,57 @@ class ProjectManager {
         - ready/w8_201809110838/T1_artist_title_20180911/instagram_txt_T1_artist_title_20180911
          */
         let dailyp = {};
-        artist = Utils.onlyLettersNumbers(artist).substring(0,12);
-        title = Utils.onlyLettersNumbers(title).substring(0,12);
+        artist = Utils.onlyLettersNumbers(artist).substring(0,18);
+        title = Utils.onlyLettersNumbers(title).substring(0,18);
         let suffix = 'T'+day_index+'_'+artist+'_'+title+'_'+project_date;
         dailyp.path_day = Utils.File.pathJoin(path_week,suffix);
+        dailyp.path_day_jsoninfo = Utils.File.pathJoin(dailyp.path_day,'track_info_'+suffix+'.json');
         dailyp.path_day_artwork = Utils.File.pathJoin(dailyp.path_day,'artwork_'+suffix); /*ext added after*/
         dailyp.path_day_instagram_txt = Utils.File.pathJoin(dailyp.path_day,'instagram_txt_'+suffix+'.txt');
         return dailyp;
     }
 
 
+    _get_single_tracklist_paths(project_date, tracklp_path, tcounter, prefix, artist, title){
+        /*
+        (path_week) ready/w8_201809110838/
 
-    _renderTemplate(template_path, output_path, template_data, escapeFn){
+        - tracks_list/BTP_51_artist_title_20180911
+        - ready/BTP_51_artist_title_20180911/artwork_BTP_51_artist_title_20180911
+        - ready/BTP_51_artist_title_20180911/instagram_txt_BTP_51_artist_title_20180911
+         */
+        let tracklp = {};
+        artist = Utils.onlyLettersNumbers(artist).substring(0,18);
+        title = Utils.onlyLettersNumbers(title).substring(0,18);
+        let suffix = prefix+'_'+tcounter+'_'+artist+'_'+title+'_'+project_date;
+        tracklp.path_day = Utils.File.pathJoin(tracklp_path,suffix);
+        tracklp.path_day_jsoninfo = Utils.File.pathJoin(tracklp.path_day,'track_info_'+suffix+'.json');
+        tracklp.path_day_artwork = Utils.File.pathJoin(tracklp.path_day,'artwork_'+suffix); /*ext added after*/
+        tracklp.path_day_instagram_txt = Utils.File.pathJoin(tracklp.path_day,'instagram_txt_'+suffix+'.txt');
+        return tracklp;
+    }
+
+
+
+    _renderTemplate(template_path, output_path, template_data, options){
+        options = _.merge({
+            maxLenght:-1,
+            escapeFn:null /*use default function*/
+        },options);
         let MustacheEscape = appLibs.Mustache.escape;
-        if(escapeFn===false){
+        if(options.escapeFn===false){
             appLibs.Mustache.escape = function(x){ return x; };
-        }else if (_.isFunction(escapeFn)) {
-            appLibs.Mustache.escape = escapeFn;
+        }else if (_.isFunction(options.escapeFn)) {
+            appLibs.Mustache.escape = options.escapeFn;
         }
 
         let tpl_content = Utils.File.readTextFileSync(template_path);
         let final_output = appLibs.Mustache.render(tpl_content, template_data);
         appLibs.Mustache.escape = MustacheEscape;
+
+        if(options.maxLenght>0){
+            final_output = Utils.String.cutByPreservingWords(final_output,options.maxLenght);
+        }
 
         if(!_.isString(final_output) || Utils.File.writeTextFileSync(output_path,final_output)!==true){
             //cliWarning
@@ -106,17 +139,56 @@ class ProjectManager {
     }
 
 
+    _mergeSingleTrackHashtags(track_info, max_count){
+        let htarray = [];
+
+        if(!_.isArray(this._cache_single_track_hashtags)){
+            let _csth_temp = Utils.File.readJsonFileSync(Utils.File.pathJoin(this._assets_path,'data','single_track_hashtags.json'));
+            if(!_.isArray(_csth_temp)){
+                d$('_mergeSingleTrackHashtags','no data from single_track_hashtags.json');
+                return false;
+            }
+            this._cache_single_track_hashtags = _csth_temp;
+        }
+        htarray = _.union(this._cache_single_track_hashtags,[]);
+
+        if(htarray.length>max_count){
+            htarray = htarray.slice(0,max_count-1);
+        }
+
+        if(htarray.length<max_count){
+            htarray = _.union(track_info.hash_tags_array.slice(0,max_count-htarray.length),htarray);
+        }
+
+        track_info.hash_tags_list = '';
+        htarray.forEach((v)=>{ track_info.hash_tags_list+='#'+v+' '; });
+        return true;
+    }
+
+
+    _mergeTracksWeekHashtags(track_info, max_count){
+
+        this._cache_tracks_week_hashtags = null;
+    }
+
+
     _generateReadyTrack(track_info,dailyp){
         // download dailyp.path_day_artwork
         // template dailyp.path_day_instagram_txt
 
         Utils.Network.downloadImage(track_info.artworklink,dailyp.path_day_artwork);
 
+        Utils.File.writeJsonFileSync(dailyp.path_day_jsoninfo,track_info); /*save trackinfo before further changes*/
+
+        this._mergeSingleTrackHashtags(track_info, 30 /*max on instagram and facebook */);
+
         this._renderTemplate(
             Utils.File.pathJoin(this._assets_path,'templates','single_track_info.txt'),
             dailyp.path_day_instagram_txt,
             track_info,
-            false /*no escape*/
+            {
+                escapeFn: false /*no escape*/
+            }
         );
 
         return true;
@@ -140,21 +212,27 @@ class ProjectManager {
             Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info.txt'),
             weeklyp.path_tracksweek_instagram_txt,
             { tracks_data: tracks_data },
-            false /*no escape*/
+            {
+                escapeFn: false /*no escape*/
+            }
         );
 
         this._renderTemplate(
             Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_artiststitles.txt'),
             weeklyp.path_tracksweek_ps_artiststitles_txt,
             { tracks_info: tracks_data.tracks_info },
-            false /*no escape*/
+            {
+                escapeFn: false /*no escape*/
+            }
         );
 
         this._renderTemplate(
             Utils.File.pathJoin(this._assets_path,'templates','tracks_week_ps_labels.txt'),
             weeklyp.path_tracksweek_ps_labels_txt,
             { tracks_info: tracks_data.tracks_info },
-            false /*no escape*/
+            {
+                escapeFn: false /*no escape*/
+            }
         );
 
         return true;
@@ -227,6 +305,42 @@ class ProjectManager {
     }
 
 
+    generateTracksListDirectory(){
+
+        /* Read weeks counter from file */
+        let TracksCounter_fromFile = this._get_config_param('TracksCounter');
+        let TracksCounter_start = (_.isNil(TracksCounter_fromFile)?ConfigMgr.get('TracksCounter'):TracksCounter_fromFile);
+        let TracksCounter = TracksCounter_start;
+
+        /* Destination directory */
+        Utils.File.ensureDirSync(this.path_tracks_list);
+
+        let project_date = Utils.dateToYYYYMMDD();
+
+        this._addSocialMediaData();
+
+        this._current_project_data.forEach((v,i)=>{
+
+            let tracklp = this._get_single_tracklist_paths(project_date, this.path_tracks_list, TracksCounter, v.SourceCode, v.artists.toString(), v.title);
+            Utils.File.ensureDirSync(tracklp.path_day);
+
+            let this_track = v.toPrintableJSON();
+            this_track.id=i+1;
+
+            this._generateReadyTrack(this_track,tracklp);
+
+            TracksCounter++;
+        });
+
+        if(TracksCounter_fromFile===null){
+            this._set_config_param('TracksCounter',TracksCounter_start);
+            ConfigMgr.set('TracksCounter',TracksCounter);
+            ConfigMgr.save();
+        }
+
+        return true;
+    }
+
     hasData(){
         return (_.isArray(this._current_project_data) && this._current_project_data.length>0);
     }
@@ -268,6 +382,8 @@ class ProjectManager {
             return false;
         }
 
+        clUI.print('New project path > ',this.project_path);
+
         return true;
     }
 
@@ -288,6 +404,11 @@ class ProjectManager {
     }
 
 
+    checkTracksListExists(){
+        if(!this.path_tracks_list) return false;
+        return Utils.File.fileExistsSync(this.path_tracks_list);
+    }
+
     cleanFinalData(){
         Utils.File.removeFileSync(this.path_utilsdata_finaldata);
         Utils.File.removeFileSync(this.path_utilsdata_searchutility);
@@ -298,19 +419,14 @@ class ProjectManager {
         return Utils.File.removeDirSync(this.path_ready_tracks);
     }
 
+    cleanTracksListData(){
+        return Utils.File.removeDirSync(this.path_tracks_list);
+    }
+
 
     setFromRawData(){
         let raw_data_json = Utils.File.readJsonFileSync(this.path_utilsdata_rawdata);
         if(!_.isObject(raw_data_json)) return null;
-
-        // Randomize array - order by title on the website
-        let checkShuffled = this._get_config_param('RawDataShuffled');
-        if(_.isNil(checkShuffled)){
-            d$('setFromRawData','Shuffling raw data...');
-            raw_data_json.collection = Utils.shuffleArray(raw_data_json.collection);
-            this._set_config_param('RawDataShuffled',true);
-            Utils.File.writeJsonFileSync(this.path_utilsdata_rawdata,raw_data_json);
-        }
 
         let TrackSource_class = TrackSource.getClass(raw_data_json.datasource);
         if(!TrackSource_class){
