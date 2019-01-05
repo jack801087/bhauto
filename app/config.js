@@ -38,10 +38,16 @@
         defaultValue: 10
     });
 
-    ConfigMgr.addField('WeeksSplit', {
+    ConfigMgr.addField('NextWeekDate', {
+        description:'',
+        datatype: 'string',
+        defaultValue: '2019-02-03'
+    });
+
+    ConfigMgr.addField('WeeksSetMinSize', {
         description:'',
         datatype: 'integer',
-        defaultValue: -1
+        defaultValue: 5
     });
 
     //ConfigMgr.addFlag('new_scan_needed_sampledir','New scan needed after changing the samples directory');

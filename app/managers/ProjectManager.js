@@ -599,6 +599,79 @@ class ProjectManager {
         return jobj;
     }
 
+
+
+    selectReadyTracks(tlData, selectStr){
+        let newTlData = {
+            selection:'random',
+            _data: [],
+            list:[]
+        };
+
+        let _sArray = _.splitValues(selectStr,',');
+
+        if(_.isString(selectStr) && selectStr.length>2){
+            newTlData.selection='by IDs';
+            if(_sArray.length<=0){
+                clUI.print('Wrong choice for Ready Tracks');
+                return null;
+            }
+            let _errorFlag = false;
+            _sArray.forEach((v,i,a)=>{
+                let vx=Utils.strToInteger(v);
+                if(vx===null){
+                    clUI.print('Invalid id for Ready Tracks',v,vx);
+                    _errorFlag=true;
+                }
+                else if((tlData._data.length+1) < vx){
+                    clUI.print('Id out of range for Ready Tracks',v,vx);
+                    _errorFlag=true;
+                }
+                a[i] = vx-1;
+                newTlData._data.push(tlData._data[a[i]]);
+            });
+            if(_errorFlag===true) return null;
+
+        }else{
+            newTlData._data = _.union(tlData._data,[]);
+            newTlData._data = Utils.shuffleArray(newTlData._data);
+            newTlData._data = newTlData._data.slice(0,ConfigMgr.get('WeeksSetMinSize'));
+        }
+
+        newTlData._data.forEach((v)=>{
+            newTlData.list.push({
+                name:v.name
+            });
+        });
+        return newTlData;
+
+    }
+
+
+    getReadyTracksList(){
+        if(!_.isString(this.path_ready_tracks)) return null;
+        if(!Utils.File.directoryExistsSync(this.path_ready_tracks)) return null;
+        let tlData = {
+            _data: [],
+            list:[]
+        };
+        DirectoryTree.walkDirectory(this.path_ready_tracks,{
+            maxLevel:2,
+            itemCb:function(p_info){
+                if(p_info.item.isDirectory && p_info.item.level===2){
+                    tlData._data.push(p_info.item);
+                    tlData.list.push({
+                        name:p_info.item.name
+                    });
+                }
+            }
+        });
+
+        if(tlData._data.length===0) return null;
+        return tlData;
+    }
+
+
 }
 
 module.exports = new ProjectManager();

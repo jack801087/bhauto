@@ -44,4 +44,4 @@ crea directory bh_w10_20181003 (appprefix + weekcounter + nextsunday)
 
 copia e rinomina directory: D1__<oldname>
 
-legge json info di tutte le directory e crea tracksweek info
+legge json info di tutte le directory e crea tracksweek info / split tracksweek if>5
