@@ -184,8 +184,26 @@ class ProjectManager {
 
 
     _mergeTracksWeekHashtags(track_info, max_count){
+        let htarray = [];
 
-        this._cache_tracks_week_hashtags = null;
+        if(!_.isArray(this._cache_tracks_week_hashtags)){
+            let _csth_temp = Utils.File.readJsonFileSync(Utils.File.pathJoin(this._assets_path,'data','tracks_week_hashtags.json'));
+            if(!_.isArray(_csth_temp)){
+                d$('_mergeTracksWeekHashtags','no data from single_track_hashtags.json');
+                return false;
+            }
+            this._cache_tracks_week_hashtags = _csth_temp;
+        }
+        htarray = _.union(this._cache_tracks_week_hashtags,[]);
+        track_info.hash_tags_array = htarray;
+
+        if(htarray.length>max_count){
+            htarray = htarray.slice(0,max_count-1);
+        }
+
+        track_info.hash_tags_list = '';
+        htarray.forEach((v)=>{ track_info.hash_tags_list+='#'+v+' '; });
+        return true;
     }
 
 
@@ -270,7 +288,7 @@ class ProjectManager {
         let WeeksCounter = WeeksCounter_start;
         let DayCounter = 0;
         let DataLastIndex = this._current_project_data.length-1;
-        let project_date = Utils.dateToYYYYMMDD();
+        let project_date = Utils.Date.dateToYYYYMMDD();
 
         let weeklyp, dailyp;
         let tracks_data = { hash_tags_list:'' };
@@ -333,7 +351,7 @@ class ProjectManager {
         Utils.File.ensureDirSync(this.path_tracks_list);
         Utils.File.ensureDirSync(this.path_ready_tracks);
 
-        let project_date = Utils.dateToYYYYMMDD();
+        let project_date = Utils.Date.dateToYYYYMMDD();
 
         this._addSocialMediaData();
 
@@ -379,7 +397,7 @@ class ProjectManager {
         }
         Utils.File.ensureDirSync(export_project_path);
         if(!_.isString(project_path)){
-            project_path = Utils.File.pathJoin(export_project_path,'bh_proj_'+Utils.dateToYYYYMMDDhhiiss());
+            project_path = Utils.File.pathJoin(export_project_path,'bh_proj_'+Utils.Date.dateToYYYYMMDDhhiiss());
         }
         this._init(project_path);
         ConfigMgr.set('CurrentProject',this.project_path);
@@ -601,6 +619,71 @@ class ProjectManager {
 
 
 
+    _get_weeklyset_paths(week_index, week_date){
+        /*
+        - ready/w8_201809110838/
+        - ready/w8_201809110838/w8_tracksweek/
+        - ready/w8_201809110838/w8_tracksweek/instagram_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_artists_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
+         */
+        let weeklyp = {};
+        week_index = 'W'+week_index;
+        let week_signature = week_index+'_'+week_date;
+
+        weeklyp.path_week = Utils.File.pathJoin(this.path_weekly_sets,ConfigMgr.get('AppSignature')+'_'+week_signature);
+        weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
+        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
+        return weeklyp;
+    }
+
+
+
+    generateWeekSetDirectory(tlData){
+
+        let WeeksCounter = ConfigMgr.get('WeeksCounter');
+        let NextWeekDate = ConfigMgr.get('NextWeekDate');
+
+        Utils.File.ensureDirSync(this.path_weekly_sets);
+        let weeklyp = this._get_weeklyset_paths(WeeksCounter,Utils.onlyLettersNumbers(NextWeekDate));
+        Utils.File.ensureDirSync(weeklyp.path_tracksweek);
+
+        let tracks_data = { hash_tags_list:'' };
+        tracks_data.date_interval = ConfigMgr.fieldFn('NextWeekDate','weekInterval');
+        tracks_data.hash_tags_array = [];
+        tracks_data.tracks_info = [];
+
+        let _error_flag = false;
+
+        tlData._data.forEach((tlInfo)=>{
+            clUI.error('Moving directory',tlInfo.parent_path,' ...');
+
+            let moveDData = Utils.File.moveDirectorySync(tlInfo.parent_path,weeklyp.path_week,{ overwrite:true, setDirName:true });
+            if(moveDData.err!==null){
+                _error_flag = true;
+                clUI.error('> an error occurred',"\n",moveDData.err);
+                return;
+            }
+
+            tracks_data.tracks_info.push(tlInfo.json);
+        });
+
+        this._mergeTracksWeekHashtags(tracks_data,30);
+        this._generateReadyTracksWeek(tracks_data,weeklyp);
+
+        if(_error_flag===true) return false;
+
+        ConfigMgr.set('WeeksCounter',WeeksCounter+1);
+        ConfigMgr.fieldFn('NextWeekDate','setNextweek',{ set:true });
+        ConfigMgr.save();
+
+        return true;
+    }
+
+
+
     selectReadyTracks(tlData, selectStr){
         let newTlData = {
             selection:'random',
@@ -640,7 +723,7 @@ class ProjectManager {
 
         newTlData._data.forEach((v)=>{
             newTlData.list.push({
-                name:v.name
+                name:v.json.artists_list+' - '+v.json.title
             });
         });
         return newTlData;
@@ -655,14 +738,26 @@ class ProjectManager {
             _data: [],
             list:[]
         };
+        let error_flag=false;
+        let _parent_path=null;
         DirectoryTree.walkDirectory(this.path_ready_tracks,{
-            maxLevel:2,
+            maxLevel:3,
             itemCb:function(p_info){
                 if(p_info.item.isDirectory && p_info.item.level===2){
-                    tlData._data.push(p_info.item);
-                    tlData.list.push({
-                        name:p_info.item.name
+                    _parent_path = p_info.item.path;
+                }
+                if(p_info.item.isFile && p_info.item.level===3 && p_info.item.checkExt('json')){
+
+                    let tinfojson = Utils.File.readJsonFileSync(p_info.item.path);
+
+                    tlData._data.push({
+                        json:tinfojson,
+                        parent_path:_parent_path
                     });
+                    tlData.list.push({
+                        name:tinfojson.artists_list+' - '+tinfojson.title
+                    });
+
                 }
             }
         });

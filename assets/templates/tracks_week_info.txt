@@ -1,3 +1,6 @@
+TRACKS OF THE WEEK
+{{tracks_data.date_interval}}
+
 {{#tracks_data.tracks_info}}
 {{artists_list}} - {{title}}
 Label: {{labels_list}}
@@ -11,4 +14,4 @@ Supported by BlackHart selections, the finest hard melodic techno.
  .
  .
  .
-{{tracks_data.hash_tags_list}} 
+{{tracks_data.hash_tags_list}}

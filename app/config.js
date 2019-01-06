@@ -26,6 +26,12 @@
         defaultValue: ''
     });
 
+    ConfigMgr.addField('AppSignature', {
+        description:'',
+        datatype: 'string',
+        defaultValue: 'BH'
+    });
+
     ConfigMgr.addField('TracksCounter', {
         description:'',
         datatype: 'integer',
@@ -41,7 +47,29 @@
     ConfigMgr.addField('NextWeekDate', {
         description:'',
         datatype: 'string',
-        defaultValue: '2019-02-03'
+        defaultValue: '2018-02-03',
+        customFn:{
+            setNextweek:function(v){
+                let dt = new Date(v);
+                dt.setDate(dt.getDate() + 7);
+                let dtobj = Utils.Date.dateToStrObj(dt);
+                return [dtobj.yyyy, dtobj.mm, dtobj.dd].join('-');
+            },
+            dateobj:function(v){
+                return new Date(v);
+            },
+            weekInterval:function(v){
+                let intStr = '';
+                let dt = new Date(v);
+                intStr+=dt.getDate();
+
+                dt.setDate(dt.getDate() + 6);
+                intStr+='-'+dt.getDate();
+
+                intStr+=' '+Utils.Date.monthToName(dt.getMonth())+' '+dt.getFullYear();
+                return intStr;
+            }
+        }
     });
 
     ConfigMgr.addField('WeeksSetMinSize', {

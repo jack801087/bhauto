@@ -135,6 +135,7 @@ class ConfigManager {
         return this._fields[field_name].get();
     }
 
+
     setFromCli(field_name, values, parse_string){
         if(!this._fields[field_name]) return;
         let set_outcome = true;
@@ -179,6 +180,22 @@ class ConfigManager {
             });
         }
         return set_outcome;
+    }
+
+
+    fieldFn(field_name, fn_name, options, addt){
+        if(!this._fields[field_name]) return false;
+        if(!this._fields[field_name].customFn(fn_name)) return false;
+        options = _.merge({
+            set:false,
+            error:false,
+            data:{}
+        },options);
+        let newFieldValue = this._fields[field_name].customFn(fn_name)(this.get(field_name),options.data);
+        if(options.set===true){
+            if(this.set(field_name,newFieldValue,addt)!==true) options.error=true;
+        }
+        return newFieldValue;
     }
 
 

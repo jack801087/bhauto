@@ -21,7 +21,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     }
 
     tlData.list.forEach((v,i)=>{
-        clUI.print('',(i+1)+') ',v.name);
+        clUI.print('',(i+1)+')',v.name);
     });
     cliReference.prompt({
         type: 'input',
@@ -35,8 +35,12 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
         clUI.print('Selection mode:',newTlData.selection);
         newTlData.list.forEach((v,i)=>{
-            clUI.print('',(i+1)+') ',v.name);
+            clUI.print('',(i+1)+')',v.name);
         });
+
+        if(newTlData.list.length < ConfigMgr.get('WeeksSetMinSize')){
+            clUI.print("\nWARNING:",'Tracks count','('+newTlData.list.length+')','lower than WeeksSetMinSize','('+ConfigMgr.get('WeeksSetMinSize')+')');
+        }
 
         cliReference.prompt({
             type: 'input',
@@ -46,6 +50,9 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
             if(result.answer !== 'y'){
                 return cliNextCb(cliData.success_code);
             }
+            clUI.print("\n");
+
+            ProjectMgr.generateWeekSetDirectory(newTlData);
             return cliNextCb(cliData.success_code);
             //p1(cliReference,cliNextCb,cliData);
         });

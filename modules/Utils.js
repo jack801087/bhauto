@@ -4,6 +4,7 @@ class Utils {
 
     constructor(){
         this.File = require('./extensions/Utils.File');
+        this.Date = require('./extensions/Utils.Date');
         this.String = require('./extensions/Utils.String');
         this.SystemInfo = require('./extensions/Utils.SystemInfo');
         this.Network = require('./extensions/Utils.Network');
@@ -137,41 +138,6 @@ class Utils {
             if(array[i][key]==value) return true;
         }
         return false;
-    }
-
-    dateToStrObj(date){
-        if(_.isNil(date)) date=Date.now();
-        let dtobj = {};
-        let d = new Date(date);
-
-        dtobj.mm = '' + (d.getMonth() + 1);
-        if (dtobj.mm.length < 2) dtobj.mm = '0' + dtobj.mm;
-
-        dtobj.dd = '' + d.getDate();
-        if (dtobj.dd.length < 2) dtobj.dd = '0' + dtobj.dd;
-
-        dtobj.yyyy = d.getFullYear();
-
-        dtobj.hh = '' + d.getHours();
-        if (dtobj.hh.length < 2) dtobj.hh = '0' + dtobj.hh;
-
-        dtobj.ii = '' + d.getMinutes();
-        if (dtobj.ii.length < 2) dtobj.ii = '0' + dtobj.ii;
-
-        dtobj.ss = '' + d.getSeconds();
-        if (dtobj.ss.length < 2) dtobj.ss = '0' + dtobj.ss;
-
-        return dtobj;
-    }
-
-    dateToYYYYMMDD(date) {
-        let dtobj = this.dateToStrObj(date);
-        return [dtobj.yyyy, dtobj.mm, dtobj.dd].join('');
-    }
-
-    dateToYYYYMMDDhhiiss(date) {
-        let dtobj = this.dateToStrObj(date);
-        return [dtobj.yyyy, dtobj.mm, dtobj.dd, dtobj.hh, dtobj.ii, dtobj.ss].join('');
     }
 
     shuffleArray(array) {

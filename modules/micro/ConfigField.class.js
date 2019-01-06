@@ -42,6 +42,9 @@ class ConfigField {
             defaultValue: null,
             allowedValues: [],
             flagsOnChange: null,
+            customFn:{
+                /* exampleFn:function(v,dt) v=current value, dt={} object for data - return undefined to avoid set*/
+            },
 
             printErrorFn:null,
             checkFn: null,
@@ -126,6 +129,13 @@ class ConfigField {
         return true;
     }
 
+    fnSet(){
+        return this._field_cfg.fnSet;
+    }
+
+    customFn(fnName){
+        return this._field_cfg.customFn[fnName];
+    }
 
     _parseValue(strvalue){
         if(_.isArray(strvalue)){
