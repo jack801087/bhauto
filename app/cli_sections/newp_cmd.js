@@ -8,6 +8,7 @@ CliMgr.addCommandHeader(cmd_name)
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
     let p1 = (cliReference,cliNextCb,cliData)=>{
+        ConfigMgr.save();
         ProjectMgr.newProjectStructure();
         return cliNextCb(cliData.success_code);
     };
@@ -16,8 +17,6 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
     let project_path = ProjectMgr.newProject();
     if(project_path === null) return cliNextCb(cliData.success_code);
-
-    ConfigMgr.save();
 
     if(Utils.File.directoryExistsSync(project_path)){
         clUI.print('The project directory already exists:',project_path);

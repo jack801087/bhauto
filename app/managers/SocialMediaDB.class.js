@@ -55,6 +55,7 @@ class SocialMediaDB {
                 key:this._lastkey.key,
                 hash:this._lastkey.hash,
                 InstagramTags:[],
+                FacebookTags:[],
                 Hashtags:[]
             };
             this._collection[elmt.hash] = elmt;
@@ -67,6 +68,12 @@ class SocialMediaDB {
         let elmt = this._get(key);
         if(_.isNil(elmt)) return [];
         return _.union(elmt.InstagramTags,[]);
+    }
+
+    getFacebookTags(key){
+        let elmt = this._get(key);
+        if(_.isNil(elmt)) return [];
+        return _.union(elmt.FacebookTags,[]);
     }
 
 
@@ -83,6 +90,16 @@ class SocialMediaDB {
             elmt.InstagramTags = [];
         }
         elmt.InstagramTags = _.union(elmt.InstagramTags,values);
+        return true;
+    }
+
+
+    setFacebookTags(key,values,reset){
+        let elmt = this._cget(key);
+        if(reset===true){
+            elmt.FacebookTags = [];
+        }
+        elmt.FacebookTags = _.union(elmt.FacebookTags,values);
         return true;
     }
 

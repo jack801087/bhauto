@@ -9,6 +9,7 @@ class SocialNode {
     addSocialMediaDataToDB(dbObject){
         this.collection.forEach((v,i)=>{
             dbObject.setInstagramTags(v.name,v.instagram_tags);
+            dbObject.setFacebookTags(v.name,v.facebook_tags);
             dbObject.setHashtags(v.name,v.hashtags);
         });
     }
@@ -18,6 +19,7 @@ class SocialNode {
         this.collection.forEach((v,i)=>{
             let it_array = dbObject.getInstagramTags(v.name);
             v.instagram_tags = _.union(v.instagram_tags,dbObject.getInstagramTags(v.name));
+            v.facebook_tags = _.union(v.facebook_tags,dbObject.getFacebookTags(v.name));
             v.hashtags = _.union(v.hashtags,dbObject.getHashtags(v.name));
         });
     }
@@ -31,6 +33,7 @@ class SocialNode {
             this.collection.push({
                 name:v,
                 instagram_tags:[],
+                facebook_tags:[],
                 hashtags:[]
             });
         });
@@ -48,6 +51,13 @@ class SocialNode {
                 instagram_tags.push(it);
             });
 
+            let facebook_tags = [];
+            v.facebook_tags.forEach((ft)=>{
+                ft = _.trim(ft);
+                if(ft.length<2) return;
+                facebook_tags.push(ft);
+            });
+
             let hashtags = [];
             v.hashtags.forEach((it)=>{
                 it = _.trim(it);
@@ -58,6 +68,7 @@ class SocialNode {
             this.collection.push({
                 name:v.name,
                 instagram_tags:instagram_tags,
+                facebook_tags:facebook_tags,
                 hashtags:hashtags
             });
         });
@@ -69,6 +80,7 @@ class SocialNode {
             return {
                 name:o.name,
                 instagram_tags:_.union(o.instagram_tags,[]),
+                facebook_tags:_.union(o.facebook_tags,[]),
                 hashtags:_.union(o.hashtags,[])
             };
         };
@@ -89,6 +101,7 @@ class SocialNode {
     toArrayEditable(){
         return this.toArray((b)=>{
             b.instagram_tags.push("");
+            b.facebook_tags.push("");
             //b.instagram_tags.push("");
             b.hashtags.push("");
             b.hashtags.push("");
@@ -103,6 +116,7 @@ class SocialNode {
             final.push({
                 name:cobj.name,
                 instagram_tags:cobj.instagram_tags,
+                facebook_tags:cobj.facebook_tags,
                 hashtags:cobj.hashtags,
                 q_name:Utils.String.html_query_string(cobj.name)
             });
@@ -143,6 +157,16 @@ class SocialNode {
         return names;
     }
 
+    facebookTagsToArray(){
+        let names = [];
+        this.collection.forEach((cobj)=>{
+            cobj.facebook_tags.forEach((v)=>{
+                names.push(v);
+            });
+        });
+        return names;
+    }
+
     hashtagsToArray(){
         let names = [];
         this.collection.forEach((cobj)=>{
@@ -159,6 +183,18 @@ class SocialNode {
         if(!_.isString(join_str)) join_str=', ';
         this.collection.forEach((cobj)=>{
             cobj.instagram_tags.forEach((v)=>{
+                names.push('@'+v);
+            });
+        });
+        return names.join(join_str);
+    }
+
+
+    facebookTagsToString(join_str){
+        let names = [];
+        if(!_.isString(join_str)) join_str=', ';
+        this.collection.forEach((cobj)=>{
+            cobj.facebook_tags.forEach((v)=>{
                 names.push('@'+v);
             });
         });

@@ -31,8 +31,6 @@ class TrackSource {
     get artists(){ return this._artists; }
     get remixers(){ return this._remixers; }
     get labels(){ return this._labels; }
-    get artists_instagram_tags(){ }
-    get labels_instagram_tags(){  }
     get release(){ return this._release; }
     get artworklink(){ return this._artworklink; }
     get buylinks(){ return this._buylinks; }
@@ -85,8 +83,6 @@ class TrackSource {
         fdjson.labels = this._labels.toPlainArray();
         fdjson.release = this.release;
         fdjson.q_title = Utils.String.html_query_string(this.q_title);
-        //fdjson.artists_instagram_tags = this.artists_instagram_tags.join(', ');
-        //fdjson.labels_instagram_tags = this.labels_instagram_tags.join(', ');
         fdjson.artworklink = this.artworklink;
         fdjson.buylinks = this.buylinks;
         return fdjson;
@@ -112,7 +108,7 @@ class TrackSource {
         fdjson.labels_list = fdjson.labels_array.join(', ');
 
         this._toPrintableJSON_instagramTags(fdjson);
-
+        this._toPrintableJSON_facebookTags(fdjson);
         this._toPrintableJSON_hashTags(fdjson);
 
         return fdjson;
@@ -139,6 +135,11 @@ class TrackSource {
             __addToArray(fdjson.hash_tags_labels_array,v);
         });
 
+        // labels facebook_profiles to hashtags
+        fdjson.fb_tags_labels_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_labels_array,v);
+        });
+
         // labels to hashtags
         fdjson.labels_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_labels_array,v);
@@ -152,6 +153,11 @@ class TrackSource {
             __addToArray(fdjson.hash_tags_artists_array,v);
         });
 
+        // artists facebook_profiles to hashtags
+        fdjson.fb_tags_artists_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_artists_array,v);
+        });
+
         // artists to hashtags
         fdjson.artists_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_artists_array,v);
@@ -161,6 +167,11 @@ class TrackSource {
 
         // remixers instagram_profiles to hashtags
         fdjson.ig_tags_remixers_array.forEach((v)=>{
+            __addToArray(fdjson.hash_tags_remixers_array,v);
+        });
+
+        // remixers facebook_profiles to hashtags
+        fdjson.fb_tags_remixers_array.forEach((v)=>{
             __addToArray(fdjson.hash_tags_remixers_array,v);
         });
 
@@ -185,6 +196,22 @@ class TrackSource {
         fdjson.ig_tags_array = _.union(fdjson.ig_tags_artists_array,fdjson.ig_tags_remixers_array,fdjson.ig_tags_labels_array);
         fdjson.ig_tags_array.forEach((v)=>{ fdjson.ig_tags_list+='@'+v+' '; });
     }
+
+
+    _toPrintableJSON_facebookTags(fdjson){
+        fdjson.fb_tags_artists_array = [];
+        fdjson.fb_tags_remixers_array = [];
+        fdjson.fb_tags_labels_array = [];
+
+        fdjson.fb_tags_artists_array = this._artists.facebookTagsToArray();
+        fdjson.fb_tags_remixers_array = this._remixers.facebookTagsToArray();
+        fdjson.fb_tags_labels_array = this._labels.facebookTagsToArray();
+
+        fdjson.fb_tags_list = "";
+        fdjson.fb_tags_array = _.union(fdjson.fb_tags_artists_array,fdjson.fb_tags_remixers_array,fdjson.fb_tags_labels_array);
+        fdjson.fb_tags_array.forEach((v)=>{ fdjson.fb_tags_list+='@'+v+' '; });
+    }
+
 
     __fairHashtagDistribution(fdjson){
         let maxLen = Math.max(fdjson.hash_tags_artists_array.length, fdjson.hash_tags_remixers_array.length, fdjson.hash_tags_labels_array.length);

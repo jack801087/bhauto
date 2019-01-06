@@ -13,20 +13,22 @@ class ProjectManager {
     }
 
 
-    _init(){
-        let project_path = ConfigMgr.cfg_path('CurrentProject');
+    _init(project_path){
+        if(!_.isString(project_path)){
+            project_path = ConfigMgr.cfg_path('CurrentProject');
+        }
         let ready_tracks_path = ConfigMgr.cfg_path('ReadyTracksDirectory');
         let weekly_sets_path = ConfigMgr.cfg_path('WeeklySetsDirectory');
         if(!_.isString(project_path) || project_path.length<2){
-            d$('ProjectManager.init > No CurrentProject path');
+            clUI.warning('ProjectManager.init > No CurrentProject path');
             return;
         }
         if(!_.isString(ready_tracks_path) || ready_tracks_path.length<2){
-            d$('ProjectManager.init > No ReadyTracksDirectory path');
+            clUI.warning('ProjectManager.init > No ReadyTracksDirectory path');
             return;
         }
         if(!_.isString(weekly_sets_path) || weekly_sets_path.length<2){
-            d$('ProjectManager.init > No WeeklySetsDirectory path');
+            clUI.warning('ProjectManager.init > No WeeklySetsDirectory path');
             return;
         }
 
@@ -81,6 +83,7 @@ class ProjectManager {
         weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
         weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_index+'_'+project_date+'.txt');
         weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_index+'_'+project_date+'.txt');
         weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_index+'_'+project_date+'.txt');
         return weeklyp;
@@ -103,6 +106,7 @@ class ProjectManager {
         dailyp.path_day_jsoninfo = Utils.File.pathJoin(dailyp.path_day,'track_info_'+suffix+'.json');
         dailyp.path_day_artwork = Utils.File.pathJoin(dailyp.path_day,'artwork_'+suffix); /*ext added after*/
         dailyp.path_day_instagram_txt = Utils.File.pathJoin(dailyp.path_day,'instagram_txt_'+suffix+'.txt');
+        dailyp.path_day_facebook_txt = Utils.File.pathJoin(dailyp.path_day,'facebook_txt_'+suffix+'.txt');
         return dailyp;
     }
 
@@ -123,6 +127,7 @@ class ProjectManager {
         tracklp.path_day_jsoninfo = Utils.File.pathJoin(tracklp.path_day,'track_info_'+suffix+'.json');
         tracklp.path_day_artwork = Utils.File.pathJoin(tracklp.path_day,'artwork_'+suffix); /*ext added after*/
         tracklp.path_day_instagram_txt = Utils.File.pathJoin(tracklp.path_day,'instagram_txt_'+suffix+'.txt');
+        tracklp.path_day_facebook_txt = Utils.File.pathJoin(tracklp.path_day,'facebook_txt_'+suffix+'.txt');
         return tracklp;
     }
 
@@ -210,6 +215,7 @@ class ProjectManager {
     _generateReadyTrack(track_info,dailyp){
         // download dailyp.path_day_artwork
         // template dailyp.path_day_instagram_txt
+        // template dailyp.path_day_facebook_txt
 
         Utils.Network.downloadImage(track_info.artworklink,dailyp.path_day_artwork);
 
@@ -218,8 +224,17 @@ class ProjectManager {
         this._mergeSingleTrackHashtags(track_info, 30 /*max on instagram and facebook */);
 
         this._renderTemplate(
-            Utils.File.pathJoin(this._assets_path,'templates','single_track_info.txt'),
+            Utils.File.pathJoin(this._assets_path,'templates','single_track_info_instagram.txt'),
             dailyp.path_day_instagram_txt,
+            track_info,
+            {
+                escapeFn: false /*no escape*/
+            }
+        );
+
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','single_track_info_facebook.txt'),
+            dailyp.path_day_facebook_txt,
             track_info,
             {
                 escapeFn: false /*no escape*/
@@ -244,8 +259,17 @@ class ProjectManager {
         // }
 
         this._renderTemplate(
-            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info.txt'),
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info_instagram.txt'),
             weeklyp.path_tracksweek_instagram_txt,
+            { tracks_data: tracks_data },
+            {
+                escapeFn: false /*no escape*/
+            }
+        );
+
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info_facebook.txt'),
+            weeklyp.path_tracksweek_facebook_txt,
             { tracks_data: tracks_data },
             {
                 escapeFn: false /*no escape*/
@@ -634,6 +658,7 @@ class ProjectManager {
         weeklyp.path_week = Utils.File.pathJoin(this.path_weekly_sets,ConfigMgr.get('AppSignature')+'_'+week_signature);
         weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
         return weeklyp;

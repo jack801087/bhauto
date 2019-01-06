@@ -62,8 +62,9 @@
             <strong>Artist</strong>
             <span>{{name}}</span>
             [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
-            <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Instagram</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Instagram2</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
             ]
         </p>
 
@@ -74,13 +75,15 @@
             {{/instagram_tags.length}}
         </p>
 
-        {{#instagram_tags.length}}
         <ul>
             {{#instagram_tags}}
             <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
             {{/instagram_tags}}
+
+            {{#facebook_tags}}
+            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+            {{/facebook_tags}}
         </ul>
-        {{/instagram_tags.length}}
 
     </div>
     {{/artists}}
@@ -94,6 +97,7 @@
             [
             <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
             <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
             ]
         </p>
 
@@ -104,13 +108,15 @@
             {{/instagram_tags.length}}
         </p>
 
-        {{#instagram_tags.length}}
         <ul>
             {{#instagram_tags}}
             <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
             {{/instagram_tags}}
+
+            {{#facebook_tags}}
+            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+            {{/facebook_tags}}
         </ul>
-        {{/instagram_tags.length}}
 
     </div>
     {{/remixers}}
@@ -123,6 +129,7 @@
             <span>{{name}}</span>
             [
             <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
             ]
         </p>
         <p>
@@ -132,13 +139,15 @@
             {{/instagram_tags.length}}
         </p>
 
-        {{#instagram_tags.length}}
         <ul>
             {{#instagram_tags}}
             <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
             {{/instagram_tags}}
+
+            {{#facebook_tags}}
+            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+            {{/facebook_tags}}
         </ul>
-        {{/instagram_tags.length}}
 
     </div>
     {{/labels}}
