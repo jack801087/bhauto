@@ -1,9 +1,10 @@
 require('./config.js');
 
+Utils.extend('Network',require('./utils/utils_network.js'));
+
 global.appLibs = {};
 global.appLibs.SHA1 = require('sha1');
 global.appLibs.Mustache = require('mustache');
-
 
 /* Project Modules */
 global.TrackSource = require('./datatypes/TrackSource.class.js');
@@ -13,6 +14,7 @@ const SocialMediaDB_class = require('./managers/SocialMediaDB.class.js');
 global.SMDB_Artists = new SocialMediaDB_class(ConfigMgr.path('artists_db'));
 global.SMDB_Labels = new SocialMediaDB_class(ConfigMgr.path('labels_db'));
 global.ProjectMgr = require('./managers/ProjectManager.js');
+
 
 
 /* CLI Sections */
