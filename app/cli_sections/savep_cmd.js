@@ -38,7 +38,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
         let p2 = (cliReference,cliNextCb,cliData)=>{
             if(!ProjectMgr.generateTracksListDirectory()){
-                d$('ProjectMgr.generateReadyDirectory returned an error');
+                d$('ProjectMgr.generateTracksListDirectory returned an error');
                 return cliNextCb(cliData.error_code);
             }
             return cliNextCb(cliData.success_code);

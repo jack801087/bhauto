@@ -70,49 +70,6 @@ class ProjectManager {
     }
 
 
-    _get_weekly_paths(week_index, project_date){
-        /*
-        - ready/w8_201809110838/
-        - ready/w8_201809110838/w8_tracksweek/
-        - ready/w8_201809110838/w8_tracksweek/instagram_txt_w8_20180911
-        - ready/w8_201809110838/w8_tracksweek/ps_artists_txt_w8_20180911
-        - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
-         */
-        let weeklyp = {};
-        week_index = 'W'+week_index;
-        weeklyp.path_week = Utils.File.pathJoin(this.path_ready_tracks,week_index+'_'+project_date);
-        weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
-        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_index+'_'+project_date+'.txt');
-        weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_index+'_'+project_date+'.txt');
-        return weeklyp;
-    }
-
-
-    _get_daily_paths(project_date, path_week, day_index, artist, title){
-        /*
-        (path_week) ready/w8_201809110838/
-
-        - ready/w8_201809110838/T1_artist_title_20180911
-        - ready/w8_201809110838/T1_artist_title_20180911/artwork_T1_artist_title_20180911
-        - ready/w8_201809110838/T1_artist_title_20180911/instagram_txt_T1_artist_title_20180911
-         */
-        let dailyp = {};
-        artist = Utils.onlyLettersNumbers(artist).substring(0,18);
-        title = Utils.onlyLettersNumbers(title).substring(0,18);
-        let suffix = 'T'+day_index+'_'+artist+'_'+title+'_'+project_date;
-        dailyp.path_day = Utils.File.pathJoin(path_week,suffix);
-        dailyp.path_day_jsoninfo = Utils.File.pathJoin(dailyp.path_day,'track_info_'+suffix+'.json');
-        dailyp.path_day_artwork = Utils.File.pathJoin(dailyp.path_day,'artwork_'+suffix); /*ext added after*/
-        dailyp.path_day_instagram_txt = Utils.File.pathJoin(dailyp.path_day,'instagram_txt_'+suffix+'.txt');
-        dailyp.path_day_facebook_txt = Utils.File.pathJoin(dailyp.path_day,'facebook_txt_'+suffix+'.txt');
-        dailyp.path_day_youtube_txt = Utils.File.pathJoin(dailyp.path_day,'youtube_txt_'+suffix+'.txt');
-        return dailyp;
-    }
-
-
     _get_single_tracklist_paths(project_date, tracklp_path, tcounter, prefix, artist, title){
         /*
         (path_week) ready/w8_201809110838/
@@ -130,6 +87,9 @@ class ProjectManager {
         tracklp.path_day_artwork = Utils.File.pathJoin(tracklp.path_day,'artwork_'+suffix); /*ext added after*/
         tracklp.path_day_instagram_txt = Utils.File.pathJoin(tracklp.path_day,'instagram_txt_'+suffix+'.txt');
         tracklp.path_day_facebook_txt = Utils.File.pathJoin(tracklp.path_day,'facebook_txt_'+suffix+'.txt');
+        tracklp.path_day_facebook_txt = Utils.File.pathJoin(tracklp.path_day,'facebook_txt_'+suffix+'.txt');
+        tracklp.path_day_youtube_txt = Utils.File.pathJoin(tracklp.path_day,'youtube_txt_'+suffix+'.txt');
+        tracklp.path_day_wordpress_txt = Utils.File.pathJoin(dailyp.path_day,'wordpress_txt_'+suffix+'.txt');
         return tracklp;
     }
 
@@ -256,6 +216,16 @@ class ProjectManager {
             }
         );
 
+        // TODO: de-comment
+        // this._renderTemplate(
+        //     Utils.File.pathJoin(this._assets_path,'templates','single_track_info_wordpress.html'),
+        //     dailyp.path_day_wordpress_txt,
+        //     track_info,
+        //     {
+        //         escapeFn: null /* escape with default function*/
+        //     }
+        // );
+
         return true;
     }
 
@@ -318,71 +288,15 @@ class ProjectManager {
             }
         );
 
-        return true;
-    }
-
-
-    generateReadyDirectory(){
-
-        /* Read weeks counter from file */
-        let WeeksCounter_fromFile = this._get_config_param('WeeksCounter');
-
-
-        //this.path_ready_tracks = Utils.File.checkAndSetDuplicatedDirectoryNameSync(this.path_ready_tracks);
-        Utils.File.ensureDirSync(this.path_ready_tracks);
-
-        let WeeksSplit = ConfigMgr.get('WeeksSplit');
-        let WeeksCounter_start = (_.isNil(WeeksCounter_fromFile)?ConfigMgr.get('WeeksCounter'):WeeksCounter_fromFile);
-        let WeeksCounter = WeeksCounter_start;
-        let DayCounter = 0;
-        let DataLastIndex = this._current_project_data.length-1;
-        let project_date = Utils.Date.dateToYYYYMMDD();
-
-        let weeklyp, dailyp;
-        let tracks_data = { hash_tags_list:'' };
-
-        this._addSocialMediaData();
-
-        this._current_project_data.forEach((v,i)=>{
-
-            let _tmod = (i)%WeeksSplit===0;
-            let _nxmod = (i+1)%WeeksSplit===0;
-
-            if(_tmod || (!_nxmod && i===DataLastIndex)){
-                tracks_data.tracks_info = [];
-
-                weeklyp = this._get_weekly_paths(WeeksCounter, project_date);
-                Utils.File.ensureDirSync(weeklyp.path_week);
-                Utils.File.ensureDirSync(weeklyp.path_tracksweek);
-
-                WeeksCounter++;
-            }
-
-            dailyp = this._get_daily_paths(project_date, weeklyp.path_week, (i+1), v.artists.toString(), v.title);
-            Utils.File.ensureDirSync(dailyp.path_day);
-
-            let this_track = v.toPrintableJSON();
-            this_track.id=i+1;
-            tracks_data.tracks_info.push(this_track);
-            tracks_data.hash_tags_list += this_track.hash_tags_list+' ';
-
-            // Daily
-            this._generateReadyTrack(this_track,dailyp);
-
-            // Weekly
-            if(_nxmod || i===DataLastIndex){
-                this._generateReadyTracksWeek(tracks_data,weeklyp);
-                tracks_data.hash_tags_list = '';
-            }
-        });
-
-        if(WeeksCounter_fromFile===null){
-            this._set_config_param('WeeksCounter',WeeksCounter_start);
-            ConfigMgr.set('WeeksCounter',WeeksCounter);
-            ConfigMgr.save();
-        }
-
-
+        // TODO: de-comment
+        // this._renderTemplate(
+        //     Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info_wordpress.html'),
+        //     weeklyp.path_tracksweek_wordpress_txt,
+        //     { tracks_data: tracks_data },
+        //     {
+        //         escapeFn: false /*no escape*/
+        //     }
+        // );
 
         return true;
     }
@@ -424,17 +338,6 @@ class ProjectManager {
 
         return true;
     }
-
-    hasData(){
-        return (_.isArray(this._current_project_data) && this._current_project_data.length>0);
-    }
-
-
-    checkWeeks(){
-        if(ConfigMgr.get('WeeksSplit')<1) return true;
-        return ((this._current_project_data.length % ConfigMgr.get('WeeksSplit'))===0);
-    }
-
 
 
     newProject(project_path){
@@ -498,10 +401,6 @@ class ProjectManager {
         Utils.File.removeFileSync(this.path_utilsdata_searchutility);
     }
 
-
-    cleanReadyData(){
-        return Utils.File.removeDirSync(this.path_ready_tracks);
-    }
 
     cleanTracksListData(){
         return Utils.File.removeDirSync(this.path_tracks_list);
@@ -642,15 +541,6 @@ class ProjectManager {
 
 
 
-    prepareReadyProject(){
-        if(!_.isObject(this._current_project_data)){
-            //cliWarning
-            return false;
-        }
-    }
-
-
-
     toJSON(){
         let jobj = {
             json:[],
@@ -664,7 +554,6 @@ class ProjectManager {
         });
         return jobj;
     }
-
 
 
     _get_weeklyset_paths(week_index, week_date){
@@ -684,11 +573,11 @@ class ProjectManager {
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_wordpress_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'wordpress_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
         return weeklyp;
     }
-
 
 
     generateWeekSetDirectory(tlData){
@@ -716,6 +605,8 @@ class ProjectManager {
                 clUI.error('> an error occurred',"\n",moveDData.err);
                 return;
             }
+
+            /* TODO: wordpress - read file single track wordpress */
 
             tracks_data.tracks_info.push(tlInfo.json);
         });
