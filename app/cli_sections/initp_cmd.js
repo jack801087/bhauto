@@ -36,8 +36,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 
     let p2 = (cliReference,cliNextCb,cliData)=>{
-        if(!ProjectMgr.generateDataCollection()){
-            d$('ProjectMgr.generateDataCollection returned an error');
+        if(!ProjectMgr.generateEditableDataCollection()){
+            d$('ProjectMgr.generateEditableDataCollection returned an error');
             return cliNextCb(cliData.error_code);
         }
         return cliNextCb(cliData.success_code);

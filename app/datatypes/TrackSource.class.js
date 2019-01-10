@@ -10,10 +10,8 @@ class TrackSource {
         this._release = "";
         this._artworklink = "";
         this._buylinks = [];
-        this._beatportlink = "";
-        this._q_artists = "";
-        this._q_title = "";
-        this._q_labels = "";
+        this._audiolinks = [];
+        this._videolinks = [];
     }
 
 
@@ -34,6 +32,8 @@ class TrackSource {
     get release(){ return this._release; }
     get artworklink(){ return this._artworklink; }
     get buylinks(){ return this._buylinks; }
+    get audiolinks(){ return this._audiolinks; }
+    get videolinks(){ return this._videolinks; }
 
     set title(v){ this._title=v; this.q_title=v; return true; }
     set artists(v){
@@ -67,6 +67,16 @@ class TrackSource {
         else this._buylinks.push(v);
         return true;
     }
+    set audiolinks(v){
+        if(v===null)  this._audiolinks=[];
+        else this._audiolinks.push(v);
+        return true;
+    }
+    set videolinks(v){
+        if(v===null)  this._videolinks=[];
+        else this._videolinks.push(v);
+        return true;
+    }
 
 
     fromRawData(spec_raw_json){
@@ -85,20 +95,36 @@ class TrackSource {
         fdjson.q_title = Utils.String.html_query_string(this.q_title);
         fdjson.artworklink = this.artworklink;
         fdjson.buylinks = this.buylinks;
+        fdjson.audiolinks = this.audiolinks;
+        fdjson.videolinks = this.videolinks;
         return fdjson;
     }
 
 
     toPrintableJSON(){
+        let linksArrow = ' - '; /* '>' not for youtube  */
         let fdjson = {};
         fdjson.datasource = this._datasource;
         fdjson.title = this.title;
         fdjson.release = this.release;
         fdjson.artworklink = this.artworklink;
+
         fdjson.buylinks = "";
+        let _tracklinksPrintFn = function(v){ return v.label+linksArrow+v.url+Utils.SystemInfo.EOL; };
         this.buylinks.forEach((v)=>{
-            fdjson.buylinks += v.label+' > '+v.url+"\r\n";
+            fdjson.buylinks += _tracklinksPrintFn(v);
         });
+        if(fdjson.buylinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+        fdjson.audiolinks = "";
+        this.audiolinks.forEach((v)=>{
+            fdjson.audiolinks += _tracklinksPrintFn(v);
+        });
+        if(fdjson.audiolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+        fdjson.videolinks = "";
+        this.videolinks.forEach((v)=>{
+            fdjson.videolinks += _tracklinksPrintFn(v);
+        });
+        if(fdjson.videolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
 
         fdjson.artists_array = this._artists.toSimpleArray();
         fdjson.artists_list = fdjson.artists_array.join(', ');
@@ -260,7 +286,10 @@ class TrackSource {
         fdjson.artworklink = this.artworklink;
         fdjson.buylinks = this.buylinks;
         fdjson.buylinks.push({label:"", url:""});
-        fdjson.buylinks.push({label:"", url:""});
+        fdjson.audiolinks = this.audiolinks;
+        fdjson.audiolinks.push({label:"", url:""});
+        fdjson.videolinks = this.videolinks;
+        fdjson.videolinks.push({label:"", url:""});
         fdjson.artists = this._artists.toArrayEditable();
         fdjson.remixers = this._remixers.toArrayEditable();
         fdjson.labels = this._labels.toArrayEditable();
@@ -277,6 +306,16 @@ class TrackSource {
         fdjson.buylinks.forEach((v)=>{
             if(v.label.length<1) return;
             this.buylinks = v;
+        });
+        this.audiolinks = null;
+        fdjson.audiolinks.forEach((v)=>{
+            if(v.label.length<1) return;
+            this.audiolinks = v;
+        });
+        this.videolinks = null;
+        fdjson.videolinks.forEach((v)=>{
+            if(v.label.length<1) return;
+            this.videolinks = v;
         });
         this._artists.fromArrayEditable(fdjson.artists);
         this._remixers.fromArrayEditable(fdjson.remixers);

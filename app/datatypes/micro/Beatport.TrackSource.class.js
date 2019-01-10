@@ -19,7 +19,9 @@ class Beatport_TrackSource extends TrackSource {
         this.labels = spec_raw_json.labels.split(',');
         this.release = spec_raw_json.release;
         this.artworklink = spec_raw_json.artworklink;
-        this.buylinks = {label:'Buy', url:spec_raw_json.beatportlink};
+        this.buylinks = {label:'Buy', url:spec_raw_json.beatportlink}; /*set method - internal push*/
+        //this.audiolinks /* nothing in the raw data */
+        //this.videolinks  /* nothing in the raw data */
     }
 
 

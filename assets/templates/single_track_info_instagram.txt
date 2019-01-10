@@ -5,6 +5,6 @@ Released: {{release}}
 
 Supported by BlackHart selections, the finest hard melodic techno
 
-{{buylinks}}
+{{buylinks}} {{audiolinks}} {{videolinks}}
 
 {{hash_tags_list}}

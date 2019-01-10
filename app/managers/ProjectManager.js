@@ -84,6 +84,7 @@ class ProjectManager {
         weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_index+'_'+project_date+'.txt');
         weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_index+'_'+project_date+'.txt');
+        weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_index+'_'+project_date+'.txt');
         weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_index+'_'+project_date+'.txt');
         weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_index+'_'+project_date+'.txt');
         return weeklyp;
@@ -107,6 +108,7 @@ class ProjectManager {
         dailyp.path_day_artwork = Utils.File.pathJoin(dailyp.path_day,'artwork_'+suffix); /*ext added after*/
         dailyp.path_day_instagram_txt = Utils.File.pathJoin(dailyp.path_day,'instagram_txt_'+suffix+'.txt');
         dailyp.path_day_facebook_txt = Utils.File.pathJoin(dailyp.path_day,'facebook_txt_'+suffix+'.txt');
+        dailyp.path_day_youtube_txt = Utils.File.pathJoin(dailyp.path_day,'youtube_txt_'+suffix+'.txt');
         return dailyp;
     }
 
@@ -183,6 +185,8 @@ class ProjectManager {
         }
 
         track_info.hash_tags_list = '';
+        track_info.hash_tags_list_commas = htarray.join(',');
+        track_info.hash_tags_list_spaces = htarray.join(' ');
         htarray.forEach((v)=>{ track_info.hash_tags_list+='#'+v+' '; });
         return true;
     }
@@ -207,6 +211,8 @@ class ProjectManager {
         }
 
         track_info.hash_tags_list = '';
+        track_info.hash_tags_list_commas = htarray.join(',');
+        track_info.hash_tags_list_spaces = htarray.join(' ');
         htarray.forEach((v)=>{ track_info.hash_tags_list+='#'+v+' '; });
         return true;
     }
@@ -235,6 +241,15 @@ class ProjectManager {
         this._renderTemplate(
             Utils.File.pathJoin(this._assets_path,'templates','single_track_info_facebook.txt'),
             dailyp.path_day_facebook_txt,
+            track_info,
+            {
+                escapeFn: false /*no escape*/
+            }
+        );
+
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','single_track_info_youtube.txt'),
+            dailyp.path_day_youtube_txt,
             track_info,
             {
                 escapeFn: false /*no escape*/
@@ -270,6 +285,15 @@ class ProjectManager {
         this._renderTemplate(
             Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info_facebook.txt'),
             weeklyp.path_tracksweek_facebook_txt,
+            { tracks_data: tracks_data },
+            {
+                escapeFn: false /*no escape*/
+            }
+        );
+
+        this._renderTemplate(
+            Utils.File.pathJoin(this._assets_path,'templates','tracks_week_info_youtube.txt'),
+            weeklyp.path_tracksweek_youtube_txt,
             { tracks_data: tracks_data },
             {
                 escapeFn: false /*no escape*/
@@ -588,7 +612,7 @@ class ProjectManager {
     }
 
 
-    generateDataCollection(){
+    generateEditableDataCollection(){
         if(!_.isObject(this._current_project_data)){
             //cliWarning
             return false;
@@ -659,6 +683,7 @@ class ProjectManager {
         weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
         weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
         weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
         return weeklyp;

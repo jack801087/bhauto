@@ -23,6 +23,7 @@ os.uptime()
 class SystemInfo {
 
     constructor(){
+        this.EOL = os.EOL;
     }
 
     isWindows(){

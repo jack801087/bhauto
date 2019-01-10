@@ -130,7 +130,7 @@ class ConfigManager {
     get(field_name, _origvalue){
         if(!this._fields[field_name]) return;
         if(this._fields[field_name].dataType.isPath===true && _origvalue!==true){
-            return this.cfg_paths(field_name);
+            return this.cfg_path(field_name);
         }
         return this._fields[field_name].get();
     }
