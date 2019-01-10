@@ -1,14 +1,42 @@
-TRACKS OF THE WEEK
-{{tracks_data.date_interval}}
+Tracks of the week {{tracks_data.date_interval}}
 
-{{#tracks_data.tracks_info}}
-{{artists_list}} - {{title}}
-Label: {{labels_list}}
-Released: {{release}}
-{{ig_tags_list}}
+<!-- wp:paragraph -->
+<p>This is our weekly recap with all the tracks which have been published between {{tracks_data.date_interval_extended}} 28th December and 3rd January 2019.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>We hope this can help you to discover some interesting hard techno producers and to enhance your dj sets with something fresh!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Note: this is not a chart; it's an alphabetically ordered list of excellent tracks.</p>
+<!-- /wp:paragraph -->
 
 
-{{tracks_data.tracks_wp_html}} wordpress
-
+{{tracks_data.tracks_wp_html}}
+<!-- wp:html -->
+{{.}}
+<!-- /wp:html -->
 {{/tracks_data.tracks_info}}
-Supported by BlackHart selections, the finest hard melodic techno.
+
+<!-- wp:html -->
+<section class="bhsignature">
+    <h2>Follow and support us!</h2>
+    <p>Follow <strong>BlackHart Selections </strong> on
+        <a href="{{url}}" target="_blank">{{profile_name}}</a>
+    </p>
+</section>
+<!-- /wp:html -->
+
+<!-- wp:quote {"className":"is-style-large"} -->
+<blockquote class="wp-block-quote is-style-large"><p>BlackHart selections, the finest hard melodic techno.</p></blockquote>
+<!-- /wp:quote -->
+
+
+<!-- wp:html -->
+<style type="text/css">
+    .tracksweek {}
+    .tracksweek .trackblock {}
+    .tracksweek .bhsignature {}
+</style>
+<!-- /wp:html -->

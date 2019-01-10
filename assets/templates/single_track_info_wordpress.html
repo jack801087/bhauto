@@ -1,10 +1,57 @@
-{{artists_list}} - {{title}}
-Label: {{labels_list}}
-Released: {{release}}
-{{fb_tags_list}}
+<section class="trackblock">
 
-Supported by BlackHart selections, the finest hard melodic techno
+    <h2>{{artists_list}} - {{title}}</h2>
 
-{{buylinks}} {{audiolinks}} {{videolinks}}
+    <p>Label: <strong>{{labels_list}}</strong></p>
 
-{{hash_tags_list}}
+    <p>Release date: <strong>{{release}}</strong></p>
+
+    {{#buylinks_array.length}}
+    <p><strong>Buy</strong>:
+        {{#buylinks_array}}
+        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        {{/buylinks_array}}
+    </p>
+    {{/buylinks_array}}
+
+    {{#audiolinks_array.length}}
+    <p><strong>Listen</strong>:
+        {{#audiolinks_array}}
+        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        {{/audiolinks_array}}
+    </p>
+    {{/audiolinks_array}}
+
+    {{#videolinks_array.length}}
+    <p><strong>Watch</strong>:
+        {{#videolinks_array}}
+        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        {{/videolinks_array}}
+    </p>
+    {{/videolinks_array}}
+
+    {{#artists_array}}
+    <p>Follow <strong>{{name}}</strong> on
+        {{#socials_array}}
+        <a href="{{url}}" target="_blank">{{profile_name}}</a>
+        {{/socials_array}}
+    </p>
+    {{/artists_array}}
+
+    {{#remixers_array}}
+    <p>Follow <strong>{{name}}</strong> on
+        {{#socials_array}}
+        <a href="{{url}}" target="_blank">{{profile_name}}</a>
+        {{/socials_array}}
+    </p>
+    {{/remixers_array}}
+
+    {{#labels_array}}
+    <p>Follow <strong>{{name}}</strong> on
+        {{#socials_array}}
+        <a href="{{url}}" target="_blank">{{profile_name}}</a>
+        {{/socials_array}}
+    </p>
+    {{/labels_array}}
+
+</section>
