@@ -6,6 +6,7 @@ class Utils {
         this.File = require('./extensions/Utils.File');
         this.Date = require('./extensions/Utils.Date');
         this.String = require('./extensions/Utils.String');
+        this.Links = require('./extensions/Utils.Links');
         this.SystemInfo = require('./extensions/Utils.SystemInfo');
     }
 

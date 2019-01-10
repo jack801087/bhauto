@@ -97,6 +97,13 @@ class Utils_Date {
         return MONTHS_LIST[mt].name;
     }
 
+    dateToExtendedString(date){
+        /* expected strings similar to yyyy-mm-dd */
+        if(_.isNil(date)) date=Date.now();
+        let d = new Date(date);
+        return d.getDate()+' '+this.monthToName(d.getMonth())+' '+d.getFullYear();
+    }
+
 }
 
 module.exports = new Utils_Date();

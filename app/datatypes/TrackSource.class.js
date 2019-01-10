@@ -107,30 +107,50 @@ class TrackSource {
         fdjson.datasource = this._datasource;
         fdjson.title = this.title;
         fdjson.release = this.release;
+        fdjson.release_extended = Utils.Date.dateToExtendedString(this.release);
         fdjson.artworklink = this.artworklink;
 
+        let linksArrayNewObj = (link_url)=>{
+            let _sitename = Utils.Links.getSitename(link_url);
+            return {
+                url:link_url,
+                sitename:_sitename
+            }
+        };
+
         fdjson.buylinks = "";
+        fdjson.buylinks_array = [];
         let _tracklinksPrintFn = function(v){ return v.label+linksArrow+v.url+Utils.SystemInfo.EOL; };
         this.buylinks.forEach((v)=>{
             fdjson.buylinks += _tracklinksPrintFn(v);
+            fdjson.buylinks_array.push(linksArrayNewObj(v.url));
         });
         if(fdjson.buylinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+
         fdjson.audiolinks = "";
+        fdjson.audiolinks_array = [];
         this.audiolinks.forEach((v)=>{
             fdjson.audiolinks += _tracklinksPrintFn(v);
+            fdjson.audiolinks_array.push(linksArrayNewObj(v.url));
         });
         if(fdjson.audiolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+
         fdjson.videolinks = "";
+        fdjson.videolinks_array = [];
         this.videolinks.forEach((v)=>{
             fdjson.videolinks += _tracklinksPrintFn(v);
+            fdjson.videolinks_array.push(linksArrayNewObj(v.url));
         });
         if(fdjson.videolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
 
         fdjson.artists_array = this._artists.toSimpleArray();
+        fdjson.artists_socials_array = this._artists.toSimpleArray();
         fdjson.artists_list = fdjson.artists_array.join(', ');
         fdjson.remixers_array = this._remixers.toSimpleArray();
+        fdjson.remixers_socials_array = this._remixers.toSimpleArray();
         fdjson.remixers_list = fdjson.remixers_array.join(', ');
         fdjson.labels_array = this._labels.toSimpleArray();
+        fdjson.labels_socials_array = this._labels.toSimpleArray();
         fdjson.labels_list = fdjson.labels_array.join(', ');
 
         this._toPrintableJSON_instagramTags(fdjson);
@@ -236,6 +256,28 @@ class TrackSource {
         fdjson.fb_tags_list = "";
         fdjson.fb_tags_array = _.union(fdjson.fb_tags_artists_array,fdjson.fb_tags_remixers_array,fdjson.fb_tags_labels_array);
         fdjson.fb_tags_array.forEach((v)=>{ fdjson.fb_tags_list+='@'+v+' '; });
+    }
+
+
+    _toPrintableJSON_socialLinks(fdjson){
+        fdjson.fb_tags_artists_array = [];
+        fdjson.fb_tags_remixers_array = [];
+        fdjson.fb_tags_labels_array = [];
+
+        fdjson.ig_tags_artists_array = [];
+        fdjson.ig_tags_remixers_array = [];
+        fdjson.ig_tags_labels_array = [];
+
+        fdjson.artists_socials_array = this._artists.toSimpleArray();
+        fdjson.remixers_socials_array = this._remixers.toSimpleArray();
+        fdjson.labels_socials_array = this._labels.toSimpleArray();
+
+        fdjson.fb_tags_artists_array.forEach((v)=>{
+            fdjson.artists_socials_array.push({
+                profile_name:v,
+                url:"https://"+v
+            });
+        });
     }
 
 
