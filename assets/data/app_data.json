@@ -1,4 +1,27 @@
 {
-    "name":"",
-    "link":""
+    "bh_info":{
+        "tag_line":"BlackHart selections, the finest hard melodic techno",
+        "socials":[
+            {
+                "site_name":"Facebook",
+                "profile_name":"blackhartselections",
+                "url":"https://www.facebook.com/blackhartselections"
+            },
+            {
+                "site_name":"Instagram",
+                "profile_name":"blackhartselections",
+                "url":"https://www.instagram.com/blackhartselections"
+            },
+            {
+                "site_name":"YouTube",
+                "profile_name":"",
+                "url":"https://www.youtube.com/channel/UCs1vxMbvHTZp7WvGmqJN_Sg"
+            },
+            {
+                "site_name":"Spotify Playlist",
+                "profile_name":"",
+                "url":"https://open.spotify.com/playlist/6j7tMe2PWW2GNacxVO3Yy8"
+            }
+        ]
+    }
 }

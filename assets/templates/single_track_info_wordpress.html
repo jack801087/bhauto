@@ -1,57 +1,53 @@
-<section class="trackblock">
+<h3>{{artists_list}} - {{title}}</h3>
 
-    <h2>{{artists_list}} - {{title}}</h2>
+<p>Label: <strong>{{labels_list}}</strong></p>
 
-    <p>Label: <strong>{{labels_list}}</strong></p>
+<p>Release date: <strong>{{release_extended}}</strong></p>
 
-    <p>Release date: <strong>{{release_extended}}</strong></p>
-
-    {{#buylinks_array.length}}
-    <p><strong>Buy</strong>:
-        {{#buylinks_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/buylinks_array}}
-    </p>
+{{#buylinks_array.length}}
+<p><strong>Buy</strong>:
+    {{#buylinks_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
     {{/buylinks_array}}
+</p>
+{{/buylinks_array.length}}
 
-    {{#audiolinks_array.length}}
-    <p><strong>Listen</strong>:
-        {{#audiolinks_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/audiolinks_array}}
-    </p>
+{{#audiolinks_array.length}}
+<p><strong>Listen</strong>:
+    {{#audiolinks_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
     {{/audiolinks_array}}
+</p>
+{{/audiolinks_array.length}}
 
-    {{#videolinks_array.length}}
-    <p><strong>Watch</strong>:
-        {{#videolinks_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/videolinks_array}}
-    </p>
+{{#videolinks_array.length}}
+<p><strong>Watch</strong>:
+    {{#videolinks_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
     {{/videolinks_array}}
+</p>
+{{/videolinks_array.length}}
 
-    {{#artists_socials_array.length}}
-    <p>Follow <strong>{{name}}</strong> on
-        {{#artists_socials_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/artists_socials_array}}
-    </p>
+{{#artists_socials_array.length}}
+<p>Follow <strong>{{name}}</strong> on
+    {{#artists_socials_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
     {{/artists_socials_array}}
+</p>
+{{/artists_socials_array.length}}
 
-    {{#remixers_socials_array.length}}
-    <p>Follow <strong>{{name}}</strong> on
-        {{#socials_socials_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/socials_socials_array}}
-    </p>
-    {{/remixers_socials_array}}
+{{#remixers_socials_array.length}}
+<p>Follow <strong>{{name}}</strong> on
+    {{#socials_socials_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
+    {{/socials_socials_array}}
+</p>
+{{/remixers_socials_array.length}}
 
-    {{#labels_socials_array.length}}
-    <p>Follow <strong>{{name}}</strong> on
-        {{#socials_socials_array}}
-        <a href="{{url}}" target="_blank">{{site_name}}</a>
-        {{/socials_socials_array}}
-    </p>
-    {{/labels_socials_array}}
-
-</section>
+{{#labels_socials_array.length}}
+<p>Follow <strong>{{name}}</strong> on
+    {{#socials_socials_array}}
+    <a href="{{{url}}}" target="_blank">{{site_name}}</a>
+    {{/socials_socials_array}}
+</p>
+{{/labels_socials_array.length}}

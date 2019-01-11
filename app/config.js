@@ -93,3 +93,9 @@
     ConfigMgr.init();
 
 })();
+
+/*
+TODO
+ config projects default this dir
+ set the other 2 directories automatically
+*/

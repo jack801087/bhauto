@@ -164,14 +164,14 @@ class TrackSource {
     __toPrintableJSON_EnhanceHashtags(fdjson){
 
         const __addToArray = (arr,v)=>{
-            v = _.toLower(_.deburr(v));
+            v = _.toLower(Utils.onlyLettersNumbers(v));
             //arr.push(v); return;
             if(arr.indexOf(v)<0 && v.length<29) arr.push(v);
         };
 
         const __addToArrayCheck = (arr,v,ck,fin)=>{
-            v = _.toLower(_.deburr(v));
-            fin = _.toLower(_.deburr(fin));
+            v = _.toLower(Utils.onlyLettersNumbers(v));
+            fin = _.toLower(Utils.onlyLettersNumbers(fin));
             if(ck.length>4) ck=ck.substring(0,ck.length-1);
             if(Utils.String.php_stripos(v,ck)!==false) return;
             if(arr.indexOf(fin)<0 && fin.length<29) arr.push(fin);

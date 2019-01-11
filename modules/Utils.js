@@ -90,7 +90,7 @@ class Utils {
     }
 
     onlyLettersNumbers(s){
-        return s.replace(/[^a-zA-Z0-9]/g,'');
+        return _.deburr(s).replace(/[^a-zA-Z0-9]/g,'');
     }
 
     onlyValidPathName(s){

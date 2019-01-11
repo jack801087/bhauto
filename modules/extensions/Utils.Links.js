@@ -3,7 +3,7 @@ class Utils_Links {
 
     constructor(){
         this._regexp = {
-            'url_domain':/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
+            url_domain:/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
             /*  'http://abc.ggg.com/kjhsf?fdklsjd'.match(rg)
                 [
                     'http://abc.ggg.com',
@@ -17,7 +17,7 @@ class Utils_Links {
 
 
     getSitename(url){
-        let url_pieces = url.match(this._regexp);
+        let url_pieces = url.match(this._regexp.url_domain);
         if(url_pieces.length<2) return '';
         let lastDot = url_pieces[1].lastIndexOf('.');
         if(lastDot>0){

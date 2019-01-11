@@ -13,23 +13,27 @@ Tracks of the week {{tracks_data.date_interval}}
 <!-- /wp:paragraph -->
 
 
-{{tracks_data.tracks_wp_html}}
+{{#tracks_data.tracks_wp_html}}
 <!-- wp:html -->
-{{.}}
+<section class="trackblock">
+    {{{.}}}
+</section>
 <!-- /wp:html -->
-{{/tracks_data.tracks_info}}
+{{/tracks_data.tracks_wp_html}}
 
 <!-- wp:html -->
 <section class="bhsignature">
     <h2>Follow and support us!</h2>
     <p>Follow <strong>BlackHart Selections </strong> on
-        <a href="{{url}}" target="_blank">{{profile_name}}</a>
+        {{#tracks_data.bh_info.socials}}
+        <a href="{{{url}}}" target="_blank">{{site_name}}</a>
+        {{/tracks_data.bh_info.socials}}
     </p>
 </section>
 <!-- /wp:html -->
 
 <!-- wp:quote {"className":"is-style-large"} -->
-<blockquote class="wp-block-quote is-style-large"><p>BlackHart selections, the finest hard melodic techno.</p></blockquote>
+<blockquote class="wp-block-quote is-style-large"><p>{{tracks_data.tag_line}}</p></blockquote>
 <!-- /wp:quote -->
 
 
