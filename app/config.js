@@ -88,6 +88,8 @@
     ConfigMgr.addSharedFile('artists_db','artists.json');
     ConfigMgr.addSharedFile('labels_db','labels.json');
 
+    ConfigMgr.loadReadOnlyData('app_data',Utils.File.pathJoin(Utils.File.getAbsPath(),'assets','data','app_data.json'));
+
     ConfigMgr.init();
 
 })();

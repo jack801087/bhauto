@@ -28,4 +28,4 @@ class Utils_Links {
     }
 }
 
-module.exports = new Utils_String();
+module.exports = new Utils_Links();

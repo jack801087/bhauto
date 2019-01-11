@@ -15,6 +15,7 @@ class ConfigManager {
         this._cfg_paths = {};
 
         this._mixed_cache = {};
+        this._readonly_data = {};
     }
 
     init(){
@@ -290,6 +291,15 @@ class ConfigManager {
             status: status,
             message: message
         }
+    }
+
+
+    loadReadOnlyData(label,path_string){
+        this._readonly_data[label] = Utils.File.readJsonFileSync(path_string);
+    }
+
+    readOnlyData(label){
+        return this._readonly_data[label];
     }
 
 
