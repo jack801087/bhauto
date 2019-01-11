@@ -79,8 +79,8 @@ class ProjectManager {
         - ready/BTP_51_artist_title_20180911/instagram_txt_BTP_51_artist_title_20180911
          */
         let tracklp = {};
-        artist = Utils.onlyLettersNumbers(artist).substring(0,18);
-        title = Utils.onlyLettersNumbers(title).substring(0,18);
+        artist = _.deburr(artist).substring(0,18);
+        title = _.deburr(title).substring(0,18);
         let suffix = prefix+'_'+tcounter+'_'+artist+'_'+title+'_'+project_date;
         tracklp.path_day = Utils.File.pathJoin(tracklp_path,suffix);
         tracklp.path_day_jsoninfo = Utils.File.pathJoin(tracklp.path_day,'track_info_'+suffix+'.json');

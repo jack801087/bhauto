@@ -114,7 +114,7 @@ class TrackSource {
             let _sitename = Utils.Links.getSitename(link_url);
             return {
                 url:link_url,
-                sitename:_sitename
+                site_name:_sitename
             }
         };
 
@@ -156,6 +156,7 @@ class TrackSource {
         this._toPrintableJSON_instagramTags(fdjson);
         this._toPrintableJSON_facebookTags(fdjson);
         this._toPrintableJSON_hashTags(fdjson);
+        this._toPrintableJSON_socialLinks(fdjson);
 
         return fdjson;
     }
@@ -163,14 +164,14 @@ class TrackSource {
     __toPrintableJSON_EnhanceHashtags(fdjson){
 
         const __addToArray = (arr,v)=>{
-            v = Utils.onlyLettersNumbers(_.toLower(v));
+            v = _.toLower(_.deburr(v));
             //arr.push(v); return;
             if(arr.indexOf(v)<0 && v.length<29) arr.push(v);
         };
 
         const __addToArrayCheck = (arr,v,ck,fin)=>{
-            v = Utils.onlyLettersNumbers(_.toLower(v));
-            fin = Utils.onlyLettersNumbers(_.toLower(fin));
+            v = _.toLower(_.deburr(v));
+            fin = _.toLower(_.deburr(fin));
             if(ck.length>4) ck=ck.substring(0,ck.length-1);
             if(Utils.String.php_stripos(v,ck)!==false) return;
             if(arr.indexOf(fin)<0 && fin.length<29) arr.push(fin);
@@ -260,24 +261,30 @@ class TrackSource {
 
 
     _toPrintableJSON_socialLinks(fdjson){
-        fdjson.fb_tags_artists_array = [];
-        fdjson.fb_tags_remixers_array = [];
-        fdjson.fb_tags_labels_array = [];
+        fdjson.artists_socials_array = [];
+        fdjson.remixers_socials_array = [];
+        fdjson.labels_socials_array = [];
 
-        fdjson.ig_tags_artists_array = [];
-        fdjson.ig_tags_remixers_array = [];
-        fdjson.ig_tags_labels_array = [];
-
-        fdjson.artists_socials_array = this._artists.toSimpleArray();
-        fdjson.remixers_socials_array = this._remixers.toSimpleArray();
-        fdjson.labels_socials_array = this._labels.toSimpleArray();
-
-        fdjson.fb_tags_artists_array.forEach((v)=>{
-            fdjson.artists_socials_array.push({
-                profile_name:v,
-                url:"https://"+v
+        let setSingle = (subject)=>{
+            fdjson['fb_tags_'+subject+'_array'].forEach((v)=>{
+                fdjson[subject+'_socials_array'].push({
+                    profile_name:v,
+                    url:"https://www.facebook.com/"+v,
+                    site_name: "Facebook"
+                });
             });
-        });
+            fdjson['ig_tags_'+subject+'_array'].forEach((v)=>{
+                fdjson[subject+'_socials_array'].push({
+                    profile_name:v,
+                    url:"https://www.instagram.com/"+v,
+                    site_name: "Instagram"
+                });
+            });
+        };
+
+        setSingle('artists');
+        setSingle('remixers');
+        setSingle('labels');
     }
 
 

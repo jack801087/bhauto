@@ -9,7 +9,7 @@
     {{#buylinks_array.length}}
     <p><strong>Buy</strong>:
         {{#buylinks_array}}
-        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
         {{/buylinks_array}}
     </p>
     {{/buylinks_array}}
@@ -17,7 +17,7 @@
     {{#audiolinks_array.length}}
     <p><strong>Listen</strong>:
         {{#audiolinks_array}}
-        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
         {{/audiolinks_array}}
     </p>
     {{/audiolinks_array}}
@@ -25,33 +25,33 @@
     {{#videolinks_array.length}}
     <p><strong>Watch</strong>:
         {{#videolinks_array}}
-        <a href="{{url}}" target="_blank">{{sitename}}</a>
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
         {{/videolinks_array}}
     </p>
     {{/videolinks_array}}
 
-    {{#artists_array}}
+    {{#artists_socials_array.length}}
     <p>Follow <strong>{{name}}</strong> on
-        {{#socials_array}}
-        <a href="{{url}}" target="_blank">{{profile_name}}</a>
-        {{/socials_array}}
+        {{#artists_socials_array}}
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
+        {{/artists_socials_array}}
     </p>
-    {{/artists_array}}
+    {{/artists_socials_array}}
 
-    {{#remixers_array}}
+    {{#remixers_socials_array.length}}
     <p>Follow <strong>{{name}}</strong> on
-        {{#socials_array}}
-        <a href="{{url}}" target="_blank">{{profile_name}}</a>
-        {{/socials_array}}
+        {{#socials_socials_array}}
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
+        {{/socials_socials_array}}
     </p>
-    {{/remixers_array}}
+    {{/remixers_socials_array}}
 
-    {{#labels_array}}
+    {{#labels_socials_array.length}}
     <p>Follow <strong>{{name}}</strong> on
-        {{#socials_array}}
-        <a href="{{url}}" target="_blank">{{profile_name}}</a>
-        {{/socials_array}}
+        {{#socials_socials_array}}
+        <a href="{{url}}" target="_blank">{{site_name}}</a>
+        {{/socials_socials_array}}
     </p>
-    {{/labels_array}}
+    {{/labels_socials_array}}
 
 </section>
