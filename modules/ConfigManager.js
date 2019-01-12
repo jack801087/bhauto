@@ -61,9 +61,6 @@ class ConfigManager {
                 Utils.EXIT('Cannot create or read the configuration file '+this._configfile_path);
             }
         }
-
-        this.printInternals();
-        this.print();
     }
 
 

@@ -17,10 +17,15 @@ class ProjectManager {
         if(!_.isString(project_path)){
             project_path = ConfigMgr.cfg_path('CurrentProject');
         }
+        let list_tracks_path = ConfigMgr.cfg_path('TracksListDirectory');
         let ready_tracks_path = ConfigMgr.cfg_path('ReadyTracksDirectory');
         let weekly_sets_path = ConfigMgr.cfg_path('WeeklySetsDirectory');
         if(!_.isString(project_path) || project_path.length<2){
             clUI.warning('ProjectManager.init > No CurrentProject path');
+            return;
+        }
+        if(!_.isString(list_tracks_path) || list_tracks_path.length<2){
+            clUI.warning('ProjectManager.init > No TracksListDirectory path');
             return;
         }
         if(!_.isString(ready_tracks_path) || ready_tracks_path.length<2){
@@ -35,6 +40,7 @@ class ProjectManager {
         this._current_project_data = null;
         this.project_name = Utils.File.pathBasename(project_path);
         this.project_path = project_path;
+        this.path_list_tracks = list_tracks_path;
         this.path_ready_tracks = ready_tracks_path;
         this.path_weekly_sets = weekly_sets_path;
 
@@ -47,7 +53,7 @@ class ProjectManager {
         this.project_date = this.project_name.split('_');
         this.project_date = this.project_date[this.project_date.length-1];
 
-        this.path_tracks_list = Utils.File.pathJoin(this.project_path,'tracks_list');
+        this.path_list_tracks = Utils.File.pathJoin(this.project_path,'tracks_list');
     }
 
 
@@ -298,7 +304,7 @@ class ProjectManager {
         let TracksCounter = TracksCounter_start;
 
         /* Destination directory */
-        Utils.File.ensureDirSync(this.path_tracks_list);
+        Utils.File.ensureDirSync(this.path_list_tracks);
         Utils.File.ensureDirSync(this.path_ready_tracks);
 
         let project_date = Utils.Date.dateToYYYYMMDD();
@@ -307,7 +313,7 @@ class ProjectManager {
 
         this._current_project_data.forEach((v,i)=>{
 
-            let tracklp = this._get_single_tracklist_paths(project_date, this.path_tracks_list, TracksCounter, v.SourceCode, v.artists.toString(), v.title);
+            let tracklp = this._get_single_tracklist_paths(project_date, this.path_list_tracks, TracksCounter, v.SourceCode, v.artists.toString(), v.title);
             Utils.File.ensureDirSync(tracklp.path_day);
 
             let this_track = v.toPrintableJSON();
@@ -379,8 +385,8 @@ class ProjectManager {
 
 
     checkTracksListExists(){
-        if(!this.path_tracks_list) return false;
-        return Utils.File.fileExistsSync(this.path_tracks_list);
+        if(!this.path_list_tracks) return false;
+        return Utils.File.fileExistsSync(this.path_list_tracks);
     }
 
     cleanFinalData(){
@@ -390,7 +396,7 @@ class ProjectManager {
 
 
     cleanTracksListData(){
-        return Utils.File.removeDirSync(this.path_tracks_list);
+        return Utils.File.removeDirSync(this.path_list_tracks);
     }
 
 

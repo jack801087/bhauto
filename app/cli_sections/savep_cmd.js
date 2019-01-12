@@ -39,6 +39,10 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         let p2 = (cliReference,cliNextCb,cliData)=>{
             if(!ProjectMgr.generateTracksListDirectory()){
                 d$('ProjectMgr.generateTracksListDirectory returned an error');
+                cliData.ui.print('Now manually copy the tracks from...');
+                cliData.ui.print(ProjectMgr.path_list_tracks);
+                cliData.ui.print('to...');
+                cliData.ui.print(ProjectMgr.path_ready_tracks);
                 return cliNextCb(cliData.error_code);
             }
             return cliNextCb(cliData.success_code);

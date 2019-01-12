@@ -8,6 +8,12 @@
         defaultValue: ''
     });
 
+    ConfigMgr.addField('TracksListDirectory', {
+        description:'',
+        datatype: 'absdirpath',
+        defaultValue: ''
+    });
+
     ConfigMgr.addField('ReadyTracksDirectory', {
         description:'',
         datatype: 'absdirpath',
@@ -92,10 +98,39 @@
 
     ConfigMgr.init();
 
-})();
 
-/*
-TODO
- config projects default this dir
- set the other 2 directories automatically
-*/
+    /* set default values */
+    (()=>{
+        let _editFlag = false;
+        let _cfg_ProjectsDirectory = ConfigMgr.cfg_path('ProjectsDirectory');
+        if(_cfg_ProjectsDirectory){
+            d$('ProjectsDirectory is not null','setting automatic values');
+            let _cfg_ProjectsDirectory_dir = Utils.File.pathDirname(_cfg_ProjectsDirectory);
+
+            if(!ConfigMgr.cfg_path('TracksListDirectory')){
+                _editFlag = true;
+                ConfigMgr.set('TracksListDirectory',Utils.File.pathJoin(_cfg_ProjectsDirectory_dir,'TracksList'));
+            }
+
+            if(!ConfigMgr.cfg_path('ReadyTracksDirectory')){
+                _editFlag = true;
+                ConfigMgr.set('ReadyTracksDirectory',Utils.File.pathJoin(_cfg_ProjectsDirectory_dir,'ReadyTracks'));
+            }
+
+            if(!ConfigMgr.cfg_path('WeeklySetsDirectory')){
+                _editFlag = true;
+                ConfigMgr.set('WeeklySetsDirectory',Utils.File.pathJoin(_cfg_ProjectsDirectory_dir,'WeeklySets'));
+            }
+        }
+        if(_editFlag===true){
+            ConfigMgr.save();
+        }
+    })();
+
+
+    /* Show final config */
+    ConfigMgr.printInternals();
+    ConfigMgr.print();
+
+
+})();
