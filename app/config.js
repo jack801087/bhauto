@@ -8,12 +8,6 @@
         defaultValue: ''
     });
 
-    ConfigMgr.addField('TracksListDirectory', {
-        description:'',
-        datatype: 'absdirpath',
-        defaultValue: ''
-    });
-
     ConfigMgr.addField('ReadyTracksDirectory', {
         description:'',
         datatype: 'absdirpath',
@@ -106,11 +100,6 @@
         if(_cfg_ProjectsDirectory){
             d$('ProjectsDirectory is not null','setting automatic values');
             let _cfg_ProjectsDirectory_dir = Utils.File.pathDirname(_cfg_ProjectsDirectory);
-
-            if(!ConfigMgr.cfg_path('TracksListDirectory')){
-                _editFlag = true;
-                ConfigMgr.set('TracksListDirectory',Utils.File.pathJoin(_cfg_ProjectsDirectory_dir,'TracksList'));
-            }
 
             if(!ConfigMgr.cfg_path('ReadyTracksDirectory')){
                 _editFlag = true;
