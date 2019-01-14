@@ -28,7 +28,7 @@ class Utils_Files {
 
     _setAbsPath(){
         let abspth = ENV_CONFIG.absolute_app_path;
-        if(fs.lstatSync(abspth).isFile()){
+        if(this._FS.lstatSync(abspth).isFile()){
             abspth = path.dirname(abspth);
             ENV_CONFIG.absolute_app_path = abspth;
         }
@@ -181,11 +181,12 @@ class Utils_Files {
             if(!encoding) encoding='utf8';
             if(!flag) flag='r';
             if(encoding==='iso88591'){
-                let fcont = fs.readFileSync(path_string,{
+                let fcont = this._FS.readFileSync(path_string,{
                     encoding:'binary',
                     flag:flag
                 }).toString();
                 return iconv.decode(fcont, 'iso88591');
+
             }else{
                 return this._FS.readFileSync(path_string,{
                     encoding:encoding,

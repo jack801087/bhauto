@@ -7,13 +7,6 @@ CliMgr.addCommandHeader(cmd_name)
 
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
-    let p1 = (cliReference,cliNextCb,cliData)=>{
-        ProjectMgr.newProjectStructure();
-        return cliNextCb(cliData.success_code);
-    };
-
-    /*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
-
     let tlData = ProjectMgr.getReadyTracksList();
     if(!tlData){
         cliData.ui.print('No ready tracks!');
@@ -29,7 +22,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         message: "\nIDs (e.g. 12,34,23) or nothing (random choice) > "
     }, function (result) {
 
-        newTlData = ProjectMgr.selectReadyTracks(tlData,result.answer);
+        let newTlData = ProjectMgr.selectReadyTracks(tlData,result.answer);
         if(!newTlData) return cliNextCb(cliData.error_code);
         clUI.print("\n");
 

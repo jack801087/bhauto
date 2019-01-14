@@ -95,6 +95,29 @@ class ProjectManager {
     }
 
 
+    _get_weeklyset_paths(week_index, week_date){
+        /*
+        - ready/w8_201809110838/
+        - ready/w8_201809110838/w8_tracksweek/
+        - ready/w8_201809110838/w8_tracksweek/instagram_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_artists_txt_w8_20180911
+        - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
+         */
+        let weeklyp = {};
+        week_index = 'W'+week_index;
+        let week_signature = week_index+'_'+week_date;
+
+        weeklyp.path_week = Utils.File.pathJoin(this.path_weekly_sets,ConfigMgr.get('AppSignature')+'_'+week_signature);
+        weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
+        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_wordpress_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'wordpress_txt_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
+        weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
+        return weeklyp;
+    }
+
 
     _renderTemplate(template_path, output_path, template_data, options){
         options = _.merge({
@@ -543,30 +566,6 @@ class ProjectManager {
     }
 
 
-    _get_weeklyset_paths(week_index, week_date){
-        /*
-        - ready/w8_201809110838/
-        - ready/w8_201809110838/w8_tracksweek/
-        - ready/w8_201809110838/w8_tracksweek/instagram_txt_w8_20180911
-        - ready/w8_201809110838/w8_tracksweek/ps_artists_txt_w8_20180911
-        - ready/w8_201809110838/w8_tracksweek/ps_titles_txt_w8_20180911
-         */
-        let weeklyp = {};
-        week_index = 'W'+week_index;
-        let week_signature = week_index+'_'+week_date;
-
-        weeklyp.path_week = Utils.File.pathJoin(this.path_weekly_sets,ConfigMgr.get('AppSignature')+'_'+week_signature);
-        weeklyp.path_tracksweek = Utils.File.pathJoin(weeklyp.path_week,week_index+'_tracksweek');
-        weeklyp.path_tracksweek_instagram_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'instagram_txt_'+week_signature+'.txt');
-        weeklyp.path_tracksweek_facebook_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'facebook_txt_'+week_signature+'.txt');
-        weeklyp.path_tracksweek_youtube_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'youtube_txt_'+week_signature+'.txt');
-        weeklyp.path_tracksweek_wordpress_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'wordpress_txt_'+week_signature+'.txt');
-        weeklyp.path_tracksweek_ps_artiststitles_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_artiststitles_'+week_signature+'.txt');
-        weeklyp.path_tracksweek_ps_labels_txt = Utils.File.pathJoin(weeklyp.path_tracksweek,'ps_labels_'+week_signature+'.txt');
-        return weeklyp;
-    }
-
-
     generateWeekSetDirectory(tlData){
 
         let WeeksCounter = ConfigMgr.get('WeeksCounter');
@@ -585,10 +584,10 @@ class ProjectManager {
         let _error_flag = false;
 
         tlData._data.forEach((tlInfo)=>{
-            clUI.error('Moving directory',tlInfo.parent_path,' ...');
+            clUI.print('Moving directory',tlInfo.parent_path,' ...');
 
             /* wordpress - read file single track wordpress */
-            tracks_data.tracks_wp_html.push(_.trim(Utils.File.readTextFileSync(weeklyp.path_tracksweek_wordpress_txt)));
+            tracks_data.tracks_wp_html.push(_.trim(Utils.File.readTextFileSync(tlInfo.content_paths['wordpress_txt'])));
 
             let moveDData = Utils.File.moveDirectorySync(tlInfo.parent_path,weeklyp.path_week,{ overwrite:true, setDirName:true });
             if(moveDData.err!==null){
@@ -669,6 +668,17 @@ class ProjectManager {
             list:[]
         };
 
+        let setLabelCp = (_pinfo_name)=>{
+            let _sduscIndex1 = _pinfo_name.indexOf('_');
+            let _labelCp = _pinfo_name;
+            if(_sduscIndex1>0){
+                let _sduscIndex2 = _labelCp.substr(_sduscIndex1+1).indexOf('_');
+                if(_sduscIndex2>0){
+                    _labelCp = _labelCp.substr(0,_sduscIndex1+_sduscIndex2+1);
+                }
+            }
+            return _labelCp;
+        };
 
         let _tinfo_data = null;
         let _tinfo_list = null;
@@ -678,17 +688,19 @@ class ProjectManager {
                 if(p_info.item.isDirectory && p_info.item.level===2){
                     _tinfo_data = {
                         parent_path: p_info.item.path,
-                        content_paths:[]
+                        content_paths:{}
                     };
                     _tinfo_list = {};
                     tlData._data.push(_tinfo_data);
                     tlData.list.push(_tinfo_list);
                 }
                 else if(p_info.item.isFile && p_info.item.level===3){
-                    _tinfo_data.content_paths.push(p_info.item.path);
+
+                    _tinfo_data.content_paths[setLabelCp(p_info.item.name)] = p_info.item.path;
 
                     if(p_info.item.checkExt('json')){
                         let tinfojson = Utils.File.readJsonFileSync(p_info.item.path);
+                        d$(tinfojson.artists_list,tinfojson.title);
                         _tinfo_data.json = tinfojson;
                         _tinfo_list.name = tinfojson.artists_list+' - '+tinfojson.title;
                     }

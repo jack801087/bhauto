@@ -94,7 +94,7 @@ class Utils {
     }
 
     onlyValidPathName(s){
-        return s.replace(/[^a-zA-Z0-9\_\-\.]/g,'');
+        return _.deburr(s).replace(/[^a-zA-Z0-9\_\-\.]/g,'');
     }
 
     printArrayOrderedList(array,prefix,processFn){
