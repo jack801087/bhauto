@@ -81,12 +81,20 @@
     //ConfigMgr.addFlag('new_scan_needed_sampledir','New scan needed after changing the samples directory');
     //ConfigMgr.addFlag('new_scan_needed_exts','New scan needed after changing the configuration on file extensions');
 
+    /*
+       - private path       ...  NOT READABLE - internally used in ConfigMgr only
+       - user/shared path   ...  ConfigMgr.path()
+       - configurable path  ...  ConfigMgr.cfg_path()
+    */
+
     ConfigMgr.setUserdataDirectory('userdata');
     ConfigMgr.setConfigFile('config.json');
 
     ConfigMgr.setSharedDirectory('bh_shared');
     ConfigMgr.addSharedFile('artists_db','artists.json');
     ConfigMgr.addSharedFile('labels_db','labels.json');
+    ConfigMgr.addUserFile('artists_db_backup','artists_backup.json');
+    ConfigMgr.addUserFile('labels_db_backup','labels_backup.json');
 
     ConfigMgr.loadReadOnlyData('app_data',Utils.File.pathJoin(Utils.File.getAbsPath(),'assets','data','app_data.json'));
 

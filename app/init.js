@@ -11,8 +11,8 @@ global.TrackSource = require('./datatypes/TrackSource.class.js');
 global.Beatport_TrackSource = require('./datatypes/micro/Beatport.TrackSource.class.js');
 global.SocialNode = require('./datatypes/SocialNode.class.js');
 const SocialMediaDB_class = require('./managers/SocialMediaDB.class.js');
-global.SMDB_Artists = new SocialMediaDB_class(ConfigMgr.path('artists_db'));
-global.SMDB_Labels = new SocialMediaDB_class(ConfigMgr.path('labels_db'));
+global.SMDB_Artists = new SocialMediaDB_class(ConfigMgr.path('artists_db'), ConfigMgr.path('artists_db_backup'));
+global.SMDB_Labels = new SocialMediaDB_class(ConfigMgr.path('labels_db'), ConfigMgr.path('labels_db_backup'));
 global.ProjectMgr = require('./managers/ProjectManager.js');
 
 

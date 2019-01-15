@@ -1,15 +1,16 @@
 
 class SocialMediaDB {
 
-    constructor(dbpath){
-        this._dbpath = dbpath;
-        this._dblabel = Utils.File.pathBasename(dbpath);
+    constructor(db_path,db_backup_path){
+        this._db_path = db_path;
+        this._dblabel = Utils.File.pathBasename(db_path);
         this._collection = {};
         this._lastkey = {};
 
         DataMgr.setHolder({
             label:this._dblabel,
-            filePath:this._dbpath,
+            filePath:this._db_path,
+            backupTo:db_backup_path,
             fileType:'json',
             dataType:'object',
             preLoad:true,
@@ -25,7 +26,7 @@ class SocialMediaDB {
         });
     }
 
-    get dbpath(){ return this._dbpath; }
+    get db_path(){ return this._db_path; }
 
     save(){
         DataMgr.save(this._dblabel);
