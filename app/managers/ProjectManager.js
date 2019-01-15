@@ -700,7 +700,6 @@ class ProjectManager {
 
                     if(p_info.item.checkExt('json')){
                         let tinfojson = Utils.File.readJsonFileSync(p_info.item.path);
-                        d$(tinfojson.artists_list,tinfojson.title);
                         _tinfo_data.json = tinfojson;
                         _tinfo_list.name = tinfojson.artists_list+' - '+tinfojson.title;
                     }

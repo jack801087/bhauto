@@ -15,14 +15,15 @@ Tracks of the week {{tracks_data.date_interval}}
 
 {{#tracks_data.tracks_wp_html}}
 <!-- wp:html -->
-<section class="trackblock">
+<section class="bh_trackblock">
     {{{.}}}
 </section>
 <!-- /wp:html -->
 {{/tracks_data.tracks_wp_html}}
 
+
 <!-- wp:html -->
-<section class="bhsignature">
+<section class="bh_signature">
     <h2>Follow and support us!</h2>
     <p>Follow <strong>BlackHart Selections </strong> on
         {{#tracks_data.bh_info.socials}}
@@ -32,15 +33,15 @@ Tracks of the week {{tracks_data.date_interval}}
 </section>
 <!-- /wp:html -->
 
+
 <!-- wp:quote {"className":"is-style-large"} -->
-<blockquote class="wp-block-quote is-style-large"><p>{{tracks_data.tag_line}}</p></blockquote>
+<blockquote class="wp-block-quote is-style-large"><p>{{tracks_data.bh_info.tag_line}}</p></blockquote>
 <!-- /wp:quote -->
 
 
 <!-- wp:html -->
 <style type="text/css">
-    .tracksweek {}
-    .tracksweek .trackblock {}
-    .tracksweek .bhsignature {}
+    .bh_trackblock {}
+    .bh_signature {}
 </style>
 <!-- /wp:html -->
