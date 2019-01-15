@@ -576,7 +576,9 @@ class ProjectManager {
         Utils.File.ensureDirSync(weeklyp.path_tracksweek);
 
         let tracks_data = { hash_tags_list:'' };
+        tracks_data.week_counter = WeeksCounter;
         tracks_data.date_interval = ConfigMgr.fieldFn('NextWeekDate','weekInterval');
+        tracks_data.date_interval_extended = ConfigMgr.fieldFn('NextWeekDate','weekInterval',{ data:{ extended:true } });
         tracks_data.hash_tags_array = [];
         tracks_data.tracks_info = [];
         tracks_data.tracks_wp_html = [];

@@ -58,16 +58,13 @@
             dateobj:function(v){
                 return new Date(v);
             },
-            weekInterval:function(v){
-                let intStr = '';
-                let dt = new Date(v);
-                intStr+=dt.getDate();
-
-                dt.setDate(dt.getDate() + 6);
-                intStr+='-'+dt.getDate();
-
-                intStr+=' '+Utils.Date.monthToName(dt.getMonth())+' '+dt.getFullYear();
-                return intStr;
+            weekInterval:function(v, params){
+                let dt1 = new Date(v);
+                let dt2 = new Date(v);
+                dt2.setDate(dt1.getDate() + 6);
+                let type=1;
+                if(params.extended===true) type=2;
+                return Utils.Date.weekIntervalToString(dt1,dt2,type);
             }
         }
     });
