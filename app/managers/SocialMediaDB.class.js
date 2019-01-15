@@ -10,6 +10,7 @@ class SocialMediaDB {
         DataMgr.setHolder({
             label:this._dblabel,
             filePath:this._db_path,
+            cloneFrom:db_backup_path,
             backupTo:db_backup_path,
             fileType:'json',
             dataType:'object',
