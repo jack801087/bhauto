@@ -5,7 +5,7 @@ TRACKS OF THE WEEK
 {{artists_list}} - {{title}}
 Label: {{labels_list}}
 Released: {{release}}
-{{ig_tags_list}}
+{{buylinks}} {{audiolinks}} {{videolinks}}
 
 {{/tracks_data.tracks_info}}
 Supported by BlackHart selections, the finest hard melodic techno.

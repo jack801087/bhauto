@@ -52,7 +52,8 @@ const MONTHS_LIST = [
 
 class Utils_Date {
 
-    constructor(){
+    constructor(parent){
+        this.utils = parent;
     }
 
     dateToStrObj(date){
@@ -134,4 +135,4 @@ class Utils_Date {
 
 }
 
-module.exports = new Utils_Date();
+module.exports = Utils_Date;

@@ -35,11 +35,10 @@ class TrackSource {
     get audiolinks(){ return this._audiolinks; }
     get videolinks(){ return this._videolinks; }
 
-    set title(v){ this._title=v; this.q_title=v; return true; }
+    set title(v){ this._title=v; return true; }
     set artists(v){
         if(_.isArray(v)){
             this._artists.fromArray(v);
-            this.q_artists=this._artists.toString();
             return true;
         }
         return false;
@@ -92,7 +91,11 @@ class TrackSource {
         fdjson.remixers = this._remixers.toPlainArray();
         fdjson.labels = this._labels.toPlainArray();
         fdjson.release = this.release;
-        fdjson.q_title = Utils.String.html_query_string(this.q_title);
+        fdjson.q_title_plus = Utils.String.html_query_string(this.title,'+');
+        fdjson.q_title_space = Utils.String.html_query_string(this.title,' ');
+        let artists_str = this._artists.toString(' ')+' '+this._remixers.toString(' ');
+        fdjson.q_artists_plus = Utils.String.html_query_string(artists_str,'+');
+        fdjson.q_artists_space = Utils.String.html_query_string(artists_str,' ');
         fdjson.artworklink = this.artworklink;
         fdjson.buylinks = this.buylinks;
         fdjson.audiolinks = this.audiolinks;

@@ -22,7 +22,8 @@ os.uptime()
 
 class SystemInfo {
 
-    constructor(){
+    constructor(parent){
+        this.utils = parent;
         this.EOL = os.EOL;
     }
 
@@ -35,4 +36,4 @@ class SystemInfo {
     }
 }
 
-module.exports = new SystemInfo();
+module.exports = SystemInfo;

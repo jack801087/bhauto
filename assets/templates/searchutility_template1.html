@@ -47,11 +47,11 @@
             <strong>Title</strong>
             <span>{{title}}</span>
             [
-            <a href="https://www.beatport.com/search/tracks?q={{q_artist}}+{{q_title}}" target="_blank">Beatport</a>
-            <a href="https://www.beatport.com/search/tracks?q={{q_title}}" target="_blank">Beatport2</a>
-            <a href="https://soundcloud.com/search/sounds?q={{q_artist}}+{{q_title}}" target="_blank">Soundcloud</a>
-            <a href="https://soundcloud.com/search/sounds?q={{q_title}}" target="_blank">Soundcloud2</a>
-            <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title}}+"{{q_artist}}"&oq={{q_title}}+"{{q_artist}}"' target="_blank">Artwork</a>
+            <a href="https://www.beatport.com/search/tracks?q={{q_artists_plus}}+{{q_title_plus}}" target="_blank">Beatport</a>
+            <a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}" target="_blank">Beatport2</a>
+            <a href="https://soundcloud.com/search/sounds?q={{q_artists_plus}}+{{q_title_plus}}" target="_blank">Soundcloud</a>
+            <a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}" target="_blank">Soundcloud2</a>
+            <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title_plus}}+"{{q_artists_plus}}"&oq={{q_title_plus}}+"{{q_artists_plus}}"' target="_blank">Artwork</a>
             ]
         </p>
     </div>
@@ -62,9 +62,9 @@
             <strong>Artist</strong>
             <span>{{name}}</span>
             [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Instagram</a>
-            <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Instagram2</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Instagram</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Instagram2</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
             ]
         </p>
 
@@ -95,9 +95,9 @@
             <strong>Remixer</strong>
             <span>{{name}}</span>
             [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
-            <a href='https://www.google.com/search?q="instagram"+"{{q_title}}+"{{q_name}}"&oq="instagram"+{{q_title}}+"{{q_name}}"' target="_blank">Google2</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Google</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Google2</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
             ]
         </p>
 
@@ -128,8 +128,8 @@
             <strong>Label</strong>
             <span>{{name}}</span>
             [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name}}"&oq="instagram"+"{{q_name}}"' target="_blank">Google</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name}}' target="_blank">Facebook</a>
+            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Google</a>
+            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
             ]
         </p>
         <p>
@@ -148,9 +148,44 @@
             <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
             {{/facebook_tags}}
         </ul>
-
     </div>
     {{/labels}}
+
+
+    <div class="row_info">
+        <p>
+            <strong>Buy</strong>
+            [
+            <a href="https://www.beatport.com/search/tracks?q={{q_artists_plus}}+{{q_title_plus}}" target="_blank">Beatport</a>
+            <a href="https://www.traxsource.com/search?term={{q_artists_plus}}+{{q_title_plus}}" target="_blank">Traxsource</a>
+            <a href="https://www.decks.de/decks/workfloor/search_db.php?such={{q_artists_plus}}+{{q_title_plus}}&wosuch=all&wassuch=atl&where=" target="_blank">Decks.de</a>
+            <a href="https://www.junodownload.com/search/?q%5Ball%5D%5B%5D={{q_artists_plus}}+{{q_title_plus}}" target="_blank">JunoDownload</a>
+            ]
+        </p>
+    </div>
+
+
+    <div class="row_info">
+        <p>
+            <strong>Listen</strong>
+            [
+            <a href="https://soundcloud.com/search/sounds?q={{q_artists_plus}}+{{q_title_plus}}" target="_blank">Soundcloud</a>
+            <a href="https://bandcamp.com/search?q={{q_artists_space}} {{q_title_space}}" target="_blank">Bandcamp</a>
+            <a href="https://open.spotify.com/search/results/{{q_artists_space}} {{q_title_space}}" target="_blank">Spotify</a>
+            ]
+        </p>
+    </div>
+
+
+    <div class="row_info">
+        <p>
+            <strong>Watch</strong>
+            [
+            <a href="https://www.youtube.com/results?search_query={{q_artists_plus}}+{{q_title_plus}}" target="_blank">YouTube</a>
+            <a href="hhttps://www.facebook.com/search/videos/?q={{q_artists_space}} {{q_title_space}}" target="_blank">Facebook</a>
+            ]
+        </p>
+    </div>
 
 </section>
 {{/tracks_content}}

@@ -1,7 +1,8 @@
 
 class Utils_Links {
 
-    constructor(){
+    constructor(parent){
+        this.utils = parent;
         this._regexp = {
             url_domain:/^(?:https?:)?(?:\/\/)?(?:[^@\n]+@)?(?:www\.)?([^:\/\n]+)/im
             /*  'http://abc.ggg.com/kjhsf?fdklsjd'.match(rg)
@@ -28,4 +29,4 @@ class Utils_Links {
     }
 }
 
-module.exports = new Utils_Links();
+module.exports = Utils_Links;

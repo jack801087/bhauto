@@ -118,7 +118,8 @@ class SocialNode {
                 instagram_tags:cobj.instagram_tags,
                 facebook_tags:cobj.facebook_tags,
                 hashtags:cobj.hashtags,
-                q_name:Utils.String.html_query_string(cobj.name)
+                q_name_plus:Utils.String.html_query_string(cobj.name,'+'),
+                q_name_space:Utils.String.html_query_string(cobj.name,' ')
             });
         });
         return final;

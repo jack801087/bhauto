@@ -41,9 +41,9 @@ class Utils_Files {
 
     setAsAbsPath(rel_path, isFile, absPath){
         rel_path = _.trim(rel_path);
-        if(isFile===true && _.endsWith(rel_path,Utils.File.pathSeparator)) rel_path=rel_path.substr(0,rel_path.length-1);
+        if(isFile===true && _.endsWith(rel_path,this.pathSeparator)) rel_path=rel_path.substr(0,rel_path.length-1);
         if(!absPath) absPath=this.getAbsPath();
-        return Utils.File.pathJoin(absPath,rel_path,(isFile!==true?Utils.File.pathSeparator:''));
+        return this.pathJoin(absPath,rel_path,(isFile!==true?this.pathSeparator:''));
     }
 
     equalPaths(p1,p2){
@@ -123,7 +123,7 @@ class Utils_Files {
     checkAndSetPathSync(path_string,callback){
         if(!_.isString(path_string)) return null;
         if(!this._FS.existsSync(path_string)) return null;
-        path_string = this.pathResolve(path_string)+Utils.File.pathSeparator;
+        path_string = this.pathResolve(path_string)+this.pathSeparator;
         if(callback) callback(path_string);
         return path_string;
     }
@@ -460,4 +460,4 @@ class Utils_Files {
 
 }
 
-module.exports = new Utils_Files();
+module.exports = Utils_Files;
