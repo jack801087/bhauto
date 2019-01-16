@@ -1,5 +1,5 @@
 TRACKS OF THE WEEK
-{{tracks_data.date_interval}}
+{{tracks_data.date_interval_extended}}
 
 {{#tracks_data.tracks_info}}
 {{artists_list}} - {{title}}
