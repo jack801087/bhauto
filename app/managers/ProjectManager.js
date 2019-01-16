@@ -52,6 +52,16 @@ class ProjectManager {
     }
 
 
+    projectDataLength(){
+        if(!_.isArray(this._current_project_data)) return 0;
+        return this._current_project_data.length;
+    }
+
+    getProjectDataItem(index){
+        return this._current_project_data[index];
+    }
+
+
     _get_config_param(label){
         if(_.isObject(this._cfg_data)) return this._cfg_data[label];
         let _cfg_data = Utils.File.readJsonFileSync(this.path_utilsdata_configdata);
@@ -522,14 +532,24 @@ class ProjectManager {
     }
 
 
-    generateEditableDataCollection(){
+    mergeSocialMediaData(){
         if(!_.isObject(this._current_project_data)){
             //cliWarning
             return false;
         }
 
         if(!this._mergeSocialMediaData()){
-            d$('ProjectMgr.mergeSocialMediaData returned an error');
+            d$('_mergeSocialMediaData returned an error');
+        }
+
+        return true;
+    }
+
+
+    generateEditableDataCollection(){
+        if(!_.isObject(this._current_project_data)){
+            //cliWarning
+            return false;
         }
 
         let final_data = this.toJSON();

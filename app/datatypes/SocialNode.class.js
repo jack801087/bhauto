@@ -16,8 +16,7 @@ class SocialNode {
 
 
     mergeSocialMediaDataFromDB(dbObject){
-        this.collection.forEach((v,i)=>{
-            let it_array = dbObject.getInstagramTags(v.name);
+        this.collection.forEach((v)=>{
             v.instagram_tags = _.union(v.instagram_tags,dbObject.getInstagramTags(v.name));
             v.facebook_tags = _.union(v.facebook_tags,dbObject.getFacebookTags(v.name));
             v.hashtags = _.union(v.hashtags,dbObject.getHashtags(v.name));

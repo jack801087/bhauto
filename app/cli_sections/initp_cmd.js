@@ -34,12 +34,70 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         p2(cliReference,cliNextCb,cliData);
     };
 
+    let p2_standard = (cliReference,cliNextCb,cliData)=>{
+        if(!ProjectMgr.mergeSocialMediaData()){
+            d$('ProjectMgr.mergeSocialMediaData returned an error');
+            return cliNextCb(cliData.error_code);
+        }
+        p3(cliReference,cliNextCb,cliData);
+    };
 
-    let p2 = (cliReference,cliNextCb,cliData)=>{
+    let __p2_interactive_socialdata = (cliReference,cliNextCb,cliData,snArray, snItem, snIndex)=>{
+
+    };
+
+    let p2_interactive = (cliReference,cliNextCb,cliData,trackIndex)=>{
+
+        if(_.isNil(trackIndex)) trackIndex=0;
+        let trackItem = ProjectMgr.getProjectDataItem(trackIndex);
+        if(_.isNil(trackItem)) {
+            p3(cliReference,cliNextCb,cliData);
+            return;
+        }
+
+        __p2_interactive_socialdata(cliReference,cliNextCb,cliData,[
+            trackItem.artists,
+            trackItem.remixers,
+            trackItem.labels
+        ]);
+
+        let tracks_count = ProjectMgr.projectDataLength();
+        let track_item = null;
+        for(let i=0; i<tracks_count; i++){
+            track_item = ProjectMgr.getProjectDataItem(i);
+
+            // for each artist selection process
+            track_item.artistsforEach()
+
+            // for each remixer selection process
+
+            // for each label selection process
+        }
+
+        // loop on this._current_project_data
+
+            // find occurrence(s) in some way
+            // ask for choice (multiple options) [f#2]
+
+            // if yes...merge data and set unique id (hash) [f#1]
+            // if no...shows all choices [f#2]
+
+                // if some id...merge data and set unique id (hash) [f#1]
+                // if no, end loop branch
+
+        p3(cliReference,cliNextCb,cliData);
+    };
+
+
+    let p2 = p2_standard;
+
+    let p3 = (cliReference,cliNextCb,cliData)=>{
+
         if(!ProjectMgr.generateEditableDataCollection()){
             d$('ProjectMgr.generateEditableDataCollection returned an error');
             return cliNextCb(cliData.error_code);
         }
+
         return cliNextCb(cliData.success_code);
     };
 
