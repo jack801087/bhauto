@@ -117,12 +117,15 @@ const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
 
     // I have current _SocialNodeInfo
     // I have the founded DB_Object
+
+    // if not founded DB_Object - create DB occurrence and get hash
+
     // merge everything
 };
 
 
 const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // if _p2i_data.socialNodeToMerge not null call p2i_mergeSocialNode
+    // call p2i_mergeSocialNode
 
     // if entityData+Label still working - increment/call p2i_entityData
     // if entityLabel still working - increment/call p2i_entityData

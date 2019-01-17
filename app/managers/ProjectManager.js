@@ -493,6 +493,7 @@ class ProjectManager {
 
 
     _addSocialMediaData(){
+        // TODO: rewrite and use insertByHash
         for(let i=0; i<this._current_project_data.length; i++){
             let tsObj = this._current_project_data[i];
             tsObj.artists.addSocialMediaDataToDB(SMDB_Artists);
