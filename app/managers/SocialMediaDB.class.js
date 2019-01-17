@@ -43,7 +43,6 @@ class SocialMediaDB {
         return this._lastkey.hash;
     }
 
-
     _get(key){
         let _id = this._getID(key);
         if(_id===null) return null;
@@ -114,6 +113,18 @@ class SocialMediaDB {
         return true;
     }
 
+
+    getSMInfoByKey(key,create){
+        if(create===true) return this._cget(key);
+        return this._get(key);
+    }
+
+    forEach(cb){
+        let khArray = Object.keys(this._collection);
+        khArray.forEach(function(k,i){
+            cb(i,k,this._collection[k]);
+        });
+    }
 }
 
 module.exports = SocialMediaDB;

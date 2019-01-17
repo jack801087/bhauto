@@ -21,6 +21,7 @@ global.ProjectMgr = require('./managers/ProjectManager.js');
 require('./cli_sections/config_cmd.js');
 require('./cli_sections/newp_cmd.js');
 require('./cli_sections/initp_cmd.js');
+require('./cli_sections/socialp_cmd.js');
 require('./cli_sections/savep_cmd.js');
 require('./cli_sections/weekp_cmd.js');
 

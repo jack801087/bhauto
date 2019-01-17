@@ -34,6 +34,7 @@ class TrackSource {
     get buylinks(){ return this._buylinks; }
     get audiolinks(){ return this._audiolinks; }
     get videolinks(){ return this._videolinks; }
+    get fulltitle(){ return this._artists.toString()+' - '+this._title; }
 
     set title(v){ this._title=v; return true; }
     set artists(v){

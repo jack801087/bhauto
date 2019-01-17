@@ -35,10 +35,10 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     };
 
     let p2 = (cliReference,cliNextCb,cliData)=>{
-        if(!ProjectMgr.mergeSocialMediaData()){
-            d$('ProjectMgr.mergeSocialMediaData returned an error');
-            return cliNextCb(cliData.error_code);
-        }
+        // if(!ProjectMgr.mergeSocialMediaData()){
+        //     d$('ProjectMgr.mergeSocialMediaData returned an error');
+        //     return cliNextCb(cliData.error_code);
+        // }
         p3(cliReference,cliNextCb,cliData);
     };
 
@@ -77,58 +77,3 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     p1(cliReference,cliNextCb,cliData);
 
 });
-
-let _p2i_data = {
-    trackIndex:0,
-    //trackArray not needed - ProjectMgr has it
-    entityLabelsIndex:0,
-    entityLabels:['artists','remixers','labels'],
-    entityDataIndex:0,
-    entityData:{
-        artists:[],
-        remixers:[],
-        labels:[]
-    },
-    socialNodeToMerge:null
-};
-
-const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // _p2i_data should be ready to work!
-
-    // search DB for this entity (artist,remixer,label)
-    // check _p2i_data.entity***
-
-    // print trackInfo entityLabel - entityData - DB occurrence
-    // ask confirm
-
-        // set _p2i_data.socialNodeToMerge
-        // if yes call p2i_update
-
-        // if not...shows all possibilities
-        // choose one or nothing
-
-            // set _p2i_data.socialNodeToMerge or null
-            // if yes call p2i_update
-};
-
-
-const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // merge socials
-
-    // I have current _SocialNodeInfo
-    // I have the founded DB_Object
-
-    // if not founded DB_Object - create DB occurrence and get hash
-
-    // merge everything
-};
-
-
-const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // call p2i_mergeSocialNode
-
-    // if entityData+Label still working - increment/call p2i_entityData
-    // if entityLabel still working - increment/call p2i_entityData
-    // if trackData still working - increment/call p2i_entityData
-    // finish
-};
