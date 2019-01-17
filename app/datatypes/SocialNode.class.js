@@ -1,3 +1,52 @@
+class _SocialNodeInfo{
+    constructor(name){
+        this.hash=null;
+        this.name = name;
+        this.instagram_tags = [];
+        this.facebook_tags = [];
+        this.hashtags = [];
+    }
+
+    fromJson(v){
+        this.hash = v.hash;
+
+        if(_.isArray(v.instagram_tags)){
+            v.instagram_tags.forEach((it)=>{
+                it = _.trim(it);
+                if(it.length<2) return;
+                this.instagram_tags.push(it);
+            });
+        }
+
+        if(_.isArray(v.facebook_tags)){
+            v.facebook_tags.forEach((ft)=>{
+                ft = _.trim(ft);
+                if(ft.length<2) return;
+                this.facebook_tags.push(ft);
+            });
+        }
+
+        if(_.isArray(v.hashtags)){
+            v.hashtags.forEach((it)=>{
+                it = _.trim(it);
+                if(it.length<2) return;
+                this.hashtags.push(it);
+            });
+        }
+    }
+
+    toJson(){
+        let jsonObj = {};
+        jsonObj.hash = this.hash;
+        jsonObj.name = this.name;
+        jsonObj.instagram_tags = _.union(this.instagram_tags,[]);
+        jsonObj.facebook_tags = _.union(this.facebook_tags,[]);
+        jsonObj.hashtags = _.union(this.hashtags,[]);
+        return jsonObj;
+    }
+}
+
+
 
 class SocialNode {
 
@@ -29,12 +78,7 @@ class SocialNode {
         a.forEach((v)=>{
             v=_.trim(v);
             if(v.length<2) return;
-            this.collection.push({
-                name:v,
-                instagram_tags:[],
-                facebook_tags:[],
-                hashtags:[]
-            });
+            this.collection.push(new _SocialNodeInfo(v));
         });
         return this;
     }
@@ -42,84 +86,47 @@ class SocialNode {
     fromArrayEditable(dt){
         this.collection = [];
         dt.forEach((v)=>{
-
-            let instagram_tags = [];
-            v.instagram_tags.forEach((it)=>{
-                it = _.trim(it);
-                if(it.length<2) return;
-                instagram_tags.push(it);
-            });
-
-            let facebook_tags = [];
-            v.facebook_tags.forEach((ft)=>{
-                ft = _.trim(ft);
-                if(ft.length<2) return;
-                facebook_tags.push(ft);
-            });
-
-            let hashtags = [];
-            v.hashtags.forEach((it)=>{
-                it = _.trim(it);
-                if(it.length<2) return;
-                hashtags.push(it);
-            });
-
-            this.collection.push({
-                name:v.name,
-                instagram_tags:instagram_tags,
-                facebook_tags:facebook_tags,
-                hashtags:hashtags
-            });
+            let _snObj = new _SocialNodeInfo(v.name);
+            _snObj.fromJson(v);
+            this.collection.push(_snObj);
         });
     }
 
 
-    toArray(editCb){
-        let _newObjFn = (o)=>{
-            return {
-                name:o.name,
-                instagram_tags:_.union(o.instagram_tags,[]),
-                facebook_tags:_.union(o.facebook_tags,[]),
-                hashtags:_.union(o.hashtags,[])
-            };
-        };
-        let newObjFn = _newObjFn;
-        if(_.isFunction(editCb)){
-            newObjFn = (o)=>{
-                return editCb(_newObjFn(o));
-            };
-        }
+    toArray(){
         let final = [];
-        this.collection.forEach((cobj)=>{
-            final.push(newObjFn(cobj));
+        this.collection.forEach((snObj)=>{
+            final.push(snObj.toJson());
         });
         return final;
     }
 
 
     toArrayEditable(){
-        return this.toArray((b)=>{
-            b.instagram_tags.push("");
-            b.facebook_tags.push("");
-            //b.instagram_tags.push("");
-            b.hashtags.push("");
-            b.hashtags.push("");
-            return b;
+        let final = [];
+        this.collection.forEach((snObj)=>{
+            let _snObj = snObj.toJson();
+            _snObj.instagram_tags.push("");
+            _snObj.facebook_tags.push("");
+            _snObj.hashtags.push("");
+            _snObj.hashtags.push("");
+
+            final.push(_snObj);
         });
+        return final;
     }
 
 
     toPlainArray(){
         let final = [];
-        this.collection.forEach((cobj)=>{
-            final.push({
-                name:cobj.name,
-                instagram_tags:cobj.instagram_tags,
-                facebook_tags:cobj.facebook_tags,
-                hashtags:cobj.hashtags,
-                q_name_plus:Utils.String.html_query_string(cobj.name,'+'),
-                q_name_space:Utils.String.html_query_string(cobj.name,' ')
-            });
+        this.collection.forEach((snObj)=>{
+            let _snObj = snObj.toJson();
+            _snObj.instagram_tags.push("");
+            _snObj.facebook_tags.push("");
+            _snObj.q_name_plus = Utils.String.html_query_string(_snObj.name,'+');
+            _snObj.q_name_space = Utils.String.html_query_string(_snObj.name,' ');
+
+            final.push(_snObj);
         });
         return final;
     }

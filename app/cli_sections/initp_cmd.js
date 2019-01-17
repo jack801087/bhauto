@@ -34,62 +34,13 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
         p2(cliReference,cliNextCb,cliData);
     };
 
-    let p2_standard = (cliReference,cliNextCb,cliData)=>{
+    let p2 = (cliReference,cliNextCb,cliData)=>{
         if(!ProjectMgr.mergeSocialMediaData()){
             d$('ProjectMgr.mergeSocialMediaData returned an error');
             return cliNextCb(cliData.error_code);
         }
         p3(cliReference,cliNextCb,cliData);
     };
-
-    let __p2_interactive_socialdata = (cliReference,cliNextCb,cliData,snArray, snItem, snIndex)=>{
-
-    };
-
-    let p2_interactive = (cliReference,cliNextCb,cliData,trackIndex)=>{
-
-        if(_.isNil(trackIndex)) trackIndex=0;
-        let trackItem = ProjectMgr.getProjectDataItem(trackIndex);
-        if(_.isNil(trackItem)) {
-            p3(cliReference,cliNextCb,cliData);
-            return;
-        }
-
-        __p2_interactive_socialdata(cliReference,cliNextCb,cliData,[
-            trackItem.artists,
-            trackItem.remixers,
-            trackItem.labels
-        ]);
-
-        let tracks_count = ProjectMgr.projectDataLength();
-        let track_item = null;
-        for(let i=0; i<tracks_count; i++){
-            track_item = ProjectMgr.getProjectDataItem(i);
-
-            // for each artist selection process
-            track_item.artistsforEach()
-
-            // for each remixer selection process
-
-            // for each label selection process
-        }
-
-        // loop on this._current_project_data
-
-            // find occurrence(s) in some way
-            // ask for choice (multiple options) [f#2]
-
-            // if yes...merge data and set unique id (hash) [f#1]
-            // if no...shows all choices [f#2]
-
-                // if some id...merge data and set unique id (hash) [f#1]
-                // if no, end loop branch
-
-        p3(cliReference,cliNextCb,cliData);
-    };
-
-
-    let p2 = p2_standard;
 
     let p3 = (cliReference,cliNextCb,cliData)=>{
 
@@ -126,3 +77,55 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     p1(cliReference,cliNextCb,cliData);
 
 });
+
+let _p2i_data = {
+    trackIndex:0,
+    //trackArray not needed - ProjectMgr has it
+    entityLabelsIndex:0,
+    entityLabels:['artists','remixers','labels'],
+    entityDataIndex:0,
+    entityData:{
+        artists:[],
+        remixers:[],
+        labels:[]
+    },
+    socialNodeToMerge:null
+};
+
+const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
+    // _p2i_data should be ready to work!
+
+    // search DB for this entity (artist,remixer,label)
+    // check _p2i_data.entity***
+
+    // print trackInfo entityLabel - entityData - DB occurrence
+    // ask confirm
+
+        // set _p2i_data.socialNodeToMerge
+        // if yes call p2i_update
+
+        // if not...shows all possibilities
+        // choose one or nothing
+
+            // set _p2i_data.socialNodeToMerge or null
+            // if yes call p2i_update
+};
+
+
+const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
+    // merge socials
+
+    // I have current _SocialNodeInfo
+    // I have the founded DB_Object
+    // merge everything
+};
+
+
+const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
+    // if _p2i_data.socialNodeToMerge not null call p2i_mergeSocialNode
+
+    // if entityData+Label still working - increment/call p2i_entityData
+    // if entityLabel still working - increment/call p2i_entityData
+    // if trackData still working - increment/call p2i_entityData
+    // finish
+};
