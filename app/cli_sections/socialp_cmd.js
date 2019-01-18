@@ -20,6 +20,9 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     };
 
     let p2 = (cliReference,cliNextCb,cliData)=>{
+        let _p2i_data = new _p2i_data_class();
+        return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
+
         if(!ProjectMgr.generateEditableDataCollection()){
             d$('ProjectMgr.generateEditableDataCollection returned an error');
             return cliNextCb(cliData.error_code);
@@ -39,7 +42,57 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 });
 
 
-//let _p2i_data = new _p2i_data_class();
+const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
+    // _p2i_data should be ready to work!
+
+    // print trackInfo entityLabel - entityData - DB occurrence
+    d$("\n\n");
+    d$('Current track ',_p2i_data.getTrackObject().fulltitle);
+    d$('> data for',_p2i_data.getEntityLabel());
+
+    cliReference.prompt({
+        type: 'input',
+        name: 'answer',
+        message: '>'
+    }, function(){
+        return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+    });
+    return;
+
+    // search DB for this entity (artist,remixer,label)
+    let smInfo = _p2i_data.getSMInfoAlt1();
+    if(smInfo===null) return p2i_entityData_attempt2();
+    _p2i_data.setSocialMediaInfoToMerge(smInfo);
+
+    clUI.print();
+    cliReference.prompt({
+        type: 'input',
+        name: 'answer',
+        message: 'Is it correct? [y/n] '
+    }, function (result) {
+        if(result.answer !== 'y'){
+            return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+        }
+        return p2i_entityData_attempt2();
+    });
+    return;
+
+    /*
+    // ask confirm
+
+    // set _p2i_data.socialMediaInfoToMerge
+    // if yes call p2i_update
+
+    // if not...shows all possibilities
+    // choose one or nothing
+
+    // set entityData.name with dbNode.key
+    // set _p2i_data.socialMediaInfoToMerge or null
+    // if yes call p2i_update
+    */
+};
+
+
 
 const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_data){
 
@@ -64,49 +117,9 @@ const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_dat
 };
 
 
-const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // _p2i_data should be ready to work!
-
-    // print trackInfo entityLabel - entityData - DB occurrence
-    d$("\n\n");
-    d$('Current track ',_p2i_data.getTrackObject().fulltitle);
-    d$('> data for',_p2i_data.getEntityLabel());
-
-    // search DB for this entity (artist,remixer,label)
-    let smInfo = _p2i_data.getSMInfoAlt1();
-    if(smInfo===null) return p2i_entityData_attempt2();
-    _p2i_data.setSocialMediaInfoToMerge(smInfo);
-
-    clUI.print();
-    cliReference.prompt({
-        type: 'input',
-        name: 'answer',
-        message: 'Is it correct? [y/n] '
-    }, function (result) {
-        if(result.answer !== 'y'){
-            return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
-        }
-        return p2i_entityData_attempt2();
-    });
-    return;
-
-    // ask confirm
-
-    // set _p2i_data.socialMediaInfoToMerge
-    // if yes call p2i_update
-
-    // if not...shows all possibilities
-    // choose one or nothing
-
-    // set entityData.name with dbNode.key
-    // set _p2i_data.socialMediaInfoToMerge or null
-    // if yes call p2i_update
-};
-
-
 const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     // call p2i_mergeSocialNode
-    p2i_mergeSocialNode(cliReference,cliNextCb,cliData,_p2i_data);
+    //p2i_mergeSocialNode(_p2i_data);
 
     // if entityData+Label still working - increment/call p2i_entityData
     // if entityLabel still working - increment/call p2i_entityData
@@ -116,16 +129,16 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     if(_p2i_data.updateEntityData()===false){
         if(_p2i_data.updateEntityLabel()===false){
             if(_p2i_data.updateTrackArray()===false){
-                return false;
+                return cliNextCb(cliData.success_code);
             }
         }
     }
-    _p2i_data.setSocialMediaInfoToMerge(null);
-    return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data)
+    //_p2i_data.setSocialMediaInfoToMerge(null);
+    return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
 };
 
 
-const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
+const p2i_mergeSocialNode = function(_p2i_data){
     if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
         // create one in DB
         // set hash
