@@ -337,9 +337,9 @@ class ProjectManager {
 
         let project_date = Utils.Date.dateToYYYYMMDD();
 
-        this._addSocialMediaData();
-
         this._current_project_data.forEach((v,i)=>{
+
+            //v.artists, v.remixers, v.labels // add to DB
 
             let tracklp = this._get_single_tracklist_paths(project_date, this.path_project_list_tracks, TracksCounter, v.SourceCode, v.artists.toString(), v.title);
             Utils.File.ensureDirSync(tracklp.path_day);
@@ -492,32 +492,32 @@ class ProjectManager {
     }
 
 
-    _addSocialMediaData(){
-        // TODO: rewrite and use insertByHash
-        for(let i=0; i<this._current_project_data.length; i++){
-            let tsObj = this._current_project_data[i];
-            tsObj.artists.addSocialMediaDataToDB(SMDB_Artists);
-            tsObj.remixers.addSocialMediaDataToDB(SMDB_Artists);
-            tsObj.labels.addSocialMediaDataToDB(SMDB_Labels);
-        }
-        SMDB_Artists.save();
-        SMDB_Labels.save();
+    // _addSocialMediaData(){
+    //     // TODO: rewrite and use insertByHash
+    //     for(let i=0; i<this._current_project_data.length; i++){
+    //         let tsObj = this._current_project_data[i];
+    //         tsObj.artists.addSocialMediaDataToDB(SMDB_Artists);
+    //         tsObj.remixers.addSocialMediaDataToDB(SMDB_Artists);
+    //         tsObj.labels.addSocialMediaDataToDB(SMDB_Labels);
+    //     }
+    //     SMDB_Artists.save();
+    //     SMDB_Labels.save();
+    //
+    //     this._mergeSocialMediaData();
+    //
+    //     return true;
+    // }
 
-        this._mergeSocialMediaData();
 
-        return true;
-    }
-
-
-    _mergeSocialMediaData(){
-        for(let i=0; i<this._current_project_data.length; i++){
-            let tsObj = this._current_project_data[i];
-            tsObj.artists.mergeSocialMediaDataFromDB(SMDB_Artists);
-            tsObj.remixers.mergeSocialMediaDataFromDB(SMDB_Artists);
-            tsObj.labels.mergeSocialMediaDataFromDB(SMDB_Labels);
-        }
-        return true;
-    }
+    // _mergeSocialMediaData(){
+    //     for(let i=0; i<this._current_project_data.length; i++){
+    //         let tsObj = this._current_project_data[i];
+    //         tsObj.artists.mergeSocialMediaDataFromDB(SMDB_Artists);
+    //         tsObj.remixers.mergeSocialMediaDataFromDB(SMDB_Artists);
+    //         tsObj.labels.mergeSocialMediaDataFromDB(SMDB_Labels);
+    //     }
+    //     return true;
+    // }
 
 
     _generateSearchUtility(final_data_json){
@@ -533,18 +533,18 @@ class ProjectManager {
     }
 
 
-    mergeSocialMediaData(){
-        if(!_.isObject(this._current_project_data)){
-            //cliWarning
-            return false;
-        }
-
-        if(!this._mergeSocialMediaData()){
-            d$('_mergeSocialMediaData returned an error');
-        }
-
-        return true;
-    }
+    // mergeSocialMediaData(){
+    //     if(!_.isObject(this._current_project_data)){
+    //         //cliWarning
+    //         return false;
+    //     }
+    //
+    //     if(!this._mergeSocialMediaData()){
+    //         d$('_mergeSocialMediaData returned an error');
+    //     }
+    //
+    //     return true;
+    // }
 
 
     generateEditableDataCollection(){

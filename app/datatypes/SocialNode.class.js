@@ -7,10 +7,11 @@ class _SocialNodeInfo{
         this.hashtags = [];
     }
 
-    mergeSocialMediaData(smInfo){
-        this.hash=smInfo.hash;
-        this.instagram_tags = _.union(this.instagram_tags,smInfo.InstagramTags);
-        this.facebook_tags = _.union(this.facebook_tags,smInfo.FacebookTags);
+    mergeSocialMediaData(smInfoDB){
+        if(!_.isObject(smInfoDB)) return;
+        this.hash=smInfoDB.hash;
+        this.instagram_tags = _.union(this.instagram_tags,smInfoDB.InstagramTags);
+        this.facebook_tags = _.union(this.facebook_tags,smInfoDB.FacebookTags);
     }
 
     fromJson(v){
@@ -71,13 +72,13 @@ class SocialNode {
     }
 
 
-    mergeSocialMediaDataFromDB(dbObject){
-        this.collection.forEach((v)=>{
-            v.instagram_tags = _.union(v.instagram_tags,dbObject.getInstagramTags(v.name));
-            v.facebook_tags = _.union(v.facebook_tags,dbObject.getFacebookTags(v.name));
-            v.hashtags = _.union(v.hashtags,dbObject.getHashtags(v.name));
-        });
-    }
+    // mergeSocialMediaDataFromDB(dbObject){
+    //     this.collection.forEach((v)=>{
+    //         v.instagram_tags = _.union(v.instagram_tags,dbObject.getInstagramTags(v.name));
+    //         v.facebook_tags = _.union(v.facebook_tags,dbObject.getFacebookTags(v.name));
+    //         v.hashtags = _.union(v.hashtags,dbObject.getHashtags(v.name));
+    //     });
+    // }
 
 
     fromArray(a){

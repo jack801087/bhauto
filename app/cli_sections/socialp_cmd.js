@@ -22,14 +22,9 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     let p2 = (cliReference,cliNextCb,cliData)=>{
         let _p2i_data = new _p2i_data_class();
         return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
-
-        if(!ProjectMgr.generateEditableDataCollection()){
-            d$('ProjectMgr.generateEditableDataCollection returned an error');
-            return cliNextCb(cliData.error_code);
-        }
-
-        return cliNextCb(cliData.success_code);
     };
+
+
 
     /*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
@@ -41,9 +36,21 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 });
 
+let p3 = (cliReference,cliNextCb,cliData)=>{
+    if(!ProjectMgr.generateEditableDataCollection()){
+        d$('ProjectMgr.generateEditableDataCollection returned an error');
+        return cliNextCb(cliData.error_code);
+    }
+    return cliNextCb(cliData.success_code);
+};
+
 
 const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     // _p2i_data should be ready to work!
+    if(_p2i_data.alreadyProcessedEntity()===true){
+        return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+    }
+
     _p2i_data.printCurrentTrackInfo();
 
     // search DB for this entity (artist,remixer,label)
@@ -110,7 +117,13 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
                 // print final message
                 // print social nodes with no media info
 
-                return cliNextCb(cliData.success_code);
+                // Save DB artists and labels
+                SMDB_Artists.save();
+                SMDB_Labels.save();
+
+                return p3(cliReference,cliNextCb,cliData);
+
+                //return cliNextCb(cliData.success_code);
             }
         }
     }
@@ -120,7 +133,7 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
 
 
 const p2i_mergeSocialNode = function(_p2i_data){
-    return;
+    if(_p2i_data.alreadyProcessedEntity()===true) return;
 
     if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
         _p2i_data.setSocialMediaInfoNotFound();
@@ -143,6 +156,7 @@ class _p2i_data_class{
         this.entityLabelsIndex = 0;
         this.entityLabels = [];
         this.entityDataIndex = 0;
+        this.currentEntityData = null;
         this.entityData = {
             artists:[],
             remixers:[],
@@ -166,8 +180,15 @@ class _p2i_data_class{
         if(_.isArray(this.entityData.remixers) && this.entityData.remixers.length>0) this.entityLabels.push('remixers');
         this.entityData.labels = this.trackObject.labels.collection;
         if(_.isArray(this.entityData.labels) && this.entityData.labels.length>0) this.entityLabels.push('labels');
+        this.currentEntityData = this.getEntityData();
         return true;
     }
+
+    alreadyProcessedEntity(){
+        if(_.isString(this.currentEntityData.hash) && this.currentEntityData.hash.length>1) return true;
+        return false;
+    }
+
 
     getSocialMediaInfoToMerge(){
         return this.socialMediaInfoToMerge;
@@ -187,7 +208,7 @@ class _p2i_data_class{
     }
 
     createSMInfoEmpty(){
-        return this.getEntityRelatedDB().getSMInfoByKey(this.getEntityData().name);
+        return this.getEntityRelatedDB().getSMInfoByKey(this.currentEntityData.name, true /*create*/);
     }
 
     getSMInfoAlt1(){
@@ -207,18 +228,7 @@ class _p2i_data_class{
         return _coll;
     }
 
-    abc(){
-        d$(
-            'Tk',_.padStart(this.trackArrayIndex,2,'0'),'  |  ',
-            'Li',this.entityLabelsIndex,'  |  ',
-            'Ld',this.entityDataIndex,'  |  ',
-            this.getEntityData().name
-        );
-        //d$(this.entityDataIndex);
-        //d$(this.entityLabelsIndex);
-        //d$(this.entityData[ this.entityLabels[this.entityLabelsIndex] ]);
-        //d$(this.getEntityData().name);
-    };
+
     getEntityData(){
         return( this.entityData[ this.entityLabels[this.entityLabelsIndex] ][this.entityDataIndex] );
     };
@@ -229,6 +239,7 @@ class _p2i_data_class{
         let _check = this.checkEntityData();
         if(_check===true) this.entityDataIndex++;
         else this.entityDataIndex=0;
+        this.currentEntityData = this.getEntityData();
         return _check;
     };
 
@@ -263,8 +274,9 @@ class _p2i_data_class{
 
     printCurrentTrackInfo(){
         clUI.print("\n");
-        clUI.print('Current track: ',this.getTrackObject().fulltitle);
-        clUI.print('                > entity',this.getEntityLabel(),this.getEntityData().name);
+        clUI.print('Current track #'+(this.trackArrayIndex+1)+' > ',this.getTrackObject().fulltitle);
+        clUI.print('> entity',this.getEntityLabel(),this.currentEntityData.name);
+        clUI.print("");
     }
 
 
