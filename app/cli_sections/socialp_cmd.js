@@ -48,7 +48,9 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     // print trackInfo entityLabel - entityData - DB occurrence
     d$("\n\n");
     d$('Current track ',_p2i_data.getTrackObject().fulltitle);
-    d$('> data for',_p2i_data.getEntityLabel());
+    d$('> entityLabel',_p2i_data.getEntityLabel());
+    //d$('> entity data',_p2i_data.getEntityData());
+    _p2i_data.abc();
 
     cliReference.prompt({
         type: 'input',
@@ -129,9 +131,20 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     if(_p2i_data.updateEntityData()===false){
         if(_p2i_data.updateEntityLabel()===false){
             if(_p2i_data.updateTrackArray()===false){
+                _p2i_data.abc();
+                d$('> update4');
                 return cliNextCb(cliData.success_code);
+            }else{
+                _p2i_data.abc();
+                d$('> update3');
             }
+        }else{
+            _p2i_data.abc();
+            d$('> update2');
         }
+    }else{
+        _p2i_data.abc();
+        d$('> update1');
     }
     //_p2i_data.setSocialMediaInfoToMerge(null);
     return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
@@ -164,7 +177,7 @@ class _p2i_data_class{
         this.trackArrayIndex = 0;
         this.trackObject = null;
         this.entityLabelsIndex = 0;
-        this.entityLabels = ['artists','remixers','labels'];
+        this.entityLabels = [];
         this.entityDataIndex = 0;
         this.entityData = {
             artists:[],
@@ -182,9 +195,13 @@ class _p2i_data_class{
     _setTrackData(){
         this.trackObject = ProjectMgr.getProjectDataItem(this.trackArrayIndex);
         if(!this.trackObject) return false;
+        this.entityLabels = [];
         this.entityData.artists = this.trackObject.artists.collection;
+        if(_.isArray(this.entityData.artists) && this.entityData.artists.length>0) this.entityLabels.push('artists');
         this.entityData.remixers = this.trackObject.remixers.collection;
+        if(_.isArray(this.entityData.remixers) && this.entityData.remixers.length>0) this.entityLabels.push('remixers');
         this.entityData.labels = this.trackObject.labels.collection;
+        if(_.isArray(this.entityData.labels) && this.entityData.labels.length>0) this.entityLabels.push('labels');
         return true;
     }
 
@@ -212,8 +229,23 @@ class _p2i_data_class{
         return this.getEntityRelatedDB().getSMInfoByKey(socialNodeInfo.name);
     }
 
+    abc(){
+        d$(
+            'Tk',_.padStart(this.trackArrayIndex,2,'0'),'  |  ',
+            'Li',this.entityLabelsIndex,'  |  ',
+            'Ld',this.entityDataIndex,'  |  ',
+            this.getEntityData().name
+        );
+        //d$(this.entityDataIndex);
+        //d$(this.entityLabelsIndex);
+        //d$(this.entityData[ this.entityLabels[this.entityLabelsIndex] ]);
+        //d$(this.getEntityData().name);
+    };
+    getEntityData(){
+        return( this.entityData[ this.entityLabels[this.entityLabelsIndex] ][this.entityDataIndex] );
+    };
     checkEntityData(){
-        return( this.entityDataIndex <  this.entityData[ this.entityLabels[this.entityLabelsIndex] ].length );
+        return( (this.entityDataIndex+1) <  this.entityData[ this.entityLabels[this.entityLabelsIndex] ].length );
     };
     updateEntityData(){
         let _check = this.checkEntityData();
@@ -226,7 +258,7 @@ class _p2i_data_class{
         return this.entityLabels[this.entityLabelsIndex];
     }
     checkEntityLabel(){
-        return( this.entityLabelsIndex <  this.entityLabels.length );
+        return( (this.entityLabelsIndex+1) <  this.entityLabels.length );
     };
     updateEntityLabel(){
         let _check = this.checkEntityLabel();
@@ -239,7 +271,7 @@ class _p2i_data_class{
         return this.trackObject;
     }
     checkTrackArray(){
-        return( this.trackArrayIndex <  this.trackArray.length );
+        return( (this.trackArrayIndex+1) <  ProjectMgr.projectDataLength() );
     };
     updateTrackArray(){
         let _check = this.checkTrackArray();
