@@ -54,37 +54,20 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
 
     // search DB for this entity (artist,remixer,label)
     let smInfo = _p2i_data.getSMInfoAlt1();
-    if(smInfo===null) return p2i_entityData_attempt2();
-    d$(smInfo);
-
+    if(smInfo===null) return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
+    clUI.print(smInfo);
 
     cliReference.prompt({
         type: 'input',
         name: 'answer',
-        message: '>'
-    }, function(){
+        message: '[enter to confirm, \'n\' to choose another, \'x\' to exit] '
+    }, function (result) {
+        if(result.answer === 'n'){
+            return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
+        }
+        _p2i_data.setSocialMediaInfoToMerge(smInfo);
         return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
     });
-    return;
-
-
-
-
-    _p2i_data.setSocialMediaInfoToMerge(smInfo);
-
-    clUI.print();
-    cliReference.prompt({
-        type: 'input',
-        name: 'answer',
-        message: 'Is it correct? [y/n] '
-    }, function (result) {
-        if(result.answer !== 'y'){
-            return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
-        }
-        return p2i_entityData_attempt2();
-    });
-    return;
-
     /*
     // ask confirm
 
@@ -106,22 +89,21 @@ const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_dat
 
     // search DB for this entity (artist,remixer,label)
     let smInfoSet = _p2i_data.getSMInfoAlt2();
-    if(smInfoSet===null) return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+    if(!_.isArray(smInfoSet)) return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
 
-    clUI.print();
+    clUI.print(smInfoSet);
     cliReference.prompt({
         type: 'input',
         name: 'id',
-        message: 'Choose one or nothing: '
+        message: '[enter to confirm, \'n\' to skip, \'x\' to exit] '
     }, function (result) {
         result.id = Utils.strToInteger(result.id);
-        if(result.id!==null){
+        if(_.isInteger(result.id)){
             _p2i_data.setSocialMediaInfoToMerge(smInfoSet[result.id]);
             return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
         }
         return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
     });
-    return;
 };
 
 
@@ -141,7 +123,7 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
             }
         }
     }
-    //_p2i_data.setSocialMediaInfoToMerge(null);
+    _p2i_data.setSocialMediaInfoToMerge(null);
     return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
 };
 
