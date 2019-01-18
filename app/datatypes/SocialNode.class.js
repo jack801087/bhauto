@@ -9,6 +9,7 @@ class _SocialNodeInfo{
 
     fromJson(v){
         this.hash = v.hash;
+        if(this.hash.length<2) this.hash=null;
 
         if(_.isArray(v.instagram_tags)){
             v.instagram_tags.forEach((it)=>{
@@ -37,7 +38,7 @@ class _SocialNodeInfo{
 
     toJson(){
         let jsonObj = {};
-        jsonObj.hash = this.hash;
+        jsonObj.hash = (!this.hash?'':this.hash);
         jsonObj.name = this.name;
         jsonObj.instagram_tags = _.union(this.instagram_tags,[]);
         jsonObj.facebook_tags = _.union(this.facebook_tags,[]);

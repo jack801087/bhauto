@@ -37,19 +37,11 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 });
 
-let _p2i_data = {
-    trackIndex:0,
-    //trackArray not needed - ProjectMgr has it
-    entityLabelsIndex:0,
-    entityLabels:['artists','remixers','labels'],
-    entityDataIndex:0,
-    entityData:{
-        artists:[],
-        remixers:[],
-        labels:[]
-    },
-    socialMediaInfoToMerge:null
-};
+
+
+
+
+//let _p2i_data = new _p2i_data_class();
 
 
 
@@ -104,16 +96,57 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
 
     // ask confirm
 
-        // set _p2i_data.socialMediaInfoToMerge
-        // if yes call p2i_update
+    // set _p2i_data.socialMediaInfoToMerge
+    // if yes call p2i_update
 
-        // if not...shows all possibilities
-        // choose one or nothing
+    // if not...shows all possibilities
+    // choose one or nothing
 
-            // set entityData.name with dbNode.key
-            // set _p2i_data.socialMediaInfoToMerge or null
-            // if yes call p2i_update
+    // set entityData.name with dbNode.key
+    // set _p2i_data.socialMediaInfoToMerge or null
+    // if yes call p2i_update
 };
+
+
+const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
+    // call p2i_mergeSocialNode
+    p2i_mergeSocialNode(cliReference,cliNextCb,cliData,_p2i_data);
+
+    // if entityData+Label still working - increment/call p2i_entityData
+    // if entityLabel still working - increment/call p2i_entityData
+    // if trackData still working - increment/call p2i_entityData
+    // finish
+
+    if(_p2i_data.updateEntityData()===false){
+        if(_p2i_data.updateEntityLabel()===false){
+            if(_p2i_data.updateTrackArray()===false){
+                return false;
+            }
+        }
+    }
+    _p2i_data.setSocialMediaInfoToMerge(null);
+    return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data)
+};
+
+
+const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
+    if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
+        // create one in DB
+        // set hash
+        return;
+    }
+    // merge socials
+
+    // I have current _SocialNodeInfo
+    // I have the founded DB_Object
+
+    // if not founded DB_Object - create DB occurrence and get hash
+
+    // merge everything
+};
+
+
+
 
 
 class _p2i_data_class{
@@ -208,43 +241,3 @@ class _p2i_data_class{
         return _check;
     };
 }
-
-let _p2i_data = new _p2i_data_class();
-
-
-const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // call p2i_mergeSocialNode
-    p2i_mergeSocialNode(cliReference,cliNextCb,cliData,_p2i_data);
-
-    // if entityData+Label still working - increment/call p2i_entityData
-    // if entityLabel still working - increment/call p2i_entityData
-    // if trackData still working - increment/call p2i_entityData
-    // finish
-
-    if(_p2i_data.updateEntityData()===false){
-        if(_p2i_data.updateEntityLabel()===false){
-            if(_p2i_data.updateTrackArray()===false){
-                return false;
-            }
-        }
-    }
-    _p2i_data.setSocialMediaInfoToMerge(null);
-    return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data)
-};
-
-
-const p2i_mergeSocialNode = function(cliReference,cliNextCb,cliData,_p2i_data){
-    if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
-        // create one in DB
-        // set hash
-        return;
-    }
-    // merge socials
-
-    // I have current _SocialNodeInfo
-    // I have the founded DB_Object
-
-    // if not founded DB_Object - create DB occurrence and get hash
-
-    // merge everything
-};
