@@ -52,6 +52,12 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     //d$('> entity data',_p2i_data.getEntityData());
     _p2i_data.abc();
 
+    // search DB for this entity (artist,remixer,label)
+    let smInfo = _p2i_data.getSMInfoAlt1();
+    if(smInfo===null) return p2i_entityData_attempt2();
+    d$(smInfo);
+
+
     cliReference.prompt({
         type: 'input',
         name: 'answer',
@@ -61,9 +67,9 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     });
     return;
 
-    // search DB for this entity (artist,remixer,label)
-    let smInfo = _p2i_data.getSMInfoAlt1();
-    if(smInfo===null) return p2i_entityData_attempt2();
+
+
+
     _p2i_data.setSocialMediaInfoToMerge(smInfo);
 
     clUI.print();
@@ -131,20 +137,9 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     if(_p2i_data.updateEntityData()===false){
         if(_p2i_data.updateEntityLabel()===false){
             if(_p2i_data.updateTrackArray()===false){
-                _p2i_data.abc();
-                d$('> update4');
                 return cliNextCb(cliData.success_code);
-            }else{
-                _p2i_data.abc();
-                d$('> update3');
             }
-        }else{
-            _p2i_data.abc();
-            d$('> update2');
         }
-    }else{
-        _p2i_data.abc();
-        d$('> update1');
     }
     //_p2i_data.setSocialMediaInfoToMerge(null);
     return p2i_entityData(cliReference,cliNextCb,cliData,_p2i_data);
