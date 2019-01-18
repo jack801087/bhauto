@@ -152,7 +152,8 @@ const p2i_mergeSocialNode = function(_p2i_data){
         _p2i_data.setSocialMediaInfoNotFound();
         _p2i_data.setSocialMediaInfoToMerge(_p2i_data.createSMInfoEmpty());
     }
-    _p2i_data.getCurrentSocialNodeInfo().mergeSocialMediaData(_p2i_data.getSocialMediaInfoToMerge());
+    _p2i_data.getCurrentSocialNodeInfo()
+        .mergeSocialMediaData(_p2i_data.getSocialMediaInfoToMerge());
 };
 
 

@@ -8,7 +8,9 @@ class _SocialNodeInfo{
     }
 
     mergeSocialMediaData(smInfo){
-
+        this.hash=smInfo.hash;
+        this.instagram_tags = _.union(this.instagram_tags,smInfo.InstagramTags);
+        this.facebook_tags = _.union(this.facebook_tags,smInfo.FacebookTags);
     }
 
     fromJson(v){
