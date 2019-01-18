@@ -48,13 +48,13 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     // print trackInfo entityLabel - entityData - DB occurrence
     d$("\n\n");
     d$('Current track ',_p2i_data.getTrackObject().fulltitle);
-    d$('> entityLabel',_p2i_data.getEntityLabel());
+    d$('> entityLabel',_p2i_data.getEntityLabel(),_p2i_data.getEntityData().name);
     //d$('> entity data',_p2i_data.getEntityData());
     _p2i_data.abc();
 
     // search DB for this entity (artist,remixer,label)
     let smInfo = _p2i_data.getSMInfoAlt1();
-    if(smInfo===null) return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
+    if(!smInfo) return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
     clUI.print(smInfo);
 
     cliReference.prompt({
@@ -62,6 +62,9 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
         name: 'answer',
         message: '[enter to confirm, \'n\' to choose another, \'x\' to exit] '
     }, function (result) {
+        if(result.answer === 'x'){
+            return cliNextCb(cliData.success_code);
+        }
         if(result.answer === 'n'){
             return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
         }
@@ -89,19 +92,31 @@ const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_dat
 
     // search DB for this entity (artist,remixer,label)
     let smInfoSet = _p2i_data.getSMInfoAlt2();
-    if(!_.isArray(smInfoSet)) return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+    if(smInfoSet.length===0) return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
 
-    clUI.print(smInfoSet);
+    smInfoSet.forEach(function(v,i){
+        clUI.print(_.padStart(i+1,4,' ')+')',v.key);
+        if(v.InstagramTags.length>0) clUI.print('     ','instagram: ',v.InstagramTags.join(', '));
+        if(v.FacebookTags.length>0)  clUI.print('     ','facebook:  ',v.FacebookTags.join(', '));
+        clUI.print(' ');
+    });
     cliReference.prompt({
         type: 'input',
         name: 'id',
         message: '[enter to confirm, \'n\' to skip, \'x\' to exit] '
     }, function (result) {
-        result.id = Utils.strToInteger(result.id);
-        if(_.isInteger(result.id)){
-            _p2i_data.setSocialMediaInfoToMerge(smInfoSet[result.id]);
+        if(result.id === 'x'){
+            return cliNextCb(cliData.success_code);
+        }
+        if(result.id === 'n'){
             return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
         }
+        let _id = Utils.strToInteger(result.id);
+        if(_.isInteger(_id) && _.isObject(smInfoSet[_id-1])){
+            _p2i_data.setSocialMediaInfoToMerge(smInfoSet[_id-1]);
+            return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+        }
+        clUI.warning('[wrong id value or out-of-range: '+result.id+' ]');
         return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
     });
 };
@@ -130,7 +145,7 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
 
 const p2i_mergeSocialNode = function(_p2i_data){
     if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
-        // create one in DB
+        _p2i_data.setSocialMediaInfoToMerge(_p2i_data.createSMInfoEmpty());
         // set hash
         return;
     }
@@ -196,6 +211,10 @@ class _p2i_data_class{
         return this.entityData[ this.entityLabels[this.entityLabelsIndex] ][ this.entityDataIndex ];
     }
 
+    createSMInfoEmpty(){
+        return this.getEntityRelatedDB().getSMInfoByKey(this.getEntityData().name);
+    }
+
     getSMInfoAlt1(){
         let socialNodeInfo = this.getCurrentSocialNodeInfo();
         return this.getEntityRelatedDB().getSMInfoByKey(socialNodeInfo.name);
@@ -203,7 +222,14 @@ class _p2i_data_class{
 
     getSMInfoAlt2(){
         let socialNodeInfo = this.getCurrentSocialNodeInfo();
-        return this.getEntityRelatedDB().getSMInfoByKey(socialNodeInfo.name);
+        let _firstStr = _.trim(_.toLower(socialNodeInfo.name)).substr(0,1);
+        let _coll = [];
+        this.getEntityRelatedDB().forEach(function(k,i,smObj){
+            if(_.toLower(smObj.key).startsWith(_firstStr)===true){
+                _coll.push(smObj);
+            }
+        });
+        return _coll;
     }
 
     abc(){

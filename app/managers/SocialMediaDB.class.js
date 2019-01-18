@@ -121,8 +121,9 @@ class SocialMediaDB {
 
     forEach(cb){
         let khArray = Object.keys(this._collection);
+        let _self = this;
         khArray.forEach(function(k,i){
-            cb(i,k,this._collection[k]);
+            cb(i,k,_self._collection[k]);
         });
     }
 }
