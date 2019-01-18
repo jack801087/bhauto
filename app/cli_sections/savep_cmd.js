@@ -11,7 +11,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
             ProjectMgr.cleanTracksListData();
 
             let fdObj = ProjectMgr.setFromFinalData();
-            if(!_.isObject(fdObj)){
+            if(!_.isObject(fdObj) || fdObj.data_error.length>0){
+                d$(fdObj.data_error);
                 d$('ProjectMgr.setFromFinalData returned an error');
                 return cliNextCb(cliData.error_code);
             }

@@ -10,7 +10,8 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     let p1 = (cliReference,cliNextCb,cliData)=>{
 
         let fdObj = ProjectMgr.setFromFinalData();
-        if(!_.isObject(fdObj)){
+        if(!_.isObject(fdObj) || fdObj.data_error.length>0){
+            d$(fdObj.data_error);
             d$('ProjectMgr.setFromFinalData returned an error');
             return cliNextCb(cliData.error_code);
         }
@@ -38,12 +39,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 });
 
 
-
-
-
 //let _p2i_data = new _p2i_data_class();
-
-
 
 const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_data){
 
