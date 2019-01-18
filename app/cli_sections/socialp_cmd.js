@@ -124,7 +124,7 @@ const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_dat
 
 const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     // call p2i_mergeSocialNode
-    //p2i_mergeSocialNode(_p2i_data);
+    p2i_mergeSocialNode(_p2i_data);
 
     // if entityData+Label still working - increment/call p2i_entityData
     // if entityLabel still working - increment/call p2i_entityData
@@ -134,6 +134,10 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
     if(_p2i_data.updateEntityData()===false){
         if(_p2i_data.updateEntityLabel()===false){
             if(_p2i_data.updateTrackArray()===false){
+
+                // print final message
+                // print social nodes with no media info
+
                 return cliNextCb(cliData.success_code);
             }
         }
@@ -145,18 +149,10 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
 
 const p2i_mergeSocialNode = function(_p2i_data){
     if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
+        _p2i_data.setSocialMediaInfoNotFound();
         _p2i_data.setSocialMediaInfoToMerge(_p2i_data.createSMInfoEmpty());
-        // set hash
-        return;
     }
-    // merge socials
-
-    // I have current _SocialNodeInfo
-    // I have the founded DB_Object
-
-    // if not founded DB_Object - create DB occurrence and get hash
-
-    // merge everything
+    _p2i_data.getCurrentSocialNodeInfo().mergeSocialMediaData(_p2i_data.getSocialMediaInfoToMerge());
 };
 
 
@@ -166,6 +162,7 @@ const p2i_mergeSocialNode = function(_p2i_data){
 class _p2i_data_class{
     constructor(){
         this.socialMediaInfoToMerge = null;
+        this.socialMediaInfoNotFound = [];
         this.trackArrayIndex = 0;
         this.trackObject = null;
         this.entityLabelsIndex = 0;
@@ -202,6 +199,9 @@ class _p2i_data_class{
     }
     setSocialMediaInfoToMerge(smInfo){
         this.socialMediaInfoToMerge = smInfo;
+    }
+    setSocialMediaInfoNotFound(){
+        this.socialMediaInfoNotFound.push(this.getCurrentSocialNodeInfo());
     }
 
     getEntityRelatedDB(){

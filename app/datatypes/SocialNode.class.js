@@ -7,6 +7,10 @@ class _SocialNodeInfo{
         this.hashtags = [];
     }
 
+    mergeSocialMediaData(smInfo){
+
+    }
+
     fromJson(v){
         this.hash = v.hash;
         if(this.hash.length<2) this.hash=null;
