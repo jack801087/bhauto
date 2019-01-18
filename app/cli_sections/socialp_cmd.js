@@ -44,18 +44,12 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
 const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     // _p2i_data should be ready to work!
-
-    // print trackInfo entityLabel - entityData - DB occurrence
-    d$("\n\n");
-    d$('Current track ',_p2i_data.getTrackObject().fulltitle);
-    d$('> entityLabel',_p2i_data.getEntityLabel(),_p2i_data.getEntityData().name);
-    //d$('> entity data',_p2i_data.getEntityData());
-    _p2i_data.abc();
+    _p2i_data.printCurrentTrackInfo();
 
     // search DB for this entity (artist,remixer,label)
     let smInfo = _p2i_data.getSMInfoAlt1();
     if(!smInfo) return p2i_entityData_attempt2(cliReference,cliNextCb,cliData,_p2i_data);
-    clUI.print(smInfo);
+    _p2i_data.printSocialMediaInfo(smInfo,'DB item > ');
 
     cliReference.prompt({
         type: 'input',
@@ -71,44 +65,28 @@ const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
         _p2i_data.setSocialMediaInfoToMerge(smInfo);
         return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
     });
-    /*
-    // ask confirm
-
-    // set _p2i_data.socialMediaInfoToMerge
-    // if yes call p2i_update
-
-    // if not...shows all possibilities
-    // choose one or nothing
-
-    // set entityData.name with dbNode.key
-    // set _p2i_data.socialMediaInfoToMerge or null
-    // if yes call p2i_update
-    */
 };
 
 
 
 const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_data){
-
     // search DB for this entity (artist,remixer,label)
     let smInfoSet = _p2i_data.getSMInfoAlt2();
     if(smInfoSet.length===0) return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
 
+    clUI.print('> DB items founded');
     smInfoSet.forEach(function(v,i){
-        clUI.print(_.padStart(i+1,4,' ')+')',v.key);
-        if(v.InstagramTags.length>0) clUI.print('     ','instagram: ',v.InstagramTags.join(', '));
-        if(v.FacebookTags.length>0)  clUI.print('     ','facebook:  ',v.FacebookTags.join(', '));
-        clUI.print(' ');
+        _p2i_data.printSocialMediaInfo(v,_.padStart(i+1,4,' ')+')');
     });
     cliReference.prompt({
         type: 'input',
         name: 'id',
-        message: '[enter to confirm, \'n\' to skip, \'x\' to exit] '
+        message: '[write an id, enter to skip, \'x\' to exit] '
     }, function (result) {
         if(result.id === 'x'){
             return cliNextCb(cliData.success_code);
         }
-        if(result.id === 'n'){
+        if(result.id.length<1){
             return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
         }
         let _id = Utils.strToInteger(result.id);
@@ -123,13 +101,7 @@ const p2i_entityData_attempt2 = function(cliReference,cliNextCb,cliData,_p2i_dat
 
 
 const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
-    // call p2i_mergeSocialNode
     p2i_mergeSocialNode(_p2i_data);
-
-    // if entityData+Label still working - increment/call p2i_entityData
-    // if entityLabel still working - increment/call p2i_entityData
-    // if trackData still working - increment/call p2i_entityData
-    // finish
 
     if(_p2i_data.updateEntityData()===false){
         if(_p2i_data.updateEntityLabel()===false){
@@ -148,6 +120,8 @@ const p2i_update = function(cliReference,cliNextCb,cliData,_p2i_data){
 
 
 const p2i_mergeSocialNode = function(_p2i_data){
+    return;
+
     if(!_.isObject(_p2i_data.getSocialMediaInfoToMerge())){
         _p2i_data.setSocialMediaInfoNotFound();
         _p2i_data.setSocialMediaInfoToMerge(_p2i_data.createSMInfoEmpty());
@@ -285,4 +259,20 @@ class _p2i_data_class{
         //else this.entityLabelsIndex=0;
         return _check;
     };
+
+
+    printCurrentTrackInfo(){
+        clUI.print("\n");
+        clUI.print('Current track: ',this.getTrackObject().fulltitle);
+        clUI.print('                > entity',this.getEntityLabel(),this.getEntityData().name);
+    }
+
+
+    printSocialMediaInfo(smInfo,prefix){
+        clUI.print(prefix,smInfo.key);
+        let _pfx1 = _.repeat(' ',prefix.length);
+        clUI.print(_pfx1,'instagram: ',((smInfo.InstagramTags.length>0)?smInfo.InstagramTags.join(', '):'<empty>'));
+        clUI.print(_pfx1,'facebook:  ',((smInfo.FacebookTags.length>0)?smInfo.FacebookTags.join(', '):'<empty>'));
+        clUI.print(' ');
+    }
 }
