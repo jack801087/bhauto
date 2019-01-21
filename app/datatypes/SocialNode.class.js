@@ -117,7 +117,6 @@ class SocialNode {
             _snObj.instagram_tags.push("");
             _snObj.facebook_tags.push("");
             _snObj.hashtags.push("");
-            _snObj.hashtags.push("");
 
             final.push(_snObj);
         });
