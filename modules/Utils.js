@@ -97,6 +97,10 @@ class Utils {
         return _.deburr(s).replace(/[^a-zA-Z0-9\_\-\.]/g,'');
     }
 
+    onlyValidURL(s){
+        return _.deburr(s).replace(/[^a-zA-Z0-9 ]/g,'');
+    }
+
     printArrayOrderedList(array,prefix,processFn){
         let padding = (""+array.length+"").length+1;
         if(!processFn) processFn=function(n){ return n; };

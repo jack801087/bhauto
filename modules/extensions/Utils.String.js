@@ -16,8 +16,9 @@ class Utils_String {
 
     html_query_string(v,joinch){
         //TODO handle special characters
-        v = this.utils.onlyLettersNumbers(v);
-        return v.split(' ').splice(0,2).join(joinch);
+        let pph = v.indexOf('('); if(pph>0) v=v.substr(0,pph-1);
+        v = this.utils.onlyValidURL(v);
+        return _.trim(v).split(' ').splice(0,2).join(joinch);
     }
 
 

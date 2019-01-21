@@ -129,8 +129,8 @@ class SocialNode {
         let final = [];
         this.collection.forEach((snObj)=>{
             let _snObj = snObj.toJson();
-            _snObj.instagram_tags.push("");
-            _snObj.facebook_tags.push("");
+            // _snObj.instagram_tags.push("");
+            // _snObj.facebook_tags.push("");
             _snObj.q_name_plus = Utils.String.html_query_string(_snObj.name,'+');
             _snObj.q_name_space = Utils.String.html_query_string(_snObj.name,' ');
 

@@ -337,15 +337,15 @@ class TrackSource {
         fdjson.title = this.title;
         fdjson.release = this.release;
         fdjson.artworklink = this.artworklink;
+        fdjson.artists = this._artists.toArrayEditable();
+        fdjson.remixers = this._remixers.toArrayEditable();
+        fdjson.labels = this._labels.toArrayEditable();
         fdjson.buylinks = this.buylinks;
         fdjson.buylinks.push({label:"", url:""});
         fdjson.audiolinks = this.audiolinks;
         fdjson.audiolinks.push({label:"", url:""});
         fdjson.videolinks = this.videolinks;
         fdjson.videolinks.push({label:"", url:""});
-        fdjson.artists = this._artists.toArrayEditable();
-        fdjson.remixers = this._remixers.toArrayEditable();
-        fdjson.labels = this._labels.toArrayEditable();
         return fdjson;
     }
 

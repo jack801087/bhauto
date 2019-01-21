@@ -1,0 +1,58 @@
+Tracks of the week #{{tracks_data.week_counter}} - {{tracks_data.date_interval}}
+
+<!-- wp:paragraph -->
+<p>This is our weekly recap with all the tracks which have been published between {{tracks_data.date_interval_extended}}.</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>We hope this can help you to discover some interesting hard techno producers and to enhance your dj sets with something fresh!</p>
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+<p>Note: this is not a chart; it's an alphabetically ordered list of excellent tracks.</p>
+<!-- /wp:paragraph -->
+
+
+{{#tracks_data.tracks_wp_html}}
+<!-- wp:html -->
+<section class="bh_trackblock">
+    {{{.}}}
+</section>
+<!-- /wp:html -->
+{{/tracks_data.tracks_wp_html}}
+
+
+<!-- wp:html -->
+<section class="bh_signature">
+    <h2>Follow and support us!</h2>
+    <p>Follow <strong>BlackHart Selections </strong> on
+        {{#tracks_data.bh_info.socials}}
+        <a href="{{{url}}}" target="_blank">{{site_name}}</a>
+        {{/tracks_data.bh_info.socials}}
+    </p>
+</section>
+<!-- /wp:html -->
+
+
+<!-- wp:quote {"className":"is-style-large"} -->
+<blockquote class="wp-block-quote is-style-large"><p>{{tracks_data.bh_info.tag_line}}</p></blockquote>
+<!-- /wp:quote -->
+
+
+<!-- wp:html -->
+<style type="text/css">
+    .bh_trackblock {}
+    .bh_signature {}
+</style>
+<!-- /wp:html -->
+
+
+{{soundcloud_trackid}} 274880786
+<iframe width="100%" height="300" scrolling="no" frameborder="no" allow="autoplay"
+        src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/{{soundcloud_trackid}}&color=%23000000&auto_play=false
+        &hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true&visual=true"></iframe>
+
+
+{{youtube_trackid}} oNk9I47gsac
+<iframe width="560" height="315" src="https://www.youtube.com/embed/{{youtube_trackid}}" frameborder="0"
+        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
