@@ -114,6 +114,9 @@ class SocialMediaDB {
     }
 
 
+    getSMInfoByHash(hash){
+        return this._collection[hash];
+    }
     getSMInfoByKey(key,create){
         if(create===true) return this._cget(key);
         return this._get(key);

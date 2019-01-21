@@ -47,9 +47,9 @@ let p3 = (cliReference,cliNextCb,cliData)=>{
 
 const p2i_entityData = function(cliReference,cliNextCb,cliData,_p2i_data){
     // _p2i_data should be ready to work!
-    if(_p2i_data.alreadyProcessedEntity()===true){
-        return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
-    }
+    // if(_p2i_data.alreadyProcessedEntity()===true){
+    //     return p2i_update(cliReference,cliNextCb,cliData,_p2i_data);
+    // }
 
     _p2i_data.printCurrentTrackInfo();
 
@@ -212,6 +212,9 @@ class _p2i_data_class{
     }
 
     getSMInfoAlt1(){
+        if(this.alreadyProcessedEntity()===true){
+            return this.getEntityRelatedDB().getSMInfoByHash(this.currentEntityData.hash);
+        }
         let socialNodeInfo = this.getCurrentSocialNodeInfo();
         return this.getEntityRelatedDB().getSMInfoByKey(socialNodeInfo.name);
     }
@@ -253,6 +256,7 @@ class _p2i_data_class{
         let _check = this.checkEntityLabel();
         if(_check===true) this.entityLabelsIndex++;
         else this.entityLabelsIndex=0;
+        this.currentEntityData = this.getEntityData();
         return _check;
     };
 
@@ -268,6 +272,7 @@ class _p2i_data_class{
         this._setTrackData();
         //if(_check===true) this.trackArrayIndex++;
         //else this.entityLabelsIndex=0;
+        this.currentEntityData = this.getEntityData();
         return _check;
     };
 
