@@ -158,7 +158,6 @@ class ProjectManager {
 
 
     _mergeSingleTrackHashtags(track_info, max_count){
-        let htarray = [];
 
         if(!_.isArray(this._cache_single_track_hashtags)){
             let _csth_temp = Utils.File.readJsonFileSync(Utils.File.pathJoin(this._assets_path,'data','single_track_hashtags.json'));
@@ -168,7 +167,7 @@ class ProjectManager {
             }
             this._cache_single_track_hashtags = _csth_temp;
         }
-        htarray = _.union(this._cache_single_track_hashtags,[]);
+        let htarray = _.union(this._cache_single_track_hashtags,[]);
 
         if(htarray.length>max_count){
             htarray = htarray.slice(0,max_count-1);
