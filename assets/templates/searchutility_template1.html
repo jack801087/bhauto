@@ -14,7 +14,7 @@
     a {
         color:#00307f;
     }
-    p { margin:0.6em 0; }
+    p, div.pgrph { margin:0.6em 0; }
     ul,ol,li{ margin:0; padding:0;}
     ul,ol{ margin:0em 0 1.2em 2.6em; }
     section.row {
@@ -30,165 +30,239 @@
     div.row_info {
 
     }
+
+
+    .row { display: none; }
+    .row.active { display: block; }
+
+    .navbar {
+        padding:0.6em 0.6em;
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        background-color:#CCCCCC;
+    }
+
+    .navbar a {
+        color: #FFFFFF;
+        background-color:#000;
+        padding: 0.6em 1.2em;
+        text-decoration: none;
+    }
+
   </style>
+
+    <script src="./jquery.min.js"></script>
+    <script>
+        jQuery(document).ready(function($){
+
+            $('.row:first').addClass('active');
+            $('section.navbar .prev').css({'visibility':'hidden'});
+
+            let _navButtonFn = function(direction){
+                let _elmt = null;
+                if(direction=='P'){
+                    _elmt = $('.row.active').eq(0).prev('.row');
+                    if (_elmt.is(':first-child')===true) {
+                        $('section.navbar .prev').css({'visibility':'hidden'});
+                    }
+                    if(_elmt.length===0){
+                        return;
+                    }
+                    $('section.navbar .next').css({'visibility':'visible'});
+                }
+                if(direction=='N'){
+                    _elmt = $('.row.active').eq(0).next('.row');
+                    if (_elmt.is(':last-child')===true) {
+                        $('section.navbar .next').css({'visibility':'hidden'});
+                    }
+                    if(_elmt.length===0){
+                        return;
+                    }
+                    $('section.navbar .prev').css({'visibility':'visible'});
+                }
+                $('.row').removeClass('active');
+                _elmt.addClass('active');
+            };
+
+            $('section.navbar .prev').click(function(e){
+                e.preventDefault();
+                _navButtonFn('P');
+            });
+
+            $('section.navbar .next').click(function(e){
+                e.preventDefault();
+                _navButtonFn('N');
+            });
+
+        });
+    </script>
 </head>
 
 <body>
 
-{{#tracks_content}}
-<section class="row">
-
-    <div class="row_info">
-        <p><strong>Track #{{id}}</strong></p>
-    </div>
-
-    <div class="row_info">
-        <p>
-            <strong>Title</strong>
-            <span>{{title}}</span>
-            [
-            <a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Beatport</a>
-            <a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}" target="_blank">Beatport2</a>
-            <a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Soundcloud</a>
-            <a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}" target="_blank">Soundcloud2</a>
-            <a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title_plus}}+"{{q_artists_plus}}"&oq={{q_title_plus}}+"{{q_artists_plus}}"' target="_blank">Artwork</a>
-            ]
-        </p>
-    </div>
-
-    {{#artists}}
-    <div class="row_info">
-        <p>
-            <strong>Artist</strong>
-            <span>{{name}}</span>
-            [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Instagram</a>
-            <a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Instagram2</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
-            ]
-        </p>
-
-        <p>
-            <strong>Artist {{name}}: social profiles</strong>
-            {{^instagram_tags.length}}
-            <small><strong style="color:#FF0000;">[empty]</strong></small>
-            {{/instagram_tags.length}}
-        </p>
-
-        <ul>
-            {{#instagram_tags}}
-            <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
-            {{/instagram_tags}}
-
-            {{#facebook_tags}}
-            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
-            {{/facebook_tags}}
-        </ul>
-
-    </div>
-    {{/artists}}
-
-
-    {{#remixers}}
-    <div class="row_info">
-        <p>
-            <strong>Remixer</strong>
-            <span>{{name}}</span>
-            [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Google</a>
-            <a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Google2</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
-            ]
-        </p>
-
-        <p>
-            <strong>Remixer {{name}}: social profiles</strong>
-            {{^instagram_tags.length}}
-            <small><strong style="color:#FF0000;">[empty]</strong></small>
-            {{/instagram_tags.length}}
-        </p>
-
-        <ul>
-            {{#instagram_tags}}
-            <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
-            {{/instagram_tags}}
-
-            {{#facebook_tags}}
-            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
-            {{/facebook_tags}}
-        </ul>
-
-    </div>
-    {{/remixers}}
-
-
-    {{#labels}}
-    <div class="row_info">
-        <p>
-            <strong>Label</strong>
-            <span>{{name}}</span>
-            [
-            <a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Google</a>
-            <a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a>
-            ]
-        </p>
-        <p>
-            <strong>Label {{name}}: social profiles</strong>
-            {{^instagram_tags.length}}
-            <small><strong style="color:#FF0000;">[empty]</strong></small>
-            {{/instagram_tags.length}}
-        </p>
-
-        <ul>
-            {{#instagram_tags}}
-            <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
-            {{/instagram_tags}}
-
-            {{#facebook_tags}}
-            <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
-            {{/facebook_tags}}
-        </ul>
-    </div>
-    {{/labels}}
-
-
-    <div class="row_info">
-        <p>
-            <strong>Buy</strong>
-            [
-            <a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Beatport</a>
-            <a href="https://www.traxsource.com/search?term={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Traxsource</a>
-            <a href="https://www.decks.de/decks/workfloor/search_db.php?such={{q_title_plus}}+{{q_artists_plus}}&wosuch=all&wassuch=atl&where=" target="_blank">Decks.de</a>
-            <a href="https://www.junodownload.com/search/?q%5Ball%5D%5B%5D={{q_title_plus}}+{{q_artists_plus}}" target="_blank">JunoDownload</a>
-            ]
-        </p>
-    </div>
-
-
-    <div class="row_info">
-        <p>
-            <strong>Listen</strong>
-            [
-            <a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Soundcloud</a>
-            <a href="https://bandcamp.com/search?q={{q_title_space}} {{q_artists_space}}" target="_blank">Bandcamp</a>
-            <a href="https://open.spotify.com/search/results/{{q_title_space}} {{q_artists_space}}" target="_blank">Spotify</a>
-            ]
-        </p>
-    </div>
-
-
-    <div class="row_info">
-        <p>
-            <strong>Watch</strong>
-            [
-            <a href="https://www.youtube.com/results?search_query={{q_title_plus}}+{{q_artists_plus}}" target="_blank">YouTube</a>
-            <a href="hhttps://www.facebook.com/search/videos/?q={{q_title_space}} {{q_artists_space}}" target="_blank">Facebook</a>
-            ]
-        </p>
-    </div>
-
+<section class="navbar">
+    <a href="#" class="prev">&laquo; Previous</a>
+    <a href="#" class="next">Next &raquo;</a>
 </section>
-{{/tracks_content}}
+
+
+<section class="trackslist">
+    {{#tracks_content}}
+    <section class="row">
+
+        <div class="row_info">
+            <p><strong>Track #{{id}}</strong></p>
+        </div>
+
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Title</strong>
+                <span>{{title}}</span>
+                <ul>
+                    <li><a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Beatport</a></li>
+                    <li><a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}" target="_blank">Beatport (title only)</a></li>
+                    <li><a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Soundcloud</a></li>
+                    <li><a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}" target="_blank">Soundcloud (title only)</a></li>
+                    <li><a href='https://www.google.com/search?&tbm=isch&source=lnms&q={{q_title_plus}}+"{{q_artists_plus}}"&oq={{q_title_plus}}+"{{q_artists_plus}}"' target="_blank">Artwork</a></li>
+                </ul>
+            </div>
+        </div>
+
+        {{#artists}}
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Artist</strong>
+                <span>{{name}}</span>
+                <ul>
+                    <li><a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Instagram</a></li>
+                    <li><a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Instagram (complete)</a></li>
+                    <li><a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a></li>
+                </ul>
+            </div>
+
+            <div class="pgrph">
+                <strong>Artist {{name}}: social profiles</strong>
+                {{^instagram_tags.length}}
+                <small><strong style="color:#FF0000;">[empty]</strong></small>
+                {{/instagram_tags.length}}
+            </div>
+
+            <ul>
+                {{#instagram_tags}}
+                <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
+                {{/instagram_tags}}
+
+                {{#facebook_tags}}
+                <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+                {{/facebook_tags}}
+            </ul>
+
+        </div>
+        {{/artists}}
+
+
+        {{#remixers}}
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Remixer</strong>
+                <span>{{name}}</span>
+                <ul>
+                    <li><a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Instagram</a></li>
+                    <li><a href='https://www.google.com/search?q="instagram"+"{{q_title_plus}}+"{{q_name_plus}}"&oq="instagram"+{{q_title_plus}}+"{{q_name_plus}}"' target="_blank">Instagram (complete)</a></li>
+                    <li><a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a></li>
+                </ul>
+            </div>
+
+            <div class="pgrph">
+                <strong>Remixer {{name}}: social profiles</strong>
+                {{^instagram_tags.length}}
+                <small><strong style="color:#FF0000;">[empty]</strong></small>
+                {{/instagram_tags.length}}
+            </div>
+
+            <ul>
+                {{#instagram_tags}}
+                <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
+                {{/instagram_tags}}
+
+                {{#facebook_tags}}
+                <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+                {{/facebook_tags}}
+            </ul>
+
+        </div>
+        {{/remixers}}
+
+
+        {{#labels}}
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Label</strong>
+                <span>{{name}}</span>
+                <ul>
+                    <li><a href='https://www.google.com/search?q="instagram"+"{{q_name_plus}}"&oq="instagram"+"{{q_name_plus}}"' target="_blank">Instagram</a></li>
+                    <li><a href='https://www.facebook.com/search/pages/?q={{q_name_plus}}' target="_blank">Facebook</a></li>
+                </ul>
+            </div>
+            <div class="pgrph">
+                <strong>Label {{name}}: social profiles</strong>
+                {{^instagram_tags.length}}
+                <small><strong style="color:#FF0000;">[empty]</strong></small>
+                {{/instagram_tags.length}}
+            </div>
+
+            <ul>
+                {{#instagram_tags}}
+                <li><a href="https://www.instagram.com/{{.}}" target="_blank">{{.}} (instagram)</a></li>
+                {{/instagram_tags}}
+
+                {{#facebook_tags}}
+                <li><a href="https://www.facebook.com/{{.}}" target="_blank">{{.}} (facebook)</a></li>
+                {{/facebook_tags}}
+            </ul>
+        </div>
+        {{/labels}}
+
+
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Buy</strong>
+                <ul>
+                    <li><a href="https://www.beatport.com/search/tracks?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Beatport</a></li>
+                    <li><a href="https://www.traxsource.com/search?term={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Traxsource</a></li>
+                    <li><a href="https://www.decks.de/decks/workfloor/search_db.php?such={{q_title_plus}}+{{q_artists_plus}}&wosuch=all&wassuch=atl&where=" target="_blank">Decks.de</a></li>
+                    <li><a href="https://www.junodownload.com/search/?q%5Ball%5D%5B%5D={{q_title_plus}}+{{q_artists_plus}}" target="_blank">JunoDownload</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Listen</strong>
+                <ul>
+                    <li><a href="https://soundcloud.com/search/sounds?q={{q_title_plus}}+{{q_artists_plus}}" target="_blank">Soundcloud</a></li>
+                    <li><a href="https://bandcamp.com/search?q={{q_title_space}} {{q_artists_space}}" target="_blank">Bandcamp</a></li>
+                    <li><a href="https://open.spotify.com/search/results/{{q_title_space}} {{q_artists_space}}" target="_blank">Spotify</a></li>
+                </ul>
+            </div>
+        </div>
+
+
+        <div class="row_info">
+            <div class="pgrph">
+                <strong>Watch</strong>
+                <ul>
+                    <li><a href="https://www.youtube.com/results?search_query={{q_title_plus}}+{{q_artists_plus}}" target="_blank">YouTube</a></li>
+                    <li><a href="hhttps://www.facebook.com/search/videos/?q={{q_title_space}} {{q_artists_space}}" target="_blank">Facebook</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </section>
+    {{/tracks_content}}
+</section>
 
 </body>
 </html>
