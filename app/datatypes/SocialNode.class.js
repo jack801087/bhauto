@@ -162,23 +162,29 @@ class SocialNode {
 
 
     instagramTagsToArray(){
-        let names = [];
+        let array = [];
         this.collection.forEach((cobj)=>{
             cobj.instagram_tags.forEach((v)=>{
-                names.push(v);
+                array.push({
+                    name:cobj.name,
+                    tag:v
+                });
             });
         });
-        return names;
+        return array;
     }
 
     facebookTagsToArray(){
-        let names = [];
+        let array = [];
         this.collection.forEach((cobj)=>{
             cobj.facebook_tags.forEach((v)=>{
-                names.push(v);
+                array.push({
+                    name:cobj.name,
+                    tag:v
+                });
             });
         });
-        return names;
+        return array;
     }
 
     hashtagsToArray(){

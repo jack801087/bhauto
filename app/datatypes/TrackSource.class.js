@@ -137,7 +137,7 @@ class TrackSource {
             fdjson.audiolinks += _tracklinksPrintFn(v);
             fdjson.audiolinks_array.push(linksArrayNewObj(v.url));
         });
-        if(fdjson.audiolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+        if(fdjson.audiolinks.length>3) fdjson.audiolinks+= ' '+Utils.SystemInfo.EOL;
 
         fdjson.videolinks = "";
         fdjson.videolinks_array = [];
@@ -145,7 +145,7 @@ class TrackSource {
             fdjson.videolinks += _tracklinksPrintFn(v);
             fdjson.videolinks_array.push(linksArrayNewObj(v.url));
         });
-        if(fdjson.videolinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+        if(fdjson.videolinks.length>3) fdjson.videolinks+= ' '+Utils.SystemInfo.EOL;
 
         fdjson.artists_array = this._artists.toSimpleArray();
         fdjson.artists_socials_array = this._artists.toSimpleArray();
@@ -245,7 +245,7 @@ class TrackSource {
 
         fdjson.ig_tags_list = "";
         fdjson.ig_tags_array = _.union(fdjson.ig_tags_artists_array,fdjson.ig_tags_remixers_array,fdjson.ig_tags_labels_array);
-        fdjson.ig_tags_array.forEach((v)=>{ fdjson.ig_tags_list+='@'+v+' '; });
+        fdjson.ig_tags_array.forEach((v)=>{ fdjson.ig_tags_list+='@'+v.tag+' '; });
     }
 
 
@@ -260,7 +260,7 @@ class TrackSource {
 
         fdjson.fb_tags_list = "";
         fdjson.fb_tags_array = _.union(fdjson.fb_tags_artists_array,fdjson.fb_tags_remixers_array,fdjson.fb_tags_labels_array);
-        fdjson.fb_tags_array.forEach((v)=>{ fdjson.fb_tags_list+='@'+v+' '; });
+        fdjson.fb_tags_array.forEach((v)=>{ fdjson.fb_tags_list+='@'+v.tag+' '; });
     }
 
 
@@ -272,15 +272,17 @@ class TrackSource {
         let setSingle = (subject)=>{
             fdjson['fb_tags_'+subject+'_array'].forEach((v)=>{
                 fdjson[subject+'_socials_array'].push({
-                    profile_name:v,
-                    url:"https://www.facebook.com/"+v,
+                    name:v.name,
+                    profile_name:v.tag,
+                    url:"https://www.facebook.com/"+v.tag,
                     site_name: "Facebook"
                 });
             });
             fdjson['ig_tags_'+subject+'_array'].forEach((v)=>{
                 fdjson[subject+'_socials_array'].push({
-                    profile_name:v,
-                    url:"https://www.instagram.com/"+v,
+                    name:v.name,
+                    profile_name:v.tag,
+                    url:"https://www.instagram.com/"+v.tag,
                     site_name: "Instagram"
                 });
             });
@@ -317,7 +319,7 @@ class TrackSource {
         // d$('fdjson.hash_tags_artists_array',fdjson.hash_tags_artists_array);
         // d$('fdjson.hash_tags_labels_array',fdjson.hash_tags_labels_array);
 
-        this.__toPrintableJSON_EnhanceHashtags(fdjson);
+        //this.__toPrintableJSON_EnhanceHashtags(fdjson); //TODO: FIX
 
         // d$('fdjson.hash_tags_artists_array',fdjson.hash_tags_artists_array);
         // d$('fdjson.hash_tags_labels_array',fdjson.hash_tags_labels_array);
@@ -325,7 +327,7 @@ class TrackSource {
         // d$(' ');
 
         fdjson.hash_tags_list = "";
-        fdjson.hash_tags_array = this.__fairHashtagDistribution(fdjson);
+        fdjson.hash_tags_array = []; //this.__fairHashtagDistribution(fdjson); //TODO: FIX
         //fdjson.hash_tags_array = _.union(fdjson.hash_tags_artists_array,fdjson.hash_tags_remixers_array,fdjson.hash_tags_labels_array);
         //fdjson.hash_tags_array.forEach((v)=>{ fdjson.hash_tags_list+='#'+v+' '; });
     }
