@@ -16,6 +16,7 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
     tlData.list.forEach((v,i)=>{
         clUI.print('',(i+1)+')',v.name);
     });
+
     cliReference.prompt({
         type: 'input',
         name: 'answer',
@@ -49,7 +50,5 @@ CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
             return cliNextCb(cliData.success_code);
             //p1(cliReference,cliNextCb,cliData);
         });
-        return;
     });
-    return;
 });

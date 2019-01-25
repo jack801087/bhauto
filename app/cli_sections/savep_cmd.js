@@ -7,47 +7,47 @@ CliMgr.addCommandHeader(cmd_name)
 
 CliMgr.addCommandBody(cmd_name,function(cliReference,cliNextCb,cliData){
 
-        let p1 = (cliReference,cliNextCb,cliData)=>{
-            ProjectMgr.cleanTracksListData();
+    let p1 = (cliReference,cliNextCb,cliData)=>{
+        ProjectMgr.cleanTracksListData();
 
-            let fdObj = ProjectMgr.setFromFinalData();
-            if(!_.isObject(fdObj) || fdObj.data_error.length>0){
-                d$(fdObj.data_error);
-                d$('ProjectMgr.setFromFinalData returned an error');
-                return cliNextCb(cliData.error_code);
-            }
+        let fdObj = ProjectMgr.setFromFinalData();
+        if(!_.isObject(fdObj) || fdObj.data_error.length>0){
+            d$(fdObj.data_error);
+            d$('ProjectMgr.setFromFinalData returned an error');
+            return cliNextCb(cliData.error_code);
+        }
 
-            if(fdObj.data_error.length>0){
-                cliData.ui.warning(fdObj.data_error);
-                cliData.ui.warning('Some errors occurred while reading the final data showed above.');
-                cliReference.prompt({
-                    type: 'input',
-                    name: 'answer',
-                    message: 'Do you want to continue? [y/n] '
-                }, function (result) {
-                    if(result.answer !== 'y'){
-                        return cliNextCb(cliData.success_code);
-                    }
-                    p2(cliReference,cliNextCb,cliData);
-                });
-                return;
-            }
+        if(fdObj.data_error.length>0){
+            cliData.ui.warning(fdObj.data_error);
+            cliData.ui.warning('Some errors occurred while reading the final data showed above.');
+            cliReference.prompt({
+                type: 'input',
+                name: 'answer',
+                message: 'Do you want to continue? [y/n] '
+            }, function (result) {
+                if(result.answer !== 'y'){
+                    return cliNextCb(cliData.success_code);
+                }
+                p2(cliReference,cliNextCb,cliData);
+            });
+            return;
+        }
 
-            p2(cliReference,cliNextCb,cliData);
+        p2(cliReference,cliNextCb,cliData);
+    };
 
-        };
 
-        let p2 = (cliReference,cliNextCb,cliData)=>{
-            if(!ProjectMgr.generateTracksListDirectory()){
-                d$('ProjectMgr.generateTracksListDirectory returned an error');
-                return cliNextCb(cliData.error_code);
-            }
-            cliData.ui.print('Now manually copy the tracks from...');
-            cliData.ui.print(ProjectMgr.path_project_list_tracks);
-            cliData.ui.print('to...');
-            cliData.ui.print(ProjectMgr.path_ready_tracks);
-            return cliNextCb(cliData.success_code);
-        };
+    let p2 = (cliReference,cliNextCb,cliData)=>{
+        if(!ProjectMgr.generateTracksListDirectory()){
+            d$('ProjectMgr.generateTracksListDirectory returned an error');
+            return cliNextCb(cliData.error_code);
+        }
+        cliData.ui.print('Now manually copy the tracks from...');
+        cliData.ui.print(ProjectMgr.path_project_list_tracks);
+        cliData.ui.print('to...');
+        cliData.ui.print(ProjectMgr.path_ready_tracks);
+        return cliNextCb(cliData.success_code);
+    };
 
     /*  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  *  */
 
