@@ -65,9 +65,9 @@ class SocialNode {
 
     addSocialMediaDataToDB(dbObject){
         this.collection.forEach((v,i)=>{
-            dbObject.setInstagramTags(v.name,v.instagram_tags);
-            dbObject.setFacebookTags(v.name,v.facebook_tags);
-            dbObject.setHashtags(v.name,v.hashtags);
+            dbObject.setInstagramTags(v.hash,v.instagram_tags);
+            dbObject.setFacebookTags(v.hash,v.facebook_tags);
+            dbObject.setHashtags(v.hash,v.hashtags);
         });
     }
 

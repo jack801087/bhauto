@@ -129,7 +129,7 @@ class TrackSource {
             fdjson.buylinks += _tracklinksPrintFn(v);
             fdjson.buylinks_array.push(linksArrayNewObj(v.url));
         });
-        if(fdjson.buylinks.length>3) fdjson.buylinks+= ' '+Utils.SystemInfo.EOL;
+        if(fdjson.buylinks.length>3) fdjson.buylinks= ' '+Utils.SystemInfo.EOL+fdjson.buylinks+' '+Utils.SystemInfo.EOL;
 
         fdjson.audiolinks = "";
         fdjson.audiolinks_array = [];
@@ -137,7 +137,7 @@ class TrackSource {
             fdjson.audiolinks += _tracklinksPrintFn(v);
             fdjson.audiolinks_array.push(linksArrayNewObj(v.url));
         });
-        if(fdjson.audiolinks.length>3) fdjson.audiolinks+= ' '+Utils.SystemInfo.EOL;
+        if(fdjson.audiolinks.length>3) fdjson.audiolinks= ' '+Utils.SystemInfo.EOL+fdjson.audiolinks+' '+Utils.SystemInfo.EOL;
 
         fdjson.videolinks = "";
         fdjson.videolinks_array = [];
@@ -145,7 +145,7 @@ class TrackSource {
             fdjson.videolinks += _tracklinksPrintFn(v);
             fdjson.videolinks_array.push(linksArrayNewObj(v.url));
         });
-        if(fdjson.videolinks.length>3) fdjson.videolinks+= ' '+Utils.SystemInfo.EOL;
+        if(fdjson.videolinks.length>3) fdjson.videolinks= ' '+Utils.SystemInfo.EOL+fdjson.videolinks+' '+Utils.SystemInfo.EOL;
 
         fdjson.artists_array = this._artists.toSimpleArray();
         fdjson.artists_socials_array = this._artists.toSimpleArray();

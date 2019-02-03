@@ -338,7 +338,9 @@ class ProjectManager {
 
         this._current_project_data.forEach((v,i)=>{
 
-            //v.artists, v.remixers, v.labels // add to DB
+            v.artists.addSocialMediaDataToDB(SMDB_Artists);
+            v.remixers.addSocialMediaDataToDB(SMDB_Artists);
+            v.labels.addSocialMediaDataToDB(SMDB_Labels);
 
             let tracklp = this._get_single_tracklist_paths(project_date, this.path_project_list_tracks, TracksCounter, v.SourceCode, v.artists.toString(), v.title);
             Utils.File.ensureDirSync(tracklp.path_day);
@@ -349,6 +351,9 @@ class ProjectManager {
 
             TracksCounter++;
         });
+
+        SMDB_Artists.save();
+        SMDB_Labels.save();
 
         if(TracksCounter_fromFile===null){
             this._set_config_param('TracksCounter',TracksCounter_start);
@@ -604,14 +609,17 @@ class ProjectManager {
         tracks_data.tracks_wp_html = [];
 
         let _error_flag = false;
+        let tkIndex = 1;
 
         tlData._data.forEach((tlInfo)=>{
             clUI.print('Moving directory',tlInfo.parent_path,' ...');
+            let tkPath = Utils.File.pathJoin(weeklyp.path_week,'T'+tkIndex+'_'+Utils.File.pathBasename(tlInfo.parent_path));
+            tkIndex++;
 
             /* wordpress - read file single track wordpress */
             tracks_data.tracks_wp_html.push(_.trim(Utils.File.readTextFileSync(tlInfo.content_paths['wordpress_txt'])));
 
-            let moveDData = Utils.File.moveDirectorySync(tlInfo.parent_path,weeklyp.path_week,{ overwrite:true, setDirName:true });
+            let moveDData = Utils.File.moveDirectorySync(tlInfo.parent_path,tkPath,{ overwrite:true, setDirName:false });
             if(moveDData.err!==null){
                 _error_flag = true;
                 clUI.error('> an error occurred',"\n",moveDData.err);

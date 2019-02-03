@@ -85,8 +85,12 @@ class SocialMediaDB {
     }
 
 
-    setInstagramTags(key,values,reset){
-        let elmt = this._cget(key);
+    setInstagramTags(hash,values,reset){
+        let elmt = this._collection[hash];
+        if(_.isNil(elmt)){
+            d$('setInstagramTags - No DB occurrence with ',hash);
+            return;
+        }
         if(reset===true){
             elmt.InstagramTags = [];
         }
@@ -95,19 +99,21 @@ class SocialMediaDB {
     }
 
 
-    setFacebookTags(key,values,reset){
-        let elmt = this._cget(key);
-        if(reset===true){
-            elmt.FacebookTags = [];
+    setFacebookTags(hash,values,reset){
+        let elmt = this._collection[hash];
+        if(_.isNil(elmt)){
+            d$('setFacebookTags - No DB occurrence with ',hash);
+            return;
         }
         elmt.FacebookTags = _.union(elmt.FacebookTags,values);
         return true;
     }
 
-    setHashtags(key,values,reset){
-        let elmt = this._cget(key);
-        if(reset===true){
-            elmt.Hashtags = [];
+    setHashtags(hash,values,reset){
+        let elmt = this._collection[hash];
+        if(_.isNil(elmt)){
+            d$('setHashtags - No DB occurrence with ',hash);
+            return;
         }
         elmt.Hashtags = _.union(elmt.Hashtags,values);
         return true;
